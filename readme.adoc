@@ -1,0 +1,106 @@
+= Asciidoc Blog
+
+A blog application that supports asciidoc format.
+
+https://github.com/zemian/adocblog
+
+== Requirements
+
+* JDK8
+* Maven3
+* Tomcat8
+* PostgreSQL9
+
+== Build
+
+  mvn package
+
+== Application Deployment
+
+The application is packaged into a `war` for distribution, and it should able to run in
+any Servlet container hosting environment. There is a default `application.properties`
+file that provide environment specific values. User should override this with they values in their
+host env.
+
+== User Guide
+
+Once deployed, for example on a localhost, you may open brower to
+
+  http://localhost:8080/
+
+The application is very easy to use with self-guided navigation. When you run it on a Servlet server,
+your home page is the Public Users Viewing of blogger home. It should show latest posts with navigation
+menu to older posts. User should able to search all posts for specific interests.
+
+Majority part of the application functionalitie is at the Admin UI (eg: `http://localhost:8080/admin`).
+Throught this, logged in users (authors) may Create, Edit, Publish and manage their blog posts.
+
+== Design and Implementation
+
+The `adocblog` is a Java based web application for blogger and writer to publish and manage their
+content or posts.
+
+The blog app should have the following goals:
+
+* Write posts using `asciidoc` format. 
+* Store posts in Postgres DB
+* Posts should be versioned.
+* Allow selected version to be published.
+* Provide UI to manage posts.
+* Provide UI to view posts.
+
+Development goals:
+
+* Keep things simple, small and practical.
+* Provide sensible default values.
+* Allow extention if possible, but do not add complexity.
+
+=== Technology Stack and Libraries
+
+The following are choosen to implement the application.
+
+* PostgreSQL 9.6
+* JDK 8
+* Spring 5 (MVC + JDBC modules only, no ORM)
+* Servlet 3.1/JSP
+* Bootstrap + jQuery and webjars
+* AsciidoctorJ
+
+=== Data and Domain Model Design
+
+* Content should be stored as independent table
+* Separate Content into metadata and contentText
+* Blog is extention of Content
+* Track content versions and publication at blog level
+* Public viewers (users) should able to see, browse and search blog posts
+* Admin users (blog author) is allowed to login and manage blogs
+* App should have a settings table to allow customization at runtime
+* App should provide some system inforation as application health monitoring
+
+=== About Content/Blog Management
+
+App should allow user to write blog post in ASCIIDOC format. So the content is stored in `ADOC` format.
+Other `HTML` and `TXT` formats should also be supported for easy import and migration of older blog posts.
+
+At this point, versioning of content is simply anther copy of the full content text. Every update
+to the post will resulted in a new version. And the app allows you to publish with specific
+version, while you may edit a new version as draft.
+
+=== UI Links and Navigation
+
+Public Viewer UI
+
+* /blogs => List of published blogs for public viewers (User's landing page)
+* /blog/[id] => View single blog post
+
+Admin UI
+
+* /admin/blog/list => List of all blogs for author to manage (edit/create) them (Admin's landing page)
+* /admin/blog/preview/[id] => Preview a blog post
+* /admin/blog/create => Create new blog post
+* /admin/blog/edit/[id] => Edit a blog post
+* /admin/blog/publish/[id]/[contentId] => Publish a blog post with a specific version
+
+=== Layer and Package layout
+
+The app is divided into Data, Service and Web layer that separated by Java packages.
