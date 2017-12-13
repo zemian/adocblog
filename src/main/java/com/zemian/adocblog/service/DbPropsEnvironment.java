@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 /**
  * This service will load all records from settings table with category match to
- * APP_CONFIG_CATEGORY_PREFIX + [app.env], where [app.env] must be defined in 'application.properties' file first.
- * These DB settings will override the one found in 'application.properties'.
+ * APP_CONFIG_CATEGORY_PREFIX + [app.env], where [app.env] must be defined in 'app.properties' file first.
+ * These DB settings will override the one found in 'app.properties'.
  */
 public class DbPropsEnvironment implements ApplicationListener<ContextRefreshedEvent> {
     private static Logger LOG = LoggerFactory.getLogger(DbPropsEnvironment.class);

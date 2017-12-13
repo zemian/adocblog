@@ -18,7 +18,7 @@ https://github.com/zemian/adocblog
 == Application Deployment
 
 The application is packaged into a `war` for distribution, and it should able to run in
-any Servlet container hosting environment. There is a default `application.properties`
+any Servlet container hosting environment. There is a default `app.properties`
 file that provide environment specific values. User should override this with they values in their
 host env.
 

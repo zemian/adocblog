@@ -10,7 +10,7 @@ CREATE TABLE settings (
   description VARCHAR(1000) NULL
 );
 
--- Sample of application.properties override
+-- Sample of app.properties override
 -- INSERT INTO settings (category, name, value) VALUES ('APP_CONFIG_DEV', 'app.web.name', 'Zemian''s Blog');
 -- INSERT INTO settings (category, name, value) VALUES ('APP_CONFIG_DEV', 'app.web.title', 'Zemian''s Blog');
 -- INSERT INTO settings (category, name, value) VALUES ('APP_CONFIG_DEV', 'app.web.blogTitle', 'Writings on Java and other programming notes.');

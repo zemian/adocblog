@@ -41,8 +41,8 @@
 //        docService.update(doc);
 //    }
 //
-//    public void delete(Integer docId) {
-//        docService.delete(docId);
+//    public void markForDelete(Integer docId) {
+//        docService.markForDelete(docId);
 //    }
 //
 //    public PagingList<Blog> findLatest(Paging paging) {

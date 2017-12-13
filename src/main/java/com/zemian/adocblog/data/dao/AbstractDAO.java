@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseDAO {
+public abstract class AbstractDAO {
     @Value("${app.data.pagingSupport.maxPagingSize:10000}")
     protected int maxPagingSize;
 

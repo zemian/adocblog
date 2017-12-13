@@ -54,12 +54,12 @@ public class BlogService {
         blogDAO.update(blog);
     }
 
-    public void delete(Integer blogId, String reasonForDelete) {
-        blogDAO.delete(blogId, reasonForDelete);
+    public void markForDelete(Integer blogId, String reasonForDelete) {
+        blogDAO.markForDelete(blogId, reasonForDelete);
     }
 
-    public void deleteReal(Integer blogId) {
-        blogDAO.deleteReal(blogId);
+    public void delete(Integer blogId) {
+        blogDAO.delete(blogId);
     }
 
     public PagingList<Blog> findLatest(Paging paging) {

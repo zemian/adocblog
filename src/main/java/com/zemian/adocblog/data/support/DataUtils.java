@@ -1,29 +1,27 @@
 package com.zemian.adocblog.data.support;
 
+import com.zemian.adocblog.data.domain.Blog;
+import com.zemian.adocblog.data.domain.Content;
+
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DataUtils {
-    public static final DateTimeFormatter DATETIME_FROMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a");
-    public static Date toDate(LocalDateTime dt) {
-        return Date.from(dt.atZone(ZoneId.systemDefault()).toInstant());
-    }
-    public static String formatDate(LocalDateTime dt) {
-        return formatDate(dt, DATETIME_FROMATTER);
-    }
-    public static String formatDate(LocalDateTime dt, DateTimeFormatter format) {
-        return dt.format(format);
+    public static Blog createBlog(String username, String title, String format, String contentText) {
+        Content content = createContent(username, title, format, contentText);
+        Blog doc = new Blog();
+        doc.setLatestContent(content);
+
+        return doc;
     }
 
-    public static Map<String, Object> map(Object ... items) {
-        Map<String, Object> ret = new HashMap<>();
-        for (int i = 0; i < items.length; i+= 2) {
-            ret.put(items[0].toString(), items[i + 1]);
-        }
-        return ret;
+    public static Content createContent(String username, String title, String format, String contentText) {
+        Content content = new Content();
+        content.setVersion(1);
+        content.setTitle(title);
+        content.setFormat(Content.Format.valueOf(format));
+        content.setCreatedUser(username);
+        content.setCreatedDt(LocalDateTime.now());
+        content.setContentText(contentText);
+        return content;
     }
 }

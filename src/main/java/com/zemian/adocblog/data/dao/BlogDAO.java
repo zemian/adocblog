@@ -20,7 +20,7 @@ import java.util.List;
  * A Blog is a Blog with type = BLOG.
  */
 @Repository
-public class BlogDAO extends BaseDAO {
+public class BlogDAO extends AbstractDAO {
     private static Logger LOG = LoggerFactory.getLogger(BlogDAO.class);
 
     @Autowired
@@ -161,20 +161,20 @@ public class BlogDAO extends BaseDAO {
         return bh;
     }
 
-    public void delete(Integer blogId, String reasonForDelete) {
+    public void markForDelete(Integer blogId, String reasonForDelete) {
         int ret = jdbc.update("UPDATE blogs SET deleted = TRUE, reason_for_delete = ? WHERE blog_id = ?",
                 reasonForDelete, blogId);
-        LOG.debug("BlogId={} marked for delete. result={}", blogId, ret);
+        LOG.debug("BlogId={} marked for markForDelete. result={}", blogId, ret);
     }
 
     /*
     Delete a blog AND all of related table records!
      */
-    public void deleteReal(Integer blogId) {
+    public void delete(Integer blogId) {
         String sql;
         int ret;
 
-        // Get list of content ids to be delete
+        // Get list of content ids to be markForDelete
         sql = "SELECT content_id FROM content_vers WHERE blog_id = ?";
         List<Integer> contentIds = jdbc.queryForList(sql, Integer.class, blogId);
 

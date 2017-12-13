@@ -33,4 +33,16 @@ public class ContentService {
         }
         return result;
     }
+
+    public void create(Content content) {
+        contentDAO.create(content);
+    }
+
+    public Content get(Integer contentId) {
+        return contentDAO.get(contentId);
+    }
+
+    public Content getContentMeta(Integer contentId) {
+        return contentDAO.getContentMeta(contentId);
+    }
 }

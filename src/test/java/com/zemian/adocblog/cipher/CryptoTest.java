@@ -1,6 +1,6 @@
 package com.zemian.adocblog.cipher;
 
-import com.zemian.adocblog.BaseSpringTest;
+import com.zemian.adocblog.SpringTestBase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ContextConfiguration(classes = CryptoConfig.class)
-public class CryptoTest extends BaseSpringTest {
+public class CryptoTest extends SpringTestBase {
     @Autowired
     private Crypto crypto;
 

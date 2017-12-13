@@ -36,11 +36,15 @@ public class UserService {
         return userDAO.get(username);
     }
 
-    public void delete(String username) {
-        userDAO.delete(username);
+    public void markForDelete(String username) {
+        userDAO.markForDelete(username);
     }
 
     public boolean verifyPassword(String plainPassword, String hashedPassword) {
         return passwordHasher.verifyPassword(plainPassword, hashedPassword);
+    }
+
+    public void delete(String username) {
+        userDAO.delete(username);
     }
 }

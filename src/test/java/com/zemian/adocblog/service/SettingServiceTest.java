@@ -1,6 +1,6 @@
 package com.zemian.adocblog.service;
 
-import com.zemian.adocblog.BaseSpringTest;
+import com.zemian.adocblog.SpringTestBase;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.domain.Setting;
@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
 @ContextConfiguration(classes = ServiceConfig.class)
-public class SettingServiceTest extends BaseSpringTest {
+public class SettingServiceTest extends SpringTestBase {
     @Autowired
     private SettingService settingService;
 
@@ -52,7 +52,7 @@ public class SettingServiceTest extends BaseSpringTest {
             settingService.delete(test.getSettingId());
             try {
                 settingService.get(test.getSettingId());
-                Assert.fail("There should not be record id=" + test.getSettingId() + " after delete.");
+                Assert.fail("There should not be record id=" + test.getSettingId() + " after markForDelete.");
             } catch (RuntimeException e) {
                 // Expected.
             }

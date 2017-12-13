@@ -1,6 +1,6 @@
 package com.zemian.adocblog.service;
 
-import com.zemian.adocblog.BaseSpringTest;
+import com.zemian.adocblog.SpringTestBase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @ContextConfiguration(classes = ServiceConfig.class)
-public class AsciidocServiceTest extends BaseSpringTest {
+public class AsciidocServiceTest extends SpringTestBase {
 
     @Autowired
     private AsciidocService asciidocService;

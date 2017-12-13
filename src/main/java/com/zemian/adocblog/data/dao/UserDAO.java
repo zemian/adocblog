@@ -34,12 +34,12 @@ public class UserDAO {
         }, username);
     }
 
-    public void delete(String username) {
+    public void markForDelete(String username) {
         int ret = jdbc.update("UPDATE users SET deleted = TRUE WHERE username = ?", username);
-        LOG.debug("User username={} marked for delete. result={}", username, ret);
+        LOG.debug("User username={} marked for markForDelete. result={}", username, ret);
     }
 
-    public void deleteReal(String username) {
+    public void delete(String username) {
         int ret = jdbc.update("DELETE FROM users WHERE username = ?", username);
         LOG.debug("User username={} deleted result={}", username, ret);
     }

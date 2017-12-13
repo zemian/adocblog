@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class SettingDAO extends BaseDAO {
+public class SettingDAO extends AbstractDAO {
     private static Logger LOG = LoggerFactory.getLogger(SettingDAO.class);
 
     @Autowired

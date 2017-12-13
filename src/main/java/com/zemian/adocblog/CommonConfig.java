@@ -9,7 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  * Main Spring Java Config
  */
 @Configuration
-@PropertySource("classpath:/application.properties")
+@PropertySource("classpath:/adocblog/app.properties")
 public class CommonConfig {
     /* This special bean needs to be static to resolve `${variable}` in @Value injection. */
     @Bean

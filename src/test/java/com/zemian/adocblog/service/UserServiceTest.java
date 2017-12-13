@@ -1,20 +1,18 @@
 package com.zemian.adocblog.service;
 
-import com.zemian.adocblog.BaseSpringTest;
+import com.zemian.adocblog.SpringTestBase;
 import com.zemian.adocblog.data.dao.UserDAO;
 import com.zemian.adocblog.data.domain.User;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @ContextConfiguration(classes = ServiceConfig.class)
-public class UserServiceTest extends BaseSpringTest {
+public class UserServiceTest extends SpringTestBase {
     @Autowired
     private UserService userService;
 
@@ -44,11 +42,11 @@ public class UserServiceTest extends BaseSpringTest {
             assertThat(test2.getFullName(), is("Test UserServiceTest"));
             assertThat(test2.isAdmin(), is(false));
         } finally {
-            userService.delete(username);
+            userService.markForDelete(username);
             assertThat(userService.exists(username), is(false));
 
             // remove user for real so test can repeat
-            userDAO.deleteReal(username);
+            userDAO.delete(username);
         }
     }
 
