@@ -4,8 +4,13 @@ import java.time.LocalDateTime;
 
 public class Doc {
 
+    public static enum Type {
+        PAGE, BLOG;
+    }
+
     private Integer docId;
     private String path;
+    private Type type;
     private Content latestContent;
     private Content publishedContent;
     private String publishedUser;
@@ -25,6 +30,14 @@ public class Doc {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public Content getLatestContent() {

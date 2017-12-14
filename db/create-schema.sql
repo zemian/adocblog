@@ -55,6 +55,7 @@ CREATE TABLE content_vers (
 CREATE TABLE docs (
   doc_id SERIAL NOT NULL PRIMARY KEY,
   path VARCHAR(2000) NOT NULL UNIQUE,
+  type VARCHAR(500) NOT NULL DEFAULT 'PAGE',
   latest_content_id INT NOT NULL REFERENCES contents(content_id),
   published_content_id INT NULL REFERENCES contents(content_id),
   published_user VARCHAR(50) NULL REFERENCES users(username),

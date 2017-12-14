@@ -30,15 +30,15 @@ public class DocServiceTest extends SpringTestBase {
     @Test
     public void crud() {
         // Create
-        Doc doc = DataUtils.createDoc(
-                "test", "Just a test", "ADOC", "DocServiceTest *test*");
+        Doc doc = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
+                "test", "test doc", "DocServiceTest *test*");
         docService.create(doc);
 
         try {
             // Get
             Doc blog2 = docService.get(doc.getDocId());
             assertThat(blog2.getDocId(), greaterThanOrEqualTo(1));
-            assertThat(blog2.getLatestContent().getTitle(), is("Just a test"));
+            assertThat(blog2.getLatestContent().getTitle(), is("test doc"));
             assertThat(blog2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getVersion(), is(1));
             assertThat(blog2.getLatestContent().getReasonForEdit(), nullValue());
@@ -57,7 +57,7 @@ public class DocServiceTest extends SpringTestBase {
             docService.update(blog2);
             blog2 = docService.get(doc.getDocId());
             assertThat(blog2.getDocId(), greaterThanOrEqualTo(1));
-            assertThat(blog2.getLatestContent().getTitle(), is("Just a test"));
+            assertThat(blog2.getLatestContent().getTitle(), is("test doc"));
             assertThat(blog2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getContentId(), not(contentId));
             assertThat(blog2.getLatestContent().getVersion(), is(2));
@@ -87,8 +87,8 @@ public class DocServiceTest extends SpringTestBase {
         // Create
         List<Doc> docs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Doc doc = DataUtils.createDoc(
-                    "test", "findList test", "ADOC", "DocServiceTest *test*");
+            Doc doc = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
+                    "test", "findList test", "DocServiceTest *test*");
             docService.create(doc);
             docs.add(doc);
 
@@ -119,12 +119,13 @@ public class DocServiceTest extends SpringTestBase {
         }
     }
 
-    private Doc createAndPublish(String username, String format, String subject, String content) {
-        return createAndPublish(username, format, subject, content, LocalDateTime.now());
+    private Doc createAndPublish(Content.Format format, String username, String title, String content) {
+        return createAndPublish(format, username, title, content, LocalDateTime.now());
     }
 
-    private Doc createAndPublish(String username, String format, String subject, String content, LocalDateTime pubDate) {
-        Doc doc = DataUtils.createDoc(username, subject, format, content);
+    private Doc createAndPublish(Content.Format format, String username, String title, String content, LocalDateTime pubDate) {
+        Doc doc = DataUtils.createDoc(Doc.Type.PAGE, format,
+                username, title, content);
         docService.create(doc);
 
         doc.setPublishedDt(pubDate);
@@ -139,23 +140,23 @@ public class DocServiceTest extends SpringTestBase {
         List<Doc> docs = docService.findLatest(new Paging(0, 1000)).getList();
         boolean sampleExists = docs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc test"));
         if (!sampleExists) {
-            createAndPublish("test", "ADOC", "A asciidoc test", "== Test me\n\nHello World!\n\n* one\n* two\n");
-            createAndPublish("test", "HTML", "A html test", "<ul><li>one</li><li>two</li><li>three</li></ul>");
-            createAndPublish("test", "TXT", "A text test", "print('Python is cool')");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test", "== Test me\n\nHello World!\n\n* one\n* two\n");
+            createAndPublish(Content.Format.HTML, "test", "A html test", "<ul><li>one</li><li>two</li><li>three</li></ul>");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test2", "`print('Python is cool')`");
 
-            Doc doc = createAndPublish("test", "ADOC", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
+            Doc doc = createAndPublish(Content.Format.ADOC, "test", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
             docService.unpublish(doc.getDocId());
 
             File file = new File("readme.adoc");
             String readmeADoc = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
             for (int i = 0; i < 1000; i++) {
-                String subject = "ADocDoc readme";
+                String title = "ADocDoc readme";
                 if (i > 0) {
-                    subject += " - copy#" + i;
+                    title += " - copy#" + i;
                 }
                 LocalDateTime dt = LocalDateTime.now().minusDays(i);
-                createAndPublish("test", "ADOC", subject, readmeADoc, dt);
+                createAndPublish(Content.Format.ADOC, "test", title, readmeADoc, dt);
             }
         }
     }

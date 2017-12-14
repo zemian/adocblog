@@ -8,26 +8,27 @@ import java.time.LocalDateTime;
 
 public class DataUtils {
     public static Blog createBlog(String username, String title, String format, String contentText) {
-        Content content = createContent(username, title, format, contentText);
+        Content content = createContent(Content.Format.valueOf(format), username, title, contentText);
         Blog doc = new Blog();
         doc.setLatestContent(content);
 
         return doc;
     }
 
-    public static Doc createDoc(String username, String title, String format, String contentText) {
-        Content content = createContent(username, title, format, contentText);
+    public static Doc createDoc(Doc.Type type, Content.Format format, String username, String title, String contentText) {
+        Content content = createContent(format, username, title, contentText);
         Doc doc = new Doc();
+        doc.setType(type);
         doc.setLatestContent(content);
 
         return doc;
     }
 
-    public static Content createContent(String username, String title, String format, String contentText) {
+    public static Content createContent(Content.Format format, String username, String title, String contentText) {
         Content content = new Content();
         content.setVersion(1);
         content.setTitle(title);
-        content.setFormat(Content.Format.valueOf(format));
+        content.setFormat(format);
         content.setCreatedUser(username);
         content.setCreatedDt(LocalDateTime.now());
         content.setContentText(contentText);

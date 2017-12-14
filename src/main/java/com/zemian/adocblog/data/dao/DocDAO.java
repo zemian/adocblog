@@ -1,19 +1,16 @@
 package com.zemian.adocblog.data.dao;
 
+import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
-import com.zemian.adocblog.data.domain.Content;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -29,6 +26,7 @@ public class DocDAO extends AbstractDAO {
     public static final String SELECT_DOCS_SQL = "SELECT" +
             "   docs.doc_id," +
             "   docs.path," +
+            "   docs.type," +
             "   docs.published_user," +
             "   docs.published_dt," +
             "   latest_contents.content_id latest_content_id," +
@@ -83,6 +81,7 @@ public class DocDAO extends AbstractDAO {
             Doc doc = new Doc();
             doc.setDocId(rs.getInt("doc_id"));
             doc.setPath(rs.getString("path"));
+            doc.setType(Doc.Type.valueOf(rs.getString("type")));
 
             Content latestContent = contentMetaRowMapper.mapRow(rs, rowNum, "latest_");
             latestContent.setAuthorFullName(rs.getString("latest_full_name"));
@@ -127,10 +126,11 @@ public class DocDAO extends AbstractDAO {
         }
 
         // Insert doc
-        sql = "INSERT INTO docs(doc_id, path, latest_content_id) VALUES(?, ?, ?)";
+        sql = "INSERT INTO docs(doc_id, path, type, latest_content_id) VALUES(?, ?, ?, ?)";
         int ret = jdbc.update(sql,
             doc.getDocId(),
             doc.getPath(),
+            doc.getType().name(),
             doc.getLatestContent().getContentId());
 
         // Insert doc content version link
@@ -145,9 +145,14 @@ public class DocDAO extends AbstractDAO {
         contentDAO.create(doc.getLatestContent());
         createContentVer(doc.getDocId(), doc.getLatestContent().getContentId());
 
-        final String sql = "UPDATE docs SET path =?, latest_content_id = ? WHERE doc_id = ?";
+        final String sql = "UPDATE docs SET" +
+                " path = ?," +
+                " type = ?," +
+                " latest_content_id = ?" +
+                " WHERE doc_id = ?";
         int ret = jdbc.update(sql,
                 doc.getPath(),
+                doc.getType().name(),
                 doc.getLatestContent().getContentId(),
                 doc.getDocId());
         LOG.info("Updated docId={}, path={} with contentId={}. result: {}",
@@ -252,34 +257,5 @@ public class DocDAO extends AbstractDAO {
                 " published_user = NULL, published_dt = NULL WHERE doc_id = ?";
         int ret = jdbc.update(sql, docId);
         LOG.info("Unpublished docId={} ret={}", docId, ret);
-    }
-
-    /*
-    Get previous published doc based on given doc. Return null if not found.
-     */
-    public Doc findPrevDoc(Integer currentDocId, LocalDateTime publishedDt) {
-        String sql = SELECT_PUBLISHED_DOCS_SQL + " AND docs.published_dt > ? AND docs.doc_id <> ?" +
-                " ORDER BY docs.published_dt ASC LIMIT 1";
-        return findDocByPublishDt(sql, publishedDt, currentDocId);
-    }
-
-    /*
-    Get next published doc based on given doc. Return null if not found.
-     */
-    public Doc findNextDoc(Integer currentDocId, LocalDateTime publishedDt) {
-        String sql = SELECT_PUBLISHED_DOCS_SQL + " AND docs.published_dt < ? AND docs.doc_id <> ?" +
-                " ORDER BY docs.published_dt DESC LIMIT 1";
-        return findDocByPublishDt(sql, publishedDt, currentDocId);
-    }
-
-    /*
-    Support find Prev/Next Doc that takes a SQL to query max of one Doc object.
-     */
-    private Doc findDocByPublishDt(String sql, LocalDateTime publishDt, Integer docId) {
-        List<Doc> list = jdbc.query(sql, new DocRowMapper(), publishDt, docId);
-        if (list.size() <= 0) {
-            return null;
-        }
-        return list.get(0);
     }
 }
