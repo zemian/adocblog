@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * A Blog is a Blog with type = BLOG.
+ * A Blog that contains one or more Content data.
  */
 @Repository
 public class BlogDAO extends AbstractDAO {

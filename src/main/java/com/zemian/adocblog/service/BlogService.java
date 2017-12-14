@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 /**
- * A Blog is a Doc with type = BLOG.
+ * A Blog that contains one or more Content data.
  */
 @Service
 @Transactional
