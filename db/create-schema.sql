@@ -52,12 +52,18 @@ CREATE TABLE content_vers (
   content_id INT NOT NULL REFERENCES contents(content_id)
 );
 
-CREATE TABLE pages (
-  page_id SERIAL NOT NULL PRIMARY KEY,
-  path_name VARCHAR(2000) NOT NULL,
-  content_text TEXT NOT NULL,
-  created_user VARCHAR(50) NOT NULL REFERENCES users(username),
-  created_dt TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE docs (
+  doc_id SERIAL NOT NULL PRIMARY KEY,
+  path VARCHAR(2000) NOT NULL UNIQUE,
+  latest_content_id INT NOT NULL REFERENCES contents(content_id),
+  published_content_id INT NULL REFERENCES contents(content_id),
+  published_user VARCHAR(50) NULL REFERENCES users(username),
+  published_dt TIMESTAMPTZ NULL,
   deleted BOOLEAN NOT NULL DEFAULT FALSE,
   reason_for_delete VARCHAR(1000) NULL
+);
+
+CREATE TABLE doc_content_vers (
+  doc_id INT NOT NULL REFERENCES docs(doc_id),
+  content_id INT NOT NULL REFERENCES contents(content_id)
 );

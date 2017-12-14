@@ -2,6 +2,7 @@ package com.zemian.adocblog.data.support;
 
 import com.zemian.adocblog.data.domain.Blog;
 import com.zemian.adocblog.data.domain.Content;
+import com.zemian.adocblog.data.domain.Doc;
 
 import java.time.LocalDateTime;
 
@@ -9,6 +10,14 @@ public class DataUtils {
     public static Blog createBlog(String username, String title, String format, String contentText) {
         Content content = createContent(username, title, format, contentText);
         Blog doc = new Blog();
+        doc.setLatestContent(content);
+
+        return doc;
+    }
+
+    public static Doc createDoc(String username, String title, String format, String contentText) {
+        Content content = createContent(username, title, format, contentText);
+        Doc doc = new Doc();
         doc.setLatestContent(content);
 
         return doc;
