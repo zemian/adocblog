@@ -37,21 +37,6 @@ CREATE TABLE contents (
   created_dt TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE blogs (
-  blog_id SERIAL NOT NULL PRIMARY KEY,
-  latest_content_id INT NOT NULL REFERENCES contents(content_id),
-  published_content_id INT NULL REFERENCES contents(content_id),
-  published_user VARCHAR(50) NULL REFERENCES users(username),
-  published_dt TIMESTAMPTZ NULL,
-  deleted BOOLEAN NOT NULL DEFAULT FALSE,
-  reason_for_delete VARCHAR(1000) NULL
-);
-
-CREATE TABLE content_vers (
-  blog_id INT NOT NULL REFERENCES blogs(blog_id),
-  content_id INT NOT NULL REFERENCES contents(content_id)
-);
-
 CREATE TABLE docs (
   doc_id SERIAL NOT NULL PRIMARY KEY,
   path VARCHAR(2000) NOT NULL UNIQUE,
@@ -64,7 +49,9 @@ CREATE TABLE docs (
   reason_for_delete VARCHAR(1000) NULL
 );
 
-CREATE TABLE doc_content_vers (
+-- This is a link table
+-- One doc contains one or more versioned content
+CREATE TABLE doc_contents (
   doc_id INT NOT NULL REFERENCES docs(doc_id),
   content_id INT NOT NULL REFERENCES contents(content_id)
 );

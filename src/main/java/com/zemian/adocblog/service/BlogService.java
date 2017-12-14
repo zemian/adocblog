@@ -3,8 +3,7 @@ package com.zemian.adocblog.service;
 import com.zemian.adocblog.data.dao.BlogDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
-import com.zemian.adocblog.data.domain.Blog;
-import com.zemian.adocblog.data.domain.BlogHistory;
+import com.zemian.adocblog.data.domain.Doc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,73 +11,33 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 /**
- * A Blog that contains one or more Content data.
+ * A Doc that contains one or more Content data.
  */
 @Service
 @Transactional
-public class BlogService {
+public class BlogService extends DocService {
 
     @Autowired
     private BlogDAO blogDAO;
 
-    public int getPublishedCount() {
-        return blogDAO.getPublishedCount();
+    // Override Search Methods that auto set doc type to BLOG
+    public PagingList<Doc> findLatest(Paging paging) {
+        return docDAO.findLatest(paging, Doc.Type.BLOG);
     }
 
-    public int getTotalCount() {
-        return blogDAO.getTotalCount();
+    public PagingList<Doc> findPublished(Paging paging) {
+        return docDAO.findPublished(paging, Doc.Type.BLOG);
     }
 
-    public void create(Blog blog) {
-        blogDAO.create(blog);
+    public PagingList<Doc> searchPublished(Paging paging, String searchTerms) {
+        return docDAO.searchPublished(paging, Doc.Type.BLOG, searchTerms);
     }
 
-    public Blog get(Integer id) {
-        return blogDAO.get(id);
+    public Doc getPrevBlog(Integer currentBlogId, LocalDateTime publishedDt) {
+        return blogDAO.getPrevBlog(currentBlogId, publishedDt);
     }
 
-    public BlogHistory getBlogHistory(Integer blogId) {
-        return blogDAO.getBlogHistory(blogId);
-    }
-
-    public void publish(Blog blog) {
-        blogDAO.publish(blog);
-    }
-
-    public void unpublish(Integer blogId) {
-        blogDAO.unpublish(blogId);
-    }
-
-    public void update(Blog blog) {
-        blog.getLatestContent().setVersion(blog.getLatestContent().getVersion() + 1);
-        blogDAO.update(blog);
-    }
-
-    public void markForDelete(Integer blogId, String reasonForDelete) {
-        blogDAO.markForDelete(blogId, reasonForDelete);
-    }
-
-    public void delete(Integer blogId) {
-        blogDAO.delete(blogId);
-    }
-
-    public PagingList<Blog> findLatest(Paging paging) {
-        return blogDAO.findLatest(paging);
-    }
-
-    public PagingList<Blog> findPublished(Paging paging) {
-        return blogDAO.findPublished(paging);
-    }
-
-    public PagingList<Blog> searchPublished(Paging paging, String searchTerms) {
-        return blogDAO.searchPublished(paging, searchTerms);
-    }
-
-    public Blog findPrevBlog(Integer currentBlogId, LocalDateTime publishedDt) {
-        return blogDAO.findPrevBlog(currentBlogId, publishedDt);
-    }
-
-    public Blog findNextBlog(Integer currentBlogId, LocalDateTime publishedDt) {
-        return blogDAO.findNextBlog(currentBlogId, publishedDt);
+    public Doc getNextBlog(Integer currentBlogId, LocalDateTime publishedDt) {
+        return blogDAO.getNextBlog(currentBlogId, publishedDt);
     }
 }

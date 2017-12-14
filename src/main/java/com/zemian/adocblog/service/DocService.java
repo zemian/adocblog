@@ -19,39 +19,10 @@ import java.time.LocalDateTime;
 public class DocService {
 
     @Autowired
-    private DocDAO docDAO;
-
-    public int getPublishedCount() {
-        return docDAO.getPublishedCount();
-    }
-
-    public int getTotalCount() {
-        return docDAO.getTotalCount();
-    }
+    protected DocDAO docDAO;
 
     public void create(Doc doc) {
         docDAO.create(doc);
-    }
-
-    public Doc get(Integer id) {
-        return docDAO.get(id);
-    }
-
-    public DocHistory getDocHistory(Integer docId) {
-        return docDAO.getDocHistory(docId);
-    }
-
-    public void publish(Doc doc) {
-        docDAO.publish(doc);
-    }
-
-    public void unpublish(Integer docId) {
-        docDAO.unpublish(docId);
-    }
-
-    public void update(Doc doc) {
-        doc.getLatestContent().setVersion(doc.getLatestContent().getVersion() + 1);
-        docDAO.update(doc);
     }
 
     public void markForDelete(Integer docId, String reasonForDelete) {
@@ -62,15 +33,44 @@ public class DocService {
         docDAO.delete(docId);
     }
 
-    public PagingList<Doc> findLatest(Paging paging) {
-        return docDAO.findLatest(paging);
+    public Doc get(Integer id) {
+        return docDAO.get(id);
     }
 
-    public PagingList<Doc> findPublished(Paging paging) {
-        return docDAO.findPublished(paging);
+    public DocHistory getDocHistory(Integer docId) {
+        return docDAO.getDocHistory(docId);
     }
 
-    public PagingList<Doc> searchPublished(Paging paging, String searchTerms) {
-        return docDAO.searchPublished(paging, searchTerms);
+    public int getPublishedCount() {
+        return docDAO.getPublishedCount();
+    }
+
+    public int getTotalCount() {
+        return docDAO.getTotalCount();
+    }
+
+    public void update(Doc doc) {
+        doc.getLatestContent().setVersion(doc.getLatestContent().getVersion() + 1);
+        docDAO.update(doc);
+    }
+
+    public void publish(Doc doc) {
+        docDAO.publish(doc);
+    }
+
+    public void unpublish(Integer docId) {
+        docDAO.unpublish(docId);
+    }
+
+    public PagingList<Doc> findLatest(Paging paging, Doc.Type type) {
+        return docDAO.findLatest(paging, type);
+    }
+
+    public PagingList<Doc> findPublished(Paging paging, Doc.Type type) {
+        return docDAO.findPublished(paging, type);
+    }
+
+    public PagingList<Doc> searchPublished(Paging paging, Doc.Type type, String searchTerms) {
+        return docDAO.searchPublished(paging, type, searchTerms);
     }
 }

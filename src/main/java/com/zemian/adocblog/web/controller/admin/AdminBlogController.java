@@ -3,9 +3,9 @@ package com.zemian.adocblog.web.controller.admin;
 import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
-import com.zemian.adocblog.data.domain.Blog;
-import com.zemian.adocblog.data.domain.BlogHistory;
 import com.zemian.adocblog.data.domain.Content;
+import com.zemian.adocblog.data.domain.Doc;
+import com.zemian.adocblog.data.domain.DocHistory;
 import com.zemian.adocblog.data.support.DataUtils;
 import com.zemian.adocblog.service.AsciidocService;
 import com.zemian.adocblog.service.BlogService;
@@ -44,7 +44,7 @@ public class AdminBlogController {
 
     @GetMapping("/admin/blog/list")
     public ModelAndView list(Paging paging) {
-        PagingList<Blog> blogs = blogService.findLatest(paging);
+        PagingList<Doc> blogs = blogService.findLatest(paging);
         ModelAndView result = new ModelAndView("/admin/blog/list");
         result.addObject("blogs", blogs);
         return result;
@@ -55,7 +55,7 @@ public class AdminBlogController {
                                 HttpServletRequest req) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
 
-        Blog blog = blogService.get(blogId);
+        Doc blog = blogService.get(blogId);
 
         Content content = new Content();
         content.setContentId(contentId);
@@ -64,26 +64,26 @@ public class AdminBlogController {
         blog.setPublishedDt(LocalDateTime.now());
 
         blogService.publish(blog);
-        LOG.info("Blog {} with contentId {} published by {}",
+        LOG.info("Doc {} with contentId {} published by {}",
                 blogId, contentId, userSession.getUser().getUsername());
 
-        req.setAttribute("actionSuccessMessage", "Blog " + blogId + " with contentId " + contentId + " has published successfully.");
+        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " has published successfully.");
         return list(DEFAULT_PAGING);
     }
 
     @GetMapping("/admin/blog/unpublish/{blogId}")
     public ModelAndView unpublish(@PathVariable Integer blogId, HttpServletRequest req) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
-        Blog blog = blogService.get(blogId);
+        Doc blog = blogService.get(blogId);
         if (blog.getPublishedContent() == null) {
-            throw new AppException("Blog " + blogId + " is not yet published");
+            throw new AppException("Doc " + blogId + " is not yet published");
         }
         Integer contentId = blog.getPublishedContent().getContentId();
         blogService.unpublish(blogId);
-        LOG.info("Blog {} with contentId {} unpublished by {}",
+        LOG.info("Doc {} with contentId {} unpublished by {}",
                 blogId, contentId, userSession.getUser().getUsername());
 
-        req.setAttribute("actionSuccessMessage", "Blog " + blogId + " with contentId " + contentId + " has unpublished successfully.");
+        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " has unpublished successfully.");
         return list(DEFAULT_PAGING);
     }
 
@@ -92,13 +92,13 @@ public class AdminBlogController {
         String reasonForDelete = null;
         blogService.markForDelete(blogId, reasonForDelete);
 
-        req.setAttribute("actionSuccessMessage", "Blog " + blogId + " has deleted successfully.");
+        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " has deleted successfully.");
         return list(DEFAULT_PAGING);
     }
 
     @GetMapping("/admin/blog/history/{blogId}")
     public ModelAndView history(@PathVariable Integer blogId) {
-        BlogHistory blogHistory = blogService.getBlogHistory(blogId);
+        DocHistory blogHistory = blogService.getDocHistory(blogId);
         ModelAndView result = new ModelAndView("/admin/blog/history");
         result.addObject("blogHistory", blogHistory);
         return result;
@@ -118,15 +118,16 @@ public class AdminBlogController {
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
 
-        Blog blog = DataUtils.createBlog(userSession.getUser().getUsername(), title, format, contentText);
+        Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.valueOf(format),
+                userSession.getUser().getUsername(), title, contentText);
         blogService.create(blog);
-        req.setAttribute("actionSuccessMessage", "Blog " + blog.getBlogId() + " created successfully.");
+        req.setAttribute("actionSuccessMessage", "Doc " + blog.getDocId() + " created successfully.");
         return list(DEFAULT_PAGING);
     }
 
     @GetMapping("/admin/blog/edit/{blogId}")
     public ModelAndView edit(@PathVariable Integer blogId) {
-        Blog blog = blogService.get(blogId);
+        Doc blog = blogService.get(blogId);
         String ct = contentService.getContentText(blog.getLatestContent().getContentId());
         ModelAndView result = new ModelAndView("/admin/blog/edit");
         result.addObject("blog", blog);
@@ -144,7 +145,7 @@ public class AdminBlogController {
         String contentText = req.getParameter("contentText");
         String reasonForEdit = req.getParameter("reasonForEdit");
 
-        Blog blog = blogService.get(blogId);
+        Doc blog = blogService.get(blogId);
         blog.getLatestContent().setTitle(title);
         blog.getLatestContent().setCreatedUser(userSession.getUser().getUsername());
         blog.getLatestContent().setCreatedDt(LocalDateTime.now());
@@ -154,13 +155,13 @@ public class AdminBlogController {
         blogService.update(blog);
 
         Integer contentId = blog.getLatestContent().getContentId();
-        req.setAttribute("actionSuccessMessage", "Blog " + blogId + " with contentId " + contentId + " edited successfully.");
+        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " edited successfully.");
         return list(DEFAULT_PAGING);
     }
 
     @GetMapping("/admin/blog/preview/{blogId}/{contentId}")
     public ModelAndView preview(@PathVariable Integer blogId, @PathVariable Integer contentId) {
-        Blog blog = blogService.get(blogId);
+        Doc blog = blogService.get(blogId);
         String ct = contentService.getContentText(contentId);
         String blogContentText = asciidocService.toHtml(ct);
 

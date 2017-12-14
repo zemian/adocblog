@@ -2,9 +2,9 @@ package com.zemian.adocblog.service;
 
 import com.zemian.adocblog.SpringTestBase;
 import com.zemian.adocblog.data.dao.Paging;
-import com.zemian.adocblog.data.domain.Blog;
-import com.zemian.adocblog.data.domain.BlogHistory;
 import com.zemian.adocblog.data.domain.Content;
+import com.zemian.adocblog.data.domain.Doc;
+import com.zemian.adocblog.data.domain.DocHistory;
 import com.zemian.adocblog.data.support.DataUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -22,7 +22,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 @ContextConfiguration(classes = ServiceConfig.class)
 public class BlogServiceTest extends SpringTestBase {
@@ -35,14 +41,14 @@ public class BlogServiceTest extends SpringTestBase {
     @Test
     public void crud() {
         // Create
-        Blog blog = DataUtils.createBlog(
-                "test", "Just a test", "ADOC", "BlogServiceTest *test*");
+        Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.ADOC,
+                "test", "Just a test", "BlogServiceTest *test*");
         blogService.create(blog);
 
         try {
             // Get
-            Blog blog2 = blogService.get(blog.getBlogId());
-            assertThat(blog2.getBlogId(), greaterThanOrEqualTo(1));
+            Doc blog2 = blogService.get(blog.getDocId());
+            assertThat(blog2.getDocId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getTitle(), is("Just a test"));
             assertThat(blog2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getVersion(), is(1));
@@ -53,6 +59,7 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(blog2.getPublishedContent(), nullValue());
             assertThat(blog2.getPublishedUser(), nullValue());
             assertThat(blog2.getPublishedDt(), nullValue());
+            assertThat(blog2.getType(), is(Doc.Type.BLOG));
 
             // Update content
             Integer contentId = blog2.getLatestContent().getContentId();
@@ -60,8 +67,8 @@ public class BlogServiceTest extends SpringTestBase {
             blog2.getLatestContent().setContentText(ct);
             blog2.getLatestContent().setReasonForEdit("test edit");
             blogService.update(blog2);
-            blog2 = blogService.get(blog.getBlogId());
-            assertThat(blog2.getBlogId(), greaterThanOrEqualTo(1));
+            blog2 = blogService.get(blog.getDocId());
+            assertThat(blog2.getDocId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getTitle(), is("Just a test"));
             assertThat(blog2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getContentId(), not(contentId));
@@ -73,38 +80,39 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(blog2.getPublishedContent(), nullValue());
             assertThat(blog2.getPublishedUser(), nullValue());
             assertThat(blog2.getPublishedDt(), nullValue());
+            assertThat(blog2.getType(), is(Doc.Type.BLOG));
 
             // Delete
-            blogService.markForDelete(blog.getBlogId(), "markForDelete for test");
+            blogService.markForDelete(blog.getDocId(), "markForDelete for test");
             try {
-                blogService.get(blog.getBlogId());
-                Assert.fail("Blog " + blog.getBlogId() + " should not exists after markForDelete.");
+                blogService.get(blog.getDocId());
+                Assert.fail("Doc " + blog.getDocId() + " should not exists after markForDelete.");
             } catch (RuntimeException e) {
                 // Expecting
             }
         } finally {
-            blogService.delete(blog.getBlogId());
+            blogService.delete(blog.getDocId());
         }
     }
 
     @Test
     public void blogOperations() {
         // Create
-        Blog blog = DataUtils.createBlog(
-                "test", "Just a test", "ADOC", "BlogServiceTest *test*");
+        Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.ADOC,
+                "test", "Just a test", "BlogServiceTest *test*");
         blogService.create(blog);
 
         try {
             // Get content text
-            Blog blog2 = blogService.get(blog.getBlogId());
+            Doc blog2 = blogService.get(blog.getDocId());
             String ct = contentService.getContentText(blog2.getLatestContent().getContentId());
             assertThat(ct, is("BlogServiceTest *test*"));
 
             // Get Latest List
             final Integer contentId = blog2.getLatestContent().getContentId();
-            List<Blog> list = blogService.findLatest(new Paging()).getList();
+            List<Doc> list = blogService.findLatest(new Paging()).getList();
             assertThat(list.size(), greaterThanOrEqualTo(1));
-            Optional<Blog> found = list.stream().
+            Optional<Doc> found = list.stream().
                     filter(b -> b.getLatestContent().getContentId() == contentId).findFirst();
             assertThat(found.isPresent(), is(true));
 
@@ -118,8 +126,8 @@ public class BlogServiceTest extends SpringTestBase {
             blog2.setPublishedUser("test");
             blog2.setPublishedDt(LocalDateTime.now());
             blogService.publish(blog2);
-            blog2 = blogService.get(blog.getBlogId());
-            assertThat(blog2.getBlogId(), greaterThanOrEqualTo(1));
+            blog2 = blogService.get(blog.getDocId());
+            assertThat(blog2.getDocId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getTitle(), is("Just a test"));
             assertThat(blog2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
             assertThat(blog2.getLatestContent().getVersion(), is(1));
@@ -137,16 +145,18 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(blog2.getPublishedContent().getFormat(), is(Content.Format.ADOC));
             assertThat(blog2.getPublishedContent().getCreatedUser(), is("test"));
             assertThat(blog2.getPublishedContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
+            assertThat(blog2.getType(), is(Doc.Type.BLOG));
 
             // Update content
             ct = "_Version 2_";
             blog2.getLatestContent().setContentText(ct);
             blog2.getLatestContent().setReasonForEdit("test edit");
             blogService.update(blog2);
-            blog2 = blogService.get(blog.getBlogId());
+            blog2 = blogService.get(blog.getDocId());
             assertThat(blog2.getLatestContent().getContentId(), not(contentId));
             assertThat(blog2.getLatestContent().getVersion(), is(2));
             assertThat(blog2.getPublishedContent().getVersion(), is(1));
+            assertThat(blog2.getType(), is(Doc.Type.BLOG));
 
             // Get content text after publish + update
             ct = contentService.getContentText(blog2.getLatestContent().getContentId());
@@ -167,8 +177,8 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(found.isPresent(), is(true));
 
             // Get history
-            BlogHistory bh = blogService.getBlogHistory(blog2.getBlogId());
-            assertThat(bh.getBlogId(), is(blog2.getBlogId()));
+            DocHistory bh = blogService.getDocHistory(blog2.getDocId());
+            assertThat(bh.getDocId(), is(blog2.getDocId()));
             assertThat(bh.getPublishedContentId(), is(contentId));
             assertThat(bh.getContentVers().size(), is(2));
 
@@ -176,21 +186,22 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(cIds, hasItems(contentId, contentId2));
 
             // Unpublish
-            blogService.unpublish(blog2.getBlogId());
-            blog2 = blogService.get(blog.getBlogId());
+            blogService.unpublish(blog2.getDocId());
+            blog2 = blogService.get(blog.getDocId());
             assertThat(blog2.getPublishedContent(), nullValue());
         } finally {
-            blogService.delete(blog.getBlogId());
+            blogService.delete(blog.getDocId());
         }
     }
 
     @Test
-    public void findList() throws Exception {
+    public void getNextOrPrevBlog() throws Exception {
         // Create
-        List<Blog> blogs = new ArrayList<>();
+        List<Doc> blogs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Blog blog = DataUtils.createBlog(
-                    "test", "findList test", "ADOC", "BlogServiceTest *test*");
+            Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.ADOC,
+                    "test", "findList test", "BlogServiceTest *test*");
+
             blogService.create(blog);
             blogs.add(blog);
 
@@ -206,79 +217,83 @@ public class BlogServiceTest extends SpringTestBase {
 
         try {
             // Get Latest List
-            List<Blog> list = blogService.findLatest(new Paging()).getList();
+            List<Doc> list = blogService.findLatest(new Paging()).getList();
             list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
             assertThat(list.size(), is(10));
+            list.forEach(doc -> assertThat(doc.getType(), is(Doc.Type.BLOG)));
 
             // Get Published List
             list = blogService.findPublished(new Paging()).getList();
             list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
             assertThat(list.size(), is(5));
+            list.forEach(doc -> assertThat(doc.getType(), is(Doc.Type.BLOG)));
 
             // Find Next - next older blog
-            Blog blog2;
-            blog2 = blogService.findNextBlog(blogs.get(8).getBlogId(), blogs.get(8).getPublishedDt());
-            assertThat(blog2.getBlogId(), is(blogs.get(6).getBlogId()));
-            blog2 = blogService.findNextBlog(blogs.get(6).getBlogId(), blogs.get(6).getPublishedDt());
-            assertThat(blog2.getBlogId(), is(blogs.get(4).getBlogId()));
-            blog2 = blogService.findNextBlog(blogs.get(0).getBlogId(), blogs.get(0).getPublishedDt());
+            Doc blog2;
+            blog2 = blogService.getNextBlog(blogs.get(8).getDocId(), blogs.get(8).getPublishedDt());
+            assertThat(blog2.getDocId(), is(blogs.get(6).getDocId()));
+            blog2 = blogService.getNextBlog(blogs.get(6).getDocId(), blogs.get(6).getPublishedDt());
+            assertThat(blog2.getDocId(), is(blogs.get(4).getDocId()));
+            blog2 = blogService.getNextBlog(blogs.get(0).getDocId(), blogs.get(0).getPublishedDt());
             if (blog2 != null) {
                 assertThat(blog2.getLatestContent().getTitle(), not("findList test"));
             }
 
             // Find Previous
-            blog2 = blogService.findPrevBlog(blogs.get(0).getBlogId(), blogs.get(0).getPublishedDt());
-            assertThat(blog2.getBlogId(), is(blogs.get(2).getBlogId()));
-            blog2 = blogService.findPrevBlog(blogs.get(2).getBlogId(), blogs.get(2).getPublishedDt());
-            assertThat(blog2.getBlogId(), is(blogs.get(4).getBlogId()));
-            blog2 = blogService.findPrevBlog(blogs.get(8).getBlogId(), blogs.get(8).getPublishedDt());
+            blog2 = blogService.getPrevBlog(blogs.get(0).getDocId(), blogs.get(0).getPublishedDt());
+            assertThat(blog2.getDocId(), is(blogs.get(2).getDocId()));
+            blog2 = blogService.getPrevBlog(blogs.get(2).getDocId(), blogs.get(2).getPublishedDt());
+            assertThat(blog2.getDocId(), is(blogs.get(4).getDocId()));
+            blog2 = blogService.getPrevBlog(blogs.get(8).getDocId(), blogs.get(8).getPublishedDt());
             if (blog2 != null) {
                 assertThat(blog2.getLatestContent().getTitle(), not("findList test"));
             }
         } finally {
-            for (Blog blog : blogs) {
-                blogService.delete(blog.getBlogId());
+            for (Doc blog : blogs) {
+                blogService.delete(blog.getDocId());
             }
         }
     }
 
-    private Blog createAndPublish(String username, String format, String subject, String content) {
-        return createAndPublish(username, format, subject, content, LocalDateTime.now());
+    private Doc createAndPublish(Content.Format format, String username, String title, String content) {
+        return createAndPublish(format, username, title, content, LocalDateTime.now());
     }
 
-    private Blog createAndPublish(String username, String format, String subject, String content, LocalDateTime pubDate) {
-        Blog blog = DataUtils.createBlog(username, subject, format, content);
-        blogService.create(blog);
+    private Doc createAndPublish(Content.Format format, String username, String title, String content, LocalDateTime pubDate) {
+        Doc doc = DataUtils.createDoc(Doc.Type.BLOG, format,
+                username, title, content);
+        blogService.create(doc);
 
-        blog.setPublishedDt(pubDate);
-        blogService.publish(blog);
+        doc.setPublishedDt(pubDate);
+        blogService.publish(doc);
 
-        return blog;
+        return doc;
     }
 
     @Ignore
     @Test
     public void createSamples() throws Exception {
-        List<Blog> blogs = blogService.findLatest(new Paging(0, 1000)).getList();
+        List<Doc> blogs = blogService.findLatest(new Paging(0, 1000)).getList();
         boolean sampleExists = blogs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc test"));
         if (!sampleExists) {
-            createAndPublish("test", "ADOC", "A asciidoc test", "== Test me\n\nHello World!\n\n* one\n* two\n");
-            createAndPublish("test", "HTML", "A html test", "<ul><li>one</li><li>two</li><li>three</li></ul>");
-            createAndPublish("test", "TXT", "A text test", "print('Python is cool')");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test", "== Test me\n\nHello World!\n\n* one\n* two\n");
+            createAndPublish(Content.Format.HTML, "test", "A html test", "<ul><li>one</li><li>two</li><li>three</li></ul>");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test2", "`print('Python is cool')`");
 
-            Blog blog = createAndPublish("test", "ADOC", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
-            blogService.unpublish(blog.getBlogId());
+            Doc blog = createAndPublish(Content.Format.ADOC, "test", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
+
+            blogService.unpublish(blog.getDocId());
 
             File file = new File("readme.adoc");
             String readmeADoc = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
             for (int i = 0; i < 1000; i++) {
-                String subject = "ADocBlog readme";
+                String title = "ADocBlog readme";
                 if (i > 0) {
-                    subject += " - copy#" + i;
+                    title += " - copy#" + i;
                 }
                 LocalDateTime dt = LocalDateTime.now().minusDays(i);
-                createAndPublish("test", "ADOC", subject, readmeADoc, dt);
+                createAndPublish(Content.Format.ADOC, "test", title, readmeADoc, dt);
             }
         }
     }

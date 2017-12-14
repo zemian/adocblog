@@ -2,7 +2,7 @@ package com.zemian.adocblog.web.controller.api;
 
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
-import com.zemian.adocblog.data.domain.Blog;
+import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.service.BlogService;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.web.controller.api.payload.JsonFeed;
@@ -38,18 +38,18 @@ public class ApiBlogJsonFeedController {
         String feedUrl = req.getRequestURL().toString();
         String homeUrl = feedUrl.substring(0, feedUrl.indexOf(uri)) + req.getContextPath();
 
-        PagingList<Blog> blogs = blogService.findPublished(paging);
+        PagingList<Doc> blogs = blogService.findPublished(paging);
         List<JsonFeedItem> items = new ArrayList<>(blogs.getList().size());
-        for (Blog blog : blogs.getList()) {
+        for (Doc blog : blogs.getList()) {
             String ct = contentService.getContentHtml(blog.getPublishedContent());
 
             JsonFeedItem item = new JsonFeedItem();
             item.setContentText(ct);
             //item.setAuthor(blog.getAuthor);
             item.setDatePublished(blog.getPublishedDt().atZone(ZoneId.systemDefault()).format(fmt));
-            item.setId("" + blog.getBlogId());
+            item.setId("" + blog.getDocId());
             item.setTitle(blog.getPublishedContent().getTitle());
-            item.setUrl(homeUrl + "/blog/" + blog.getBlogId());
+            item.setUrl(homeUrl + "/blog/" + blog.getDocId());
 
             item.setVersion(blog.getPublishedContent().getVersion());
 

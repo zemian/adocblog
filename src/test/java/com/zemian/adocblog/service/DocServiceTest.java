@@ -48,6 +48,7 @@ public class DocServiceTest extends SpringTestBase {
             assertThat(blog2.getPublishedContent(), nullValue());
             assertThat(blog2.getPublishedUser(), nullValue());
             assertThat(blog2.getPublishedDt(), nullValue());
+            assertThat(blog2.getType(), is(Doc.Type.PAGE));
 
             // Update content
             Integer contentId = blog2.getLatestContent().getContentId();
@@ -68,6 +69,7 @@ public class DocServiceTest extends SpringTestBase {
             assertThat(blog2.getPublishedContent(), nullValue());
             assertThat(blog2.getPublishedUser(), nullValue());
             assertThat(blog2.getPublishedDt(), nullValue());
+            assertThat(blog2.getType(), is(Doc.Type.PAGE));
 
             // Delete
             docService.markForDelete(doc.getDocId(), "markForDelete for test");
@@ -104,14 +106,16 @@ public class DocServiceTest extends SpringTestBase {
 
         try {
             // Get Latest List
-            List<Doc> list = docService.findLatest(new Paging()).getList();
+            List<Doc> list = docService.findLatest(new Paging(), Doc.Type.PAGE).getList();
             list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
             assertThat(list.size(), is(10));
+            list.forEach(doc -> assertThat(doc.getType(), is(Doc.Type.PAGE)));
 
             // Get Published List
-            list = docService.findPublished(new Paging()).getList();
+            list = docService.findPublished(new Paging(), Doc.Type.PAGE).getList();
             list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
             assertThat(list.size(), is(5));
+            list.forEach(doc -> assertThat(doc.getType(), is(Doc.Type.PAGE)));
         } finally {
             for (Doc doc : docs) {
                 docService.delete(doc.getDocId());
@@ -137,7 +141,7 @@ public class DocServiceTest extends SpringTestBase {
     @Ignore
     @Test
     public void createSamples() throws Exception {
-        List<Doc> docs = docService.findLatest(new Paging(0, 1000)).getList();
+        List<Doc> docs = docService.findLatest(new Paging(0, 1000), Doc.Type.PAGE).getList();
         boolean sampleExists = docs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc test"));
         if (!sampleExists) {
             createAndPublish(Content.Format.ADOC, "test", "A asciidoc test", "== Test me\n\nHello World!\n\n* one\n* two\n");

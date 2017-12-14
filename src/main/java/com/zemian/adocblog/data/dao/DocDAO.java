@@ -21,8 +21,9 @@ public class DocDAO extends AbstractDAO {
     private static Logger LOG = LoggerFactory.getLogger(DocDAO.class);
 
     @Autowired
-    private ContentDAO contentDAO;
+    protected ContentDAO contentDAO;
 
+    /* Base query to select docs with content meta info (without actual content_text) */
     public static final String SELECT_DOCS_SQL = "SELECT" +
             "   docs.doc_id," +
             "   docs.path," +
@@ -52,28 +53,19 @@ public class DocDAO extends AbstractDAO {
             "   LEFT JOIN users published_users ON published_users.username = published_contents.created_user";
 
     /*
-    This query find all latest and published docs with content meta info.
+    This query find all latest and published docs.
      */
     public static final String SELECT_LATEST_DOCS_SQL = SELECT_DOCS_SQL +
             " WHERE docs.deleted = FALSE AND docs.latest_content_id IS NOT NULL";
 
     /*
-    This query find all published only docs with content meta info.
+    This query find all published only docs.
      */
     public static final String SELECT_PUBLISHED_DOCS_SQL =  SELECT_DOCS_SQL +
             " WHERE docs.deleted = FALSE AND docs.latest_content_id IS NOT NULL" +
             "   AND docs.published_content_id IS NOT NULL";
 
-    public int getPublishedCount() {
-        String sql = "SELECT COUNT(*) FROM docs WHERE deleted = FALSE AND published_content_id IS NOT NULL";
-        return jdbc.queryForObject(sql, Integer.class);
-    }
-
-    public int getTotalCount() {
-        String sql = "SELECT COUNT(*) FROM docs WHERE deleted = FALSE";
-        return jdbc.queryForObject(sql, Integer.class);
-    }
-
+    /* A Doc with Content meta data ResultSet mapping. */
     public static class DocRowMapper implements RowMapper<Doc> {
         private ContentDAO.ContentMetaRowMapper contentMetaRowMapper = new ContentDAO.ContentMetaRowMapper();
         @Override
@@ -106,10 +98,11 @@ public class DocDAO extends AbstractDAO {
         }
     }
 
-    private void createContentVer(Integer docId, Integer contentId) {
-        String sql = "INSERT INTO doc_content_vers(doc_id, content_id) VALUES(?, ?)";
+    // == DAO Create
+    private void createDocContents(Integer docId, Integer contentId) {
+        String sql = "INSERT INTO doc_contents(doc_id, content_id) VALUES(?, ?)";
         int ret = jdbc.update(sql, docId, contentId);
-        LOG.debug("Inserted doc_content_vers for docId={} and contentId={}. Ret={}", docId, contentId, ret);
+        LOG.debug("Inserted doc_contents for docId={} and contentId={}. Ret={}", docId, contentId, ret);
 
     }
 
@@ -134,31 +127,49 @@ public class DocDAO extends AbstractDAO {
             doc.getLatestContent().getContentId());
 
         // Insert doc content version link
-        createContentVer(doc.getDocId(), doc.getLatestContent().getContentId());
+        createDocContents(doc.getDocId(), doc.getLatestContent().getContentId());
 
         // Done
         LOG.info("Inserted docs.doc_id={}, path={} with contents.content_id={} result: {}",
                 doc.getDocId(), doc.getPath(), doc.getLatestContent().getContentId(), ret);
     }
 
-    public void update(Doc doc) {
-        contentDAO.create(doc.getLatestContent());
-        createContentVer(doc.getDocId(), doc.getLatestContent().getContentId());
-
-        final String sql = "UPDATE docs SET" +
-                " path = ?," +
-                " type = ?," +
-                " latest_content_id = ?" +
-                " WHERE doc_id = ?";
-        int ret = jdbc.update(sql,
-                doc.getPath(),
-                doc.getType().name(),
-                doc.getLatestContent().getContentId(),
-                doc.getDocId());
-        LOG.info("Updated docId={}, path={} with contentId={}. result: {}",
-                doc.getDocId(), doc.getPath(), doc.getLatestContent().getContentId(), ret);
+    // == DAO Delete
+    public void markForDelete(Integer docId, String reasonForDelete) {
+        int ret = jdbc.update("UPDATE docs SET deleted = TRUE, reason_for_delete = ? WHERE doc_id = ?",
+                reasonForDelete, docId);
+        LOG.debug("DocId={} marked for markForDelete. result={}", docId, ret);
     }
 
+    /*
+    Delete a doc AND all of related table records!
+     */
+    public void delete(Integer docId) {
+        String sql;
+        int ret;
+
+        // Get list of content ids to be markForDelete
+        sql = "SELECT content_id FROM doc_contents WHERE doc_id = ?";
+        List<Integer> contentIds = jdbc.queryForList(sql, Integer.class, docId);
+
+        // Delete content vers
+        sql = "DELETE FROM doc_contents WHERE doc_id = ?";
+        ret = jdbc.update(sql, docId);
+        LOG.debug("Deleted {} doc_contents with docId={}", ret, docId);
+
+        // Delete doc
+        sql = "DELETE FROM docs WHERE doc_id = ?";
+        ret = jdbc.update(sql, docId);
+        LOG.info("Deleted docs.doc_id={} result: {}", docId, ret);
+
+        // Delete contents. Let's do the long way for now.
+        for (Integer contentId : contentIds) {
+            contentDAO.delete(contentId);
+        }
+        LOG.debug("Deleted {} contents with docId={}", contentIds.size(), docId);
+    }
+
+    // == DAO Retrieval/Get
     public Doc get(Integer id) {
         String sql = SELECT_LATEST_DOCS_SQL + " AND docs.doc_id = ?";
         return jdbc.queryForObject(sql, new DocRowMapper(), id);
@@ -166,8 +177,8 @@ public class DocDAO extends AbstractDAO {
 
     public DocHistory getDocHistory(Integer docId) {
         String sql = "SELECT contents.* FROM contents" +
-                " LEFT JOIN doc_content_vers ON doc_content_vers.content_id = contents.content_id" +
-                " WHERE doc_content_vers.doc_id = ? ORDER BY contents.version DESC";
+                " LEFT JOIN doc_contents ON doc_contents.content_id = contents.content_id" +
+                " WHERE doc_contents.doc_id = ? ORDER BY contents.version DESC";
 
         ContentDAO.ContentMetaRowMapper contentMetaRowMapper = new ContentDAO.ContentMetaRowMapper();
         List<Content> contentVers = jdbc.query(sql, contentMetaRowMapper, docId);
@@ -183,61 +194,33 @@ public class DocDAO extends AbstractDAO {
         return bh;
     }
 
-    public void markForDelete(Integer docId, String reasonForDelete) {
-        int ret = jdbc.update("UPDATE docs SET deleted = TRUE, reason_for_delete = ? WHERE doc_id = ?",
-                reasonForDelete, docId);
-        LOG.debug("DocId={} marked for markForDelete. result={}", docId, ret);
+    public int getPublishedCount() {
+        String sql = "SELECT COUNT(*) FROM docs WHERE deleted = FALSE AND published_content_id IS NOT NULL";
+        return jdbc.queryForObject(sql, Integer.class);
     }
 
-    /*
-    Delete a doc AND all of related table records!
-     */
-    public void delete(Integer docId) {
-        String sql;
-        int ret;
-
-        // Get list of content ids to be markForDelete
-        sql = "SELECT content_id FROM doc_content_vers WHERE doc_id = ?";
-        List<Integer> contentIds = jdbc.queryForList(sql, Integer.class, docId);
-
-        // Delete content vers
-        sql = "DELETE FROM doc_content_vers WHERE doc_id = ?";
-        ret = jdbc.update(sql, docId);
-        LOG.debug("Deleted {} doc_content_vers with docId={}", ret, docId);
-
-        // Delete doc
-        sql = "DELETE FROM docs WHERE doc_id = ?";
-        ret = jdbc.update(sql, docId);
-        LOG.info("Deleted docs.doc_id={} result: {}", docId, ret);
-
-        // Delete contents. Let's do the long way for now.
-        for (Integer contentId : contentIds) {
-            contentDAO.delete(contentId);
-        }
-        LOG.debug("Deleted {} contents with docId={}", contentIds.size(), docId);
+    public int getTotalCount() {
+        String sql = "SELECT COUNT(*) FROM docs WHERE deleted = FALSE";
+        return jdbc.queryForObject(sql, Integer.class);
     }
 
-    public PagingList<Doc> findLatest(Paging paging) {
-        String sql = SELECT_LATEST_DOCS_SQL + " ORDER BY latest_contents.created_dt DESC";
-        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging);
-        LOG.debug("Found {} docs.", ret);
-        return ret;
-    }
+    // == DAO Updates
+    public void update(Doc doc) {
+        contentDAO.create(doc.getLatestContent());
+        createDocContents(doc.getDocId(), doc.getLatestContent().getContentId());
 
-    public PagingList<Doc> findPublished(Paging paging) {
-        String sql = SELECT_PUBLISHED_DOCS_SQL + " ORDER BY docs.published_dt DESC";
-        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging);
-        LOG.debug("Found {} published docs.", ret);
-        return ret;
-    }
-
-    public PagingList<Doc> searchPublished(Paging paging, String searchTerms) {
-        String sql = SELECT_PUBLISHED_DOCS_SQL +
-                " AND to_tsvector(published_contents.title || ' ' || published_contents.content_text) @@ to_tsquery(?)" +
-                " ORDER BY docs.published_dt DESC";
-        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, searchTerms);
-        LOG.debug("Found {} published docs with full text search.", ret);
-        return ret;
+        final String sql = "UPDATE docs SET" +
+                " path = ?," +
+                " type = ?," +
+                " latest_content_id = ?" +
+                " WHERE doc_id = ?";
+        int ret = jdbc.update(sql,
+                doc.getPath(),
+                doc.getType().name(),
+                doc.getLatestContent().getContentId(),
+                doc.getDocId());
+        LOG.info("Updated docId={}, path={} with contentId={}. result: {}",
+                doc.getDocId(), doc.getPath(), doc.getLatestContent().getContentId(), ret);
     }
 
     public void publish(Doc doc) {
@@ -257,5 +240,29 @@ public class DocDAO extends AbstractDAO {
                 " published_user = NULL, published_dt = NULL WHERE doc_id = ?";
         int ret = jdbc.update(sql, docId);
         LOG.info("Unpublished docId={} ret={}", docId, ret);
+    }
+
+    // == DAO Find List and Searches
+    public PagingList<Doc> findLatest(Paging paging, Doc.Type type) {
+        String sql = SELECT_LATEST_DOCS_SQL + " AND docs.type = ? ORDER BY latest_contents.created_dt DESC";
+        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name());
+        LOG.debug("Found {} docs.", ret);
+        return ret;
+    }
+
+    public PagingList<Doc> findPublished(Paging paging, Doc.Type type) {
+        String sql = SELECT_PUBLISHED_DOCS_SQL + " AND docs.type = ? ORDER BY docs.published_dt DESC";
+        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name());
+        LOG.debug("Found {} published docs.", ret);
+        return ret;
+    }
+
+    public PagingList<Doc> searchPublished(Paging paging, Doc.Type type, String searchTerms) {
+        String sql = SELECT_PUBLISHED_DOCS_SQL +
+                " AND docs.type = ? AND to_tsvector(published_contents.title || ' ' || published_contents.content_text) @@ to_tsquery(?)" +
+                " ORDER BY docs.published_dt DESC";
+        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name(), searchTerms);
+        LOG.debug("Found {} published docs with full text search.", ret);
+        return ret;
     }
 }
