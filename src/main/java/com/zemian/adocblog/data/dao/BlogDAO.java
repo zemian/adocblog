@@ -81,6 +81,7 @@ public class BlogDAO extends AbstractDAO {
             blog.setBlogId(rs.getInt("blog_id"));
 
             Content latestContent = contentMetaRowMapper.mapRow(rs, rowNum, "latest_");
+            latestContent.setAuthorFullName(rs.getString("latest_full_name"));
             blog.setLatestContent(latestContent);
 
             Integer publishedContentId = (Integer)rs.getObject("published_content_id");
@@ -93,6 +94,7 @@ public class BlogDAO extends AbstractDAO {
                     blog.setPublishedContent(latestContent);
                 } else {
                     Content publishedContent = contentMetaRowMapper.mapRow(rs, rowNum, "published_");
+                    publishedContent.setAuthorFullName(rs.getString("published_full_name"));
                     blog.setPublishedContent(publishedContent);
                 }
             }
@@ -211,7 +213,7 @@ public class BlogDAO extends AbstractDAO {
 
     public PagingList<Blog> searchPublished(Paging paging, String searchTerms) {
         String sql = SELECT_PUBLISHED_BLOGS_SQL +
-                " AND to_tsvector(blogs.title || ' ' || contents.content_text) @@ to_tsquery(?)" +
+                " AND to_tsvector(published_contents.title || ' ' || published_contents.content_text) @@ to_tsquery(?)" +
                 " ORDER BY blogs.published_dt DESC";
         PagingList<Blog> ret = findByPaging(sql, new BlogRowMapper(), paging, searchTerms);
         LOG.debug("Found {} published blogs with full text search.", ret);

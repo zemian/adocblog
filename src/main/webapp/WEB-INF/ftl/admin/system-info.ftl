@@ -7,7 +7,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-content">
+    <div class="app-content">
         <h1>System Information</h1>
         <table class="table">
             <#list sysInfo as key, value>

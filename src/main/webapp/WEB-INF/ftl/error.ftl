@@ -7,7 +7,7 @@
 <#include "/includes/header.ftl">
 
 <div class="container">
-    <div class="main-content">
+    <div class="app-content">
         <h1>Oops! Something went wrong.</h1>
         <p>${Request['javax.servlet.error.status_code']} ${Request['javax.servlet.error.request_uri']}</p>
         <div class="alert alert-danger" role="alert">

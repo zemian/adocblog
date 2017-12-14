@@ -9,7 +9,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
+    <div class="app-content">
         <h1>Edit Blog Post</h1>
 
         <#if actionErrorMessage??>
@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
-                <input type="input" class="form-control" id="format" name="format" value="${blog.contentMeta.format}">
+                <input type="input" class="form-control" id="format" name="format" value="${blog.latestContent.format}">
             </div>
             <div class="form-group">
                 <label for="reasonForEdit">Reason For Edit:</label>

@@ -7,10 +7,8 @@
 <#include "/themes/${app.themeName}/includes/header.ftl">
 
 <div class="container">
-    <div class="main-content">
-        <#if page??>
-            ${page.contentText.contentText}
-        </#if>
+    <div class="app-content">
+        This application is brought to you by Zemian Deng!
     </div>
 <#include "/themes/${app.themeName}/includes/footer.ftl">
 </div>

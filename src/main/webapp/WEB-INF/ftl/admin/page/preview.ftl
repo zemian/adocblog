@@ -8,7 +8,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
+    <div class="app-content">
         <h1>${page.pathName}</h1>
         ${pageContentText}
     </div>

@@ -7,7 +7,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
+    <div class="app-content">
         <h1>Pages Management</h1>
 
         <p><a href="${app.contextPath}/admin/page/create">Create New Page</a></p>

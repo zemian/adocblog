@@ -114,11 +114,11 @@ public class AdminBlogController {
     public ModelAndView createPost(HttpServletRequest req) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
 
-        String subject = req.getParameter("subject");
+        String title = req.getParameter("title");
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
 
-        Blog blog = DataUtils.createBlog(userSession.getUser().getUsername(), subject, format, contentText);
+        Blog blog = DataUtils.createBlog(userSession.getUser().getUsername(), title, format, contentText);
         blogService.create(blog);
         req.setAttribute("actionSuccessMessage", "Blog " + blog.getBlogId() + " created successfully.");
         return list(DEFAULT_PAGING);

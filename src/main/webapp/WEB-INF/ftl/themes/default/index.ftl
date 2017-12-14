@@ -7,24 +7,24 @@
 <#include "/themes/${app.themeName}/includes/header.ftl">
 
 <div class="container">
-    <div class="main-content">
+    <div class="app-content">
         <#if blog??>
-            <h1>${blog.subject}</h1>
-            <p>${blog.publication.publishDt.format(blogDateFormat)} by ${blog.contentMeta.author}</p>
+            <h1>${blog.publishedContent.title}</h1>
+            <p>${blog.publishedDt.format(blogDateFormat)} by ${blog.publishedContent.authorFullName}</p>
             <div class="blog-post">
-            ${blog.contentText.contentText}
+            ${blog.publishedContent.contentText}
             </div>
         <#else>
             <p>Welcome! Go to <a href="${app.contextPath}/admin">Admin Console</a> to create your first post!</p>
         </#if>
 
-        <#if blogs?size gt 0>
+        <#if blogs.list?size gt 0>
             <h2>Recent Posts</h2>
             <ul>
                 <#list blogs.list as blog>
                     <li>
-                        <a href="${app.contextPath}/blog/${blog.blogId}">${blog.subject}</a>
-                        ${blog.publication.publishDt.format(blogDateFormat)} by ${blog.contentMeta.author}
+                        <a href="${app.contextPath}/blog/${blog.blogId}">${blog.publishedContent.title}</a>
+                        ${blog.publishedDt.format(blogDateFormat)} by ${blog.publishedContent.authorFullName}
                     </li>
                 </#list>
                 <#if blogs.more>

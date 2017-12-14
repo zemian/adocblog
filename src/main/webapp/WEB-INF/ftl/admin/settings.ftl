@@ -7,7 +7,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
+    <div class="app-content">
         <h1>Settings Table</h1>
         <table class="table">
             <#list settings.list as setting>

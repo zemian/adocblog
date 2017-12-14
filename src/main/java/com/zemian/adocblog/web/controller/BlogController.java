@@ -39,9 +39,6 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
-//    @Autowired
-//    private PageService pageService;
-
     private String getThemeViewName(String name) {
         return "/themes/" + themeName + name;
     }
@@ -66,17 +63,11 @@ public class BlogController {
         return result;
     }
 
-//    @GetMapping("/about")
-//    public ModelAndView about() {
-//        ModelAndView result = new ModelAndView(getThemeViewName("/about"));
-//        List<Blog> docs = pageService.findByPathNames("about.ftl");
-//        if (docs.size() > 0) {
-//            result.addObject("page", docs.get(0));
-//        } else {
-//            LOG.warn("No doc found for path='about.ftl'.");
-//        }
-//        return result;
-//    }
+    @GetMapping("/about")
+    public ModelAndView about() {
+        ModelAndView result = new ModelAndView(getThemeViewName("/about"));
+        return result;
+    }
 
     /*
     List of published blogs

@@ -7,7 +7,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
+    <div class="app-content">
         <h1>Blog Versions History</h1>
         <table class="table">
             <tr>
@@ -19,24 +19,24 @@
                 <td>Published</td>
                 <td>Actions</td>
             </tr>
-            <#list blogs.list as blog>
+            <#list blogHistory.contentVers as content>
 
                 <#assign pubActionLabel = 'Publish' >
-                <#assign pubActionPath = 'publish/${blog.blogId}/${blog.contentMeta.contentId}' >
-                <#if blog.publication??>
+                <#assign pubActionPath = 'publish/${blogHistory.blogId}/${content.contentId}' >
+                <#if content.contentId == blogHistory.publishedContentId!(0)>
                     <#assign pubActionLabel = 'Unpublish' >
-                    <#assign pubActionPath = 'unpublish/${blog.blogId}' >
+                    <#assign pubActionPath = 'unpublish/${blogHistory.blogId}' >
                 </#if>
 
                 <tr>
-                    <td>${blog.contentMeta.createdDt}</td>
-                    <td>${blog.contentMeta.contentVersion}</td>
-                    <td>${blog.contentMeta.contentVersionReason!''}</td>
-                    <td>${blog.contentMeta.createdUser}</td>
-                    <td>${blog.contentMeta.format}</td>
-                    <td>${(blog.publication??)?string('Yes', 'No')}</td>
+                    <td>${content.createdDt}</td>
+                    <td>${content.version}</td>
+                    <td>${content.reasonForEdit!''}</td>
+                    <td>${content.createdUser}</td>
+                    <td>${content.format}</td>
+                    <td>${(content.contentId == blogHistory.publishedContentId!(0))?string('Yes', 'No')}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/blog/preview/${blog.blogId}/${blog.contentMeta.contentId}">Preview</a> |
+                        <a href="${app.contextPath}/admin/blog/preview/${blogHistory.blogId}/${content.contentId}">Preview</a> |
                         <a href="${app.contextPath}/admin/blog/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
                 </tr>

@@ -7,7 +7,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
+    <div class="app-content">
         <h1>Welcome to Blog Admin</h1>
         <p>There are ${publishedBlogsCount?string.number} published blogs
             and ${(totalBlogsCount - publishedBlogsCount)?string.number} unpublished blogs.</p>

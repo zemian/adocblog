@@ -7,11 +7,11 @@
 <#include "/themes/${app.themeName}/includes/header.ftl">
 
 <div class="container">
-    <div class="main-content">
-        <h1>${blog.subject}</h1>
-        <p>${blog.publication.publishDt.format(blogDateFormat)} by ${blog.contentMeta.author}</p>
+    <div class="app-content">
+        <h1>${blog.publishedContent.title}</h1>
+        <p>${blog.publishedDt.format(blogDateFormat)} by ${blog.publishedContent.authorFullName}</p>
         <div class="blog-post">
-            ${blog.contentText.contentText}
+        ${blog.publishedContent.contentText}
         </div>
 
         <!-- Next/Previous Post -->

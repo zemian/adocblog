@@ -8,8 +8,8 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
-        <h1>${blog.subject}</h1>
+    <div class="app-content">
+        <h1>${blog.latestContent.title}</h1>
         ${blogContentText}
     </div>
     <#include "/admin/includes/footer.ftl">

@@ -9,7 +9,7 @@
 <#include "/admin/includes/header.ftl">
 
 <div class="container">
-    <div class="main-app">
+    <div class="app-content">
         <h1>New Blog Post</h1>
 
         <#if actionErrorMessage??>

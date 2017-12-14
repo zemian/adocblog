@@ -34,8 +34,11 @@ public class DbPropsEnvironment implements ApplicationListener<ContextRefreshedE
     public void onApplicationEvent(ContextRefreshedEvent event) {
         String category = APP_CONFIG_CATEGORY_PREFIX + configurableEnvironment.getProperty(APP_ENV_KEY);
         LOG.info("Loading {} from settings db table.", category);
-        Map<String, Object> configProps = settingService.findByCategory(category).stream().collect(
+        Map<String, Object> dbSettings = settingService.findByCategory(category).stream().collect(
                 Collectors.toMap(Setting::getName, s -> s.getValue()));
-        configurableEnvironment.getPropertySources().addFirst(new MapPropertySource("db", configProps));
+
+        LOG.debug("Adding {} settings into Spring env", dbSettings.size());
+        MapPropertySource dbSettingsSource = new MapPropertySource("dbSettings", dbSettings);
+        configurableEnvironment.getPropertySources().addFirst(dbSettingsSource);
     }
 }

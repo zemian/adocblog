@@ -40,6 +40,7 @@ public class ContentDAO {
             content.setCreatedUser(rs.getString(prefix + "created_user"));
             content.setCreatedDt(rs.getTimestamp(prefix + "created_dt").toLocalDateTime());
             content.setFormat(Content.Format.valueOf(rs.getString(prefix + "format")));
+
             return content;
         }
     }

@@ -7,7 +7,7 @@
 <#include "/includes/header.ftl">
 
 <div class="container">
-    <div class="main-content">
+    <div class="app-content">
         <div class="row">
             <div class="col-xs-4"></div>
             <div class="col-xs-4">
