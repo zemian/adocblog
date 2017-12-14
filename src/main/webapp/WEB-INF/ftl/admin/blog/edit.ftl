@@ -33,7 +33,7 @@
                 <textarea id="contentText" name="contentText" rows="30" cols="100">${blogContentText}</textarea>
             </div>
             <button class="btn btn-success">Submit</button>
-            <input type="hidden" name="blogId" value="${blog.blogId}">
+            <input type="hidden" name="blogId" value="${blog.docId}">
         </form>
         <script>
             CodeMirror.fromTextArea(document.getElementById("contentText"), {

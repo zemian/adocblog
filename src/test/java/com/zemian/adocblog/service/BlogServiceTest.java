@@ -270,15 +270,15 @@ public class BlogServiceTest extends SpringTestBase {
         return doc;
     }
 
-    @Ignore
     @Test
     public void createSamples() throws Exception {
-        List<Doc> blogs = blogService.findLatest(new Paging(0, 1000)).getList();
-        boolean sampleExists = blogs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc test"));
+        int sampleSize = 30;
+        List<Doc> blogs = blogService.findLatest(new Paging(0, sampleSize)).getList();
+        boolean sampleExists = blogs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc blog sample"));
         if (!sampleExists) {
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test", "== Test me\n\nHello World!\n\n* one\n* two\n");
-            createAndPublish(Content.Format.HTML, "test", "A html test", "<ul><li>one</li><li>two</li><li>three</li></ul>");
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test2", "`print('Python is cool')`");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc blog sample", "== Test me\n\nHello World!\n\n* one\n* two\n");
+            createAndPublish(Content.Format.HTML, "test", "A html blog sample", "<ul><li>one</li><li>two</li><li>three</li></ul>");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc blog sample#2", "`print('Python is cool')`");
 
             Doc blog = createAndPublish(Content.Format.ADOC, "test", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
 
@@ -287,8 +287,8 @@ public class BlogServiceTest extends SpringTestBase {
             File file = new File("readme.adoc");
             String readmeADoc = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
-            for (int i = 0; i < 1000; i++) {
-                String title = "ADocBlog readme";
+            for (int i = 0; i < sampleSize; i++) {
+                String title = "ADocBlog readme blog sample";
                 if (i > 0) {
                     title += " - copy#" + i;
                 }

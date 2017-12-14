@@ -17,11 +17,11 @@
         <!-- Next/Previous Post -->
         <p>
         <#if prevBlog??>
-            <a href="${app.contextPath}/blog/${prevBlog.blogId}">Previous Blog</a>
+            <a href="${app.contextPath}/blog/${prevBlog.docId}">Previous Blog</a>
             <#if nextBlog??>|</#if>
         </#if>
         <#if nextBlog??>
-            <a href="${app.contextPath}/blog/${nextBlog.blogId}">Next Blog</a>
+            <a href="${app.contextPath}/blog/${nextBlog.docId}">Next Blog</a>
         </#if>
         </p>
     </div>

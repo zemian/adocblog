@@ -30,24 +30,24 @@
             <#list blogs.list as blog>
 
                 <#assign pubActionLabel = 'Publish' >
-                <#assign pubActionPath = 'publish/${blog.blogId}/${blog.latestContent.contentId}' >
+                <#assign pubActionPath = 'publish/${blog.docId}/${blog.latestContent.contentId}' >
                 <#assign pubVersion = 'NOT PUBLISHED' >
                 <#if blog.publishedContent??>
                     <#assign pubActionLabel = 'Unpublish' >
-                    <#assign pubActionPath = 'unpublish/${blog.blogId}' >
+                    <#assign pubActionPath = 'unpublish/${blog.docId}' >
                     <#assign pubVersion = blog.publishedContent.version >
                 </#if>
                 <tr>
-                    <td>${blog.blogId}</td>
+                    <td>${blog.docId}</td>
                     <td>${blog.latestContent.title}</td>
                     <td>${blog.latestContent.createdDt}</td>
                     <td>${blog.latestContent.version}</td>
                     <td>${pubVersion}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/blog/edit/${blog.blogId}">Edit</a> |
-                        <a href="${app.contextPath}/admin/blog/preview/${blog.blogId}/${blog.latestContent.contentId}" target="_blank">Preview</a> |
-                        <a href="${app.contextPath}/admin/blog/history/${blog.blogId}">History</a> |
-                        <a href="${app.contextPath}/admin/blog/delete/${blog.blogId}" data-toggle="confirmation" data-title="Are you sure?">Delete</a> |
+                        <a href="${app.contextPath}/admin/blog/edit/${blog.docId}">Edit</a> |
+                        <a href="${app.contextPath}/admin/blog/preview/${blog.docId}/${blog.latestContent.contentId}" target="_blank">Preview</a> |
+                        <a href="${app.contextPath}/admin/blog/history/${blog.docId}">History</a> |
+                        <a href="${app.contextPath}/admin/blog/delete/${blog.docId}" data-toggle="confirmation" data-title="Are you sure?">Delete</a> |
                         <a href="${app.contextPath}/admin/blog/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
                 </tr>

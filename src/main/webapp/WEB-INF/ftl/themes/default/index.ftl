@@ -23,7 +23,7 @@
             <ul>
                 <#list blogs.list as blog>
                     <li>
-                        <a href="${app.contextPath}/blog/${blog.blogId}">${blog.publishedContent.title}</a>
+                        <a href="${app.contextPath}/blog/${blog.docId}">${blog.publishedContent.title}</a>
                         ${blog.publishedDt.format(blogDateFormat)} by ${blog.publishedContent.authorFullName}
                     </li>
                 </#list>

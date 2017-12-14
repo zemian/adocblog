@@ -36,40 +36,43 @@ public class DocServiceTest extends SpringTestBase {
 
         try {
             // Get
-            Doc blog2 = docService.get(doc.getDocId());
-            assertThat(blog2.getDocId(), greaterThanOrEqualTo(1));
-            assertThat(blog2.getLatestContent().getTitle(), is("test doc"));
-            assertThat(blog2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
-            assertThat(blog2.getLatestContent().getVersion(), is(1));
-            assertThat(blog2.getLatestContent().getReasonForEdit(), nullValue());
-            assertThat(blog2.getLatestContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(blog2.getLatestContent().getCreatedUser(), is("test"));
-            assertThat(blog2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
-            assertThat(blog2.getPublishedContent(), nullValue());
-            assertThat(blog2.getPublishedUser(), nullValue());
-            assertThat(blog2.getPublishedDt(), nullValue());
-            assertThat(blog2.getType(), is(Doc.Type.PAGE));
+            Doc doc2 = docService.get(doc.getDocId());
+            assertThat(doc2.getDocId(), greaterThanOrEqualTo(1));
+            assertThat(doc2.getLatestContent().getTitle(), is("test doc"));
+            assertThat(doc2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
+            assertThat(doc2.getLatestContent().getVersion(), is(1));
+            assertThat(doc2.getLatestContent().getReasonForEdit(), nullValue());
+            assertThat(doc2.getLatestContent().getFormat(), is(Content.Format.ADOC));
+            assertThat(doc2.getLatestContent().getCreatedUser(), is("test"));
+            assertThat(doc2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
+            assertThat(doc2.getPublishedContent(), nullValue());
+            assertThat(doc2.getPublishedUser(), nullValue());
+            assertThat(doc2.getPublishedDt(), nullValue());
+            assertThat(doc2.getType(), is(Doc.Type.PAGE));
+            assertThat(doc2.getPath(), is("" + doc2.getDocId()));
 
             // Update content
-            Integer contentId = blog2.getLatestContent().getContentId();
+            Integer oldDocId = doc2.getDocId();
+            Integer contentId = doc2.getLatestContent().getContentId();
             String ct = "_Version 2_";
-            blog2.getLatestContent().setContentText(ct);
-            blog2.getLatestContent().setReasonForEdit("test edit");
-            docService.update(blog2);
-            blog2 = docService.get(doc.getDocId());
-            assertThat(blog2.getDocId(), greaterThanOrEqualTo(1));
-            assertThat(blog2.getLatestContent().getTitle(), is("test doc"));
-            assertThat(blog2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
-            assertThat(blog2.getLatestContent().getContentId(), not(contentId));
-            assertThat(blog2.getLatestContent().getVersion(), is(2));
-            assertThat(blog2.getLatestContent().getReasonForEdit(), is("test edit"));
-            assertThat(blog2.getLatestContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(blog2.getLatestContent().getCreatedUser(), is("test"));
-            assertThat(blog2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
-            assertThat(blog2.getPublishedContent(), nullValue());
-            assertThat(blog2.getPublishedUser(), nullValue());
-            assertThat(blog2.getPublishedDt(), nullValue());
-            assertThat(blog2.getType(), is(Doc.Type.PAGE));
+            doc2.getLatestContent().setContentText(ct);
+            doc2.getLatestContent().setReasonForEdit("test edit");
+            docService.update(doc2);
+            doc2 = docService.get(doc.getDocId());
+            assertThat(doc2.getDocId(), is(oldDocId));
+            assertThat(doc2.getLatestContent().getTitle(), is("test doc"));
+            assertThat(doc2.getLatestContent().getContentId(), greaterThanOrEqualTo(1));
+            assertThat(doc2.getLatestContent().getContentId(), not(contentId));
+            assertThat(doc2.getLatestContent().getVersion(), is(2));
+            assertThat(doc2.getLatestContent().getReasonForEdit(), is("test edit"));
+            assertThat(doc2.getLatestContent().getFormat(), is(Content.Format.ADOC));
+            assertThat(doc2.getLatestContent().getCreatedUser(), is("test"));
+            assertThat(doc2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
+            assertThat(doc2.getPublishedContent(), nullValue());
+            assertThat(doc2.getPublishedUser(), nullValue());
+            assertThat(doc2.getPublishedDt(), nullValue());
+            assertThat(doc2.getType(), is(Doc.Type.PAGE));
+            assertThat(doc2.getPath(), is("" + doc2.getDocId()));
 
             // Delete
             docService.markForDelete(doc.getDocId(), "markForDelete for test");
@@ -79,6 +82,46 @@ public class DocServiceTest extends SpringTestBase {
             } catch (RuntimeException e) {
                 // Expecting
             }
+        } finally {
+            docService.delete(doc.getDocId());
+        }
+    }
+
+    @Test
+    public void docPath() {
+        // Create
+        Doc doc = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
+                "test", "test doc", "DocServiceTest *test*");
+        doc.setPath("/junit/test/test-doc");
+        docService.create(doc);
+
+        try {
+            // Get
+            Doc doc2 = docService.get(doc.getDocId());
+            assertThat(doc2.getDocId(), greaterThanOrEqualTo(1));
+            assertThat(doc2.getPath(), not("" + doc2.getDocId()));
+            assertThat(doc2.getPath(), is("/junit/test/test-doc"));
+
+            // Path should be unique
+            try {
+                Doc doc3 = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
+                        "test", "test doc2", "#2 DocServiceTest *test*");
+                doc3.setPath("/junit/test/test-doc");
+                docService.create(doc3);
+                Assert.fail("Create doc should fail when path is duplicated.");
+            } catch (Exception e) {
+                // Expected.
+            }
+
+            // Update content
+            Integer oldDocId = doc2.getDocId();
+            doc2.setPath("/junit/test/test-doc-edit");
+            doc2.getLatestContent().setContentText(doc.getLatestContent().getContentText());
+            doc2.getLatestContent().setReasonForEdit("test edit only path");
+            docService.update(doc2);
+            assertThat(doc2.getDocId(), is(oldDocId));
+            assertThat(doc2.getPath(), not("" + doc2.getDocId()));
+            assertThat(doc2.getPath(), is("/junit/test/test-doc-edit"));
         } finally {
             docService.delete(doc.getDocId());
         }
@@ -138,15 +181,15 @@ public class DocServiceTest extends SpringTestBase {
         return doc;
     }
 
-    @Ignore
     @Test
     public void createSamples() throws Exception {
-        List<Doc> docs = docService.findLatest(new Paging(0, 1000), Doc.Type.PAGE).getList();
-        boolean sampleExists = docs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc test"));
+        int sampleSize = 30;
+        List<Doc> docs = docService.findLatest(new Paging(0, sampleSize), Doc.Type.PAGE).getList();
+        boolean sampleExists = docs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc page sample"));
         if (!sampleExists) {
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test", "== Test me\n\nHello World!\n\n* one\n* two\n");
-            createAndPublish(Content.Format.HTML, "test", "A html test", "<ul><li>one</li><li>two</li><li>three</li></ul>");
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc test2", "`print('Python is cool')`");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc page sample", "== Test me\n\nHello World!\n\n* one\n* two\n");
+            createAndPublish(Content.Format.HTML, "test", "A html page sample", "<ul><li>one</li><li>two</li><li>three</li></ul>");
+            createAndPublish(Content.Format.ADOC, "test", "A asciidoc page sample2", "`print('Python is cool')`");
 
             Doc doc = createAndPublish(Content.Format.ADOC, "test", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
             docService.unpublish(doc.getDocId());
@@ -154,8 +197,8 @@ public class DocServiceTest extends SpringTestBase {
             File file = new File("readme.adoc");
             String readmeADoc = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
-            for (int i = 0; i < 1000; i++) {
-                String title = "ADocDoc readme";
+            for (int i = 0; i < sampleSize; i++) {
+                String title = "ADocDoc readme page sample";
                 if (i > 0) {
                     title += " - copy#" + i;
                 }

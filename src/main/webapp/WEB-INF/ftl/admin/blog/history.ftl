@@ -22,10 +22,10 @@
             <#list blogHistory.contentVers as content>
 
                 <#assign pubActionLabel = 'Publish' >
-                <#assign pubActionPath = 'publish/${blogHistory.blogId}/${content.contentId}' >
+                <#assign pubActionPath = 'publish/${blogHistory.docId}/${content.contentId}' >
                 <#if content.contentId == blogHistory.publishedContentId!(0)>
                     <#assign pubActionLabel = 'Unpublish' >
-                    <#assign pubActionPath = 'unpublish/${blogHistory.blogId}' >
+                    <#assign pubActionPath = 'unpublish/${blogHistory.docId}' >
                 </#if>
 
                 <tr>
@@ -36,7 +36,7 @@
                     <td>${content.format}</td>
                     <td>${(content.contentId == blogHistory.publishedContentId!(0))?string('Yes', 'No')}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/blog/preview/${blogHistory.blogId}/${content.contentId}">Preview</a> |
+                        <a href="${app.contextPath}/admin/blog/preview/${blogHistory.docId}/${content.contentId}">Preview</a> |
                         <a href="${app.contextPath}/admin/blog/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
                 </tr>
