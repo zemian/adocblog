@@ -90,4 +90,11 @@ public class Content {
     public void setAuthorFullName(String authorFullName) {
         this.authorFullName = authorFullName;
     }
+
+    @Override
+    public String toString() {
+        return "Content{" +
+                "contentId=" + contentId +
+                '}';
+    }
 }

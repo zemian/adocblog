@@ -8,6 +8,7 @@ import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.support.DataUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -189,13 +190,13 @@ public class BlogServiceTest extends SpringTestBase {
         List<Blog> blogs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Blog blog = DataUtils.createBlog(
-                    "test", "Just a test", "ADOC", "BlogServiceTest *test*");
+                    "test", "findList test", "ADOC", "BlogServiceTest *test*");
             blogService.create(blog);
             blogs.add(blog);
 
             if (i % 2 == 0) {
                 blog.setPublishedUser("test");
-                blog.setPublishedDt(LocalDateTime.now());
+                blog.setPublishedDt(LocalDateTime.now().plusMinutes(i)); // Set published with gap on purpose for testing.
                 blogService.publish(blog);
             }
 
@@ -206,11 +207,13 @@ public class BlogServiceTest extends SpringTestBase {
         try {
             // Get Latest List
             List<Blog> list = blogService.findLatest(new Paging()).getList();
-            assertThat(list.size(), greaterThanOrEqualTo(5));
+            list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
+            assertThat(list.size(), is(10));
 
             // Get Published List
             list = blogService.findPublished(new Paging()).getList();
-            assertThat(list.size(), greaterThanOrEqualTo(5));
+            list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
+            assertThat(list.size(), is(5));
 
             // Find Next - next older blog
             Blog blog2;
@@ -218,16 +221,20 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(blog2.getBlogId(), is(blogs.get(6).getBlogId()));
             blog2 = blogService.findNextBlog(blogs.get(6).getBlogId(), blogs.get(6).getPublishedDt());
             assertThat(blog2.getBlogId(), is(blogs.get(4).getBlogId()));
-            blog2= blogService.findNextBlog(blogs.get(0).getBlogId(), blogs.get(0).getPublishedDt());
-            assertThat(blog2, nullValue());
+            blog2 = blogService.findNextBlog(blogs.get(0).getBlogId(), blogs.get(0).getPublishedDt());
+            if (blog2 != null) {
+                assertThat(blog2.getLatestContent().getTitle(), not("findList test"));
+            }
 
             // Find Previous
-            blog2= blogService.findPrevBlog(blogs.get(0).getBlogId(), blogs.get(0).getPublishedDt());
+            blog2 = blogService.findPrevBlog(blogs.get(0).getBlogId(), blogs.get(0).getPublishedDt());
             assertThat(blog2.getBlogId(), is(blogs.get(2).getBlogId()));
-            blog2= blogService.findPrevBlog(blogs.get(2).getBlogId(), blogs.get(2).getPublishedDt());
+            blog2 = blogService.findPrevBlog(blogs.get(2).getBlogId(), blogs.get(2).getPublishedDt());
             assertThat(blog2.getBlogId(), is(blogs.get(4).getBlogId()));
-            blog2= blogService.findPrevBlog(blogs.get(8).getBlogId(), blogs.get(8).getPublishedDt());
-            assertThat(blog2, nullValue());
+            blog2 = blogService.findPrevBlog(blogs.get(8).getBlogId(), blogs.get(8).getPublishedDt());
+            if (blog2 != null) {
+                assertThat(blog2.getLatestContent().getTitle(), not("findList test"));
+            }
         } finally {
             for (Blog blog : blogs) {
                 blogService.delete(blog.getBlogId());
@@ -249,6 +256,7 @@ public class BlogServiceTest extends SpringTestBase {
         return blog;
     }
 
+    @Ignore
     @Test
     public void createSamples() throws Exception {
         List<Blog> blogs = blogService.findLatest(new Paging(0, 1000)).getList();

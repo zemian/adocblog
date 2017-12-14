@@ -48,4 +48,11 @@ public class Blog {
     public void setPublishedDt(LocalDateTime publishedDt) {
         this.publishedDt = publishedDt;
     }
+
+    @Override
+    public String toString() {
+        return "Blog{" +
+                "blogId=" + blogId +
+                '}';
+    }
 }

@@ -31,4 +31,13 @@ public class BlogHistory {
     public void setContentVers(List<Content> contentVers) {
         this.contentVers = contentVers;
     }
+
+    @Override
+    public String toString() {
+        return "BlogHistory{" +
+                "blogId=" + blogId +
+                "publishedContentId=" + publishedContentId +
+                "contentVers.size()=" + (contentVers != null ? contentVers.size() : "null") +
+                '}';
+    }
 }

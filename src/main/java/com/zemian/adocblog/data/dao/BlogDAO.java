@@ -242,7 +242,7 @@ public class BlogDAO extends AbstractDAO {
      */
     public Blog findPrevBlog(Integer currentBlogId, LocalDateTime publishedDt) {
         String sql = SELECT_PUBLISHED_BLOGS_SQL + " AND blogs.published_dt > ? AND blogs.blog_id <> ?" +
-                " ORDER BY blogs.published_dt DESC LIMIT 1";
+                " ORDER BY blogs.published_dt ASC LIMIT 1";
         return findBlogByPublishDt(sql, publishedDt, currentBlogId);
     }
 
