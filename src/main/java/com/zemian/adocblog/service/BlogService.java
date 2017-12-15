@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 /**
- * A Doc that contains one or more Content data.
+ * A Blog is a Doc with type = BLOG.
  */
 @Service
 @Transactional
@@ -20,7 +20,7 @@ public class BlogService extends DocService {
     @Autowired
     private BlogDAO blogDAO;
 
-    // Override Search Methods that auto set doc type to BLOG
+    // == Override parent methods to auto set doc type to BLOG
     public PagingList<Doc> findLatest(Paging paging) {
         return docDAO.findLatest(paging, Doc.Type.BLOG);
     }
@@ -33,6 +33,7 @@ public class BlogService extends DocService {
         return docDAO.searchPublished(paging, Doc.Type.BLOG, searchTerms);
     }
 
+    // == Blog specific methods
     public Doc getPrevBlog(Integer currentBlogId, LocalDateTime publishedDt) {
         return blogDAO.getPrevBlog(currentBlogId, publishedDt);
     }

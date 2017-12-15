@@ -97,7 +97,7 @@ public class DocServiceTest extends SpringTestBase {
 
         try {
             // Get
-            Doc doc2 = docService.get(doc.getDocId());
+            Doc doc2 = docService.getByPath("/junit/test/test-doc");
             assertThat(doc2.getDocId(), greaterThanOrEqualTo(1));
             assertThat(doc2.getPath(), not("" + doc2.getDocId()));
             assertThat(doc2.getPath(), is("/junit/test/test-doc"));

@@ -10,30 +10,29 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>Edit Blog Post</h1>
+        <h1>New Page Post</h1>
 
         <#if actionErrorMessage??>
             <p class="alert alert-danger">${actionErrorMessage}</p>
         </#if>
 
-        <form class="form-horizontal" action="${app.contextPath}/admin/blog/edit" method="post">
+        <form class="form-horizontal" action="${app.contextPath}/admin/page/create" method="post">
             <div class="form-group">
                 <label for="title">Title:</label>
-                <input type="input" class="form-control" id="title" name="title" value="${blog.latestContent.title}">
+                <input type="input" class="form-control" id="title" name="title">
+            </div>
+            <div class="form-group">
+                <label for="path">Path:</label>
+                <input type="input" class="form-control" id="path" name="path">
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
-                <input type="input" class="form-control" id="format" name="format" value="${blog.latestContent.format}">
+                <input type="input" class="form-control" id="format" name="format" value="ADOC">
             </div>
             <div class="form-group">
-                <label for="reasonForEdit">Reason For Edit:</label>
-                <input type="input" class="form-control" id="reasonForEdit" name="reasonForEdit">
-            </div>
-            <div class="form-group">
-                <textarea id="contentText" name="contentText" rows="30" cols="100">${blogContentText}</textarea>
+                <textarea id="contentText" name="contentText" rows="30" cols="100"></textarea>
             </div>
             <button class="btn btn-success">Submit</button>
-            <input type="hidden" name="blogId" value="${blog.docId}">
         </form>
         <script>
             CodeMirror.fromTextArea(document.getElementById("contentText"), {

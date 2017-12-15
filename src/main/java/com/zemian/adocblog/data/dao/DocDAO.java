@@ -130,8 +130,7 @@ public class DocDAO extends AbstractDAO {
         createDocContents(doc.getDocId(), doc.getLatestContent().getContentId());
 
         // Done
-        LOG.info("Inserted docs.doc_id={}, path={} with contents.content_id={} result: {}",
-                doc.getDocId(), doc.getPath(), doc.getLatestContent().getContentId(), ret);
+        LOG.info("Inserted {} result: {}", doc, ret);
     }
 
     // == DAO Delete
@@ -173,6 +172,11 @@ public class DocDAO extends AbstractDAO {
     public Doc get(Integer id) {
         String sql = SELECT_LATEST_DOCS_SQL + " AND docs.doc_id = ?";
         return jdbc.queryForObject(sql, new DocRowMapper(), id);
+    }
+
+    public Doc getByPath(String path) {
+        String sql = SELECT_LATEST_DOCS_SQL + " AND docs.path = ?";
+        return jdbc.queryForObject(sql, new DocRowMapper(), path);
     }
 
     public DocHistory getDocHistory(Integer docId) {
@@ -219,8 +223,7 @@ public class DocDAO extends AbstractDAO {
                 doc.getType().name(),
                 doc.getLatestContent().getContentId(),
                 doc.getDocId());
-        LOG.info("Updated docId={}, path={} with contentId={}. result: {}",
-                doc.getDocId(), doc.getPath(), doc.getLatestContent().getContentId(), ret);
+        LOG.info("Updated {}. result: {}", doc, ret);
     }
 
     public void publish(Doc doc) {
@@ -232,7 +235,7 @@ public class DocDAO extends AbstractDAO {
                 " published_user = ?," +
                 " published_dt = ? WHERE doc_id = ?";
         int ret = jdbc.update(sql, contentId, username, doc.getPublishedDt(), docId);
-        LOG.info("Published docId={} with contentId={}. ret={}", docId, contentId, ret);
+        LOG.info("Published {}. ret={}", doc, ret);
     }
 
     public void unpublish(Integer docId) {

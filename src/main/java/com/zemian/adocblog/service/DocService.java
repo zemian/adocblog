@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 /**
  * A Doc that contains one or more Content data.
  */
@@ -25,6 +23,7 @@ public class DocService {
         docDAO.create(doc);
     }
 
+    // ==
     public void markForDelete(Integer docId, String reasonForDelete) {
         docDAO.markForDelete(docId, reasonForDelete);
     }
@@ -33,8 +32,13 @@ public class DocService {
         docDAO.delete(docId);
     }
 
+    // ==
     public Doc get(Integer id) {
         return docDAO.get(id);
+    }
+
+    public Doc getByPath(String path) {
+        return docDAO.getByPath(path);
     }
 
     public DocHistory getDocHistory(Integer docId) {
@@ -49,6 +53,7 @@ public class DocService {
         return docDAO.getTotalCount();
     }
 
+    // ==
     public void update(Doc doc) {
         doc.getLatestContent().setVersion(doc.getLatestContent().getVersion() + 1);
         docDAO.update(doc);
@@ -62,6 +67,7 @@ public class DocService {
         docDAO.unpublish(docId);
     }
 
+    // ==
     public PagingList<Doc> findLatest(Paging paging, Doc.Type type) {
         return docDAO.findLatest(paging, type);
     }

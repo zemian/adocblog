@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Content {
 
     public static enum Format {
-        ADOC, HTML;
+        ADOC, HTML, FTL;
     }
 
     private Integer contentId;

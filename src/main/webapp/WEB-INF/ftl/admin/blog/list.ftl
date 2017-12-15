@@ -21,7 +21,7 @@
         <table class="table">
             <tr>
                 <td>ID</td>
-                <td>Subject</td>
+                <td>Title</td>
                 <td>Date</td>
                 <td>LatestVer</td>
                 <td>PublishedVer</td>

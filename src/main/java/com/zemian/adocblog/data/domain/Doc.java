@@ -80,7 +80,10 @@ public class Doc {
         }
         return "Doc{" +
                 "docId=" + docId +
+                "type=" + type +
                 pathIdIfDiffFromId +
+                "latestContent.contentId=" + (latestContent != null ? latestContent.getContentId() : "null") +
+                "publishedContent.contentId=" + (publishedContent != null ? publishedContent.getContentId() : "null") +
                 '}';
     }
 }

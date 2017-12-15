@@ -18,7 +18,7 @@
 
         <form class="form-horizontal" action="${app.contextPath}/admin/blog/create" method="post">
             <div class="form-group">
-                <label for="title">Subject:</label>
+                <label for="title">Title:</label>
                 <input type="input" class="form-control" id="title" name="title">
             </div>
             <div class="form-group">
