@@ -38,7 +38,7 @@ The `adocblog` is a simple Java based web application for authors to publish and
 
 == Application Deployment
 
-The application is packaged into a `war` for distribution, and it should able to run in
+The application is packaged into a `target/adocblog.war` for distribution, and it should able to run in
 any Servlet container hosting environment. There is a default `app.properties`
 file that provide environment specific values. User should override this with they values in their
 host env.
@@ -54,19 +54,26 @@ After a success build, you may create an admin user like this:
 
 === Deployment
 
-If you are using Apache Tomcat server, then simply copy the
+If you are using Apache Tomcat server, then simply copy the `target/adocblog.war` file into
+`$CATALINA_BASE/webapps` and start your server.
 
 Once deployed, for example on a localhost, you may open browser to
 
-  http://localhost:8080/
+  http://localhost:8080/adocblog
 
 The application is very easy to use with self-guided navigation. When you run it on a Servlet server,
 your home page is the Public Users Viewing of blogger home. It should show latest posts with navigation
 menu to older posts. User should able to search all posts for specific interests.
 
-Majority part of the application functionalitie is at the Admin UI (eg: `http://localhost:8080/admin`).
-Throught this, logged in users (authors or admins) may Create, Edit, Publish and manage their blog posts
-or page documents.
+Majority part of the application functionaliies are at the Admin UI, and it can be access through:
+
+  http://localhost:8080/admin
+
+Using the user you created above, you may login to Create, Edit, Publish and manage their blog posts
+or page documents. If you login as "admin" users, then you may manage the site's `Page` content as well.
+Currently there is only one sensible `Page` that you may want to customize, and that's the `About` page. Simply
+create a new `Page` with Page = `themes/default/about.ftl` and you may use `WEB-INF/ftl/themes/default/about.ftl`
+as starter to customize your content.
 
 == Design and Implementation
 
