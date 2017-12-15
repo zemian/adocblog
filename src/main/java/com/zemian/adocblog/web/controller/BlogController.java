@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,23 +86,31 @@ public class BlogController {
      */
     @GetMapping("/blog/{blogId}")
     public ModelAndView blog(@PathVariable Integer blogId) {
-        Doc blog = blogService.get(blogId);
-        Content publishedContent = blog.getPublishedContent();
-        if (publishedContent == null) {
-            throw new AppException("Doc is not published yet.");
-        }
-        String ct = contentService.getContentHtml(publishedContent);
-        blog.getPublishedContent().setContentText(ct);
-
-        // Fetch previous and next blog data if there is any
-        Doc prevBlog = blogService.getPrevBlog(blog.getDocId(), blog.getPublishedDt());
-        Doc nextBlog = blogService.getNextBlog(blog.getDocId(), blog.getPublishedDt());
-
         ModelAndView result = new ModelAndView(getThemeViewName("/blog"));
-        result.addObject("blog", blog);
-        result.addObject("prevBlog", prevBlog);
-        result.addObject("nextBlog", nextBlog);
-        return result;
+        try {
+            Doc blog = blogService.get(blogId);
+            Content publishedContent = blog.getPublishedContent();
+            if (publishedContent == null) {
+                throw new AppException("Doc is not published yet.");
+            }
+            String ct = contentService.getContentHtml(publishedContent);
+            blog.getPublishedContent().setContentText(ct);
+
+            // Fetch previous and next blog data if there is any
+            Doc prevBlog = blogService.getPrevBlog(blog.getDocId(), blog.getPublishedDt());
+            Doc nextBlog = blogService.getNextBlog(blog.getDocId(), blog.getPublishedDt());
+
+            result.addObject("blog", blog);
+            result.addObject("prevBlog", prevBlog);
+            result.addObject("nextBlog", nextBlog);
+            return result;
+        } catch (EmptyResultDataAccessException e) {
+            result.addObject("errorMessage", "Blog not found.");
+            return result;
+        } catch (RuntimeException e) {
+            result.addObject("errorMessage", e.getMessage());
+            return result;
+        }
     }
 
     /*

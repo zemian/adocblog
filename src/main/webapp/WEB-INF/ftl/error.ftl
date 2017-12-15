@@ -11,11 +11,12 @@
         <h1>Oops! Something went wrong.</h1>
         <p>${Request['javax.servlet.error.status_code']} ${Request['javax.servlet.error.request_uri']}</p>
         <div class="alert alert-danger" role="alert">
-            <p>${Request['javax.servlet.error.message']!''}</p>
+            <p>${errorMessage!''}</p>
         </div>
-
+        <!--
         <h3>Exception</h3>
-        <pre>${exceptionStacktrace}</pre>
+        <pre>${exceptionStacktrace!''}</pre>
+        -->
     </div>
 <#include "/includes/footer.ftl">
 </div>

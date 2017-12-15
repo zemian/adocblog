@@ -7,6 +7,7 @@ import freemarker.cache.TemplateLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -28,7 +29,7 @@ public class PageTemplateLoader implements TemplateLoader {
         Doc page = null;
         try {
             page = pageService.getByPath(name);
-        } catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
             // It's okay to not find the page!
             LOG.trace("Page not found from DB: " + name);
         }
