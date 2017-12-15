@@ -3,6 +3,7 @@ package com.zemian.adocblog.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zemian.adocblog.service.DbPropsEnvironment;
 import com.zemian.adocblog.web.listener.UserSessionInterceptor;
+import com.zemian.adocblog.web.view.freemarker.PageTemplateLoader;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,10 +53,16 @@ public class AppWebConfig implements WebMvcConfigurer {
         registry.addViewController("/error").setViewName("error");
     }
 
-    @Bean("webFreeMarkerConfigurationFactoryBean")
-    @Primary
+    @Bean
+    public PageTemplateLoader pageTemplateLoader() {
+        PageTemplateLoader bean = new PageTemplateLoader();
+        return bean;
+    }
+
+    @Bean
     public FreeMarkerConfigurationFactoryBean freeMarkerConfigurationFactoryBean() {
         FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
+        bean.setPreTemplateLoaders(pageTemplateLoader());
         bean.setTemplateLoaderPath("/WEB-INF/ftl/");
         return bean;
     }

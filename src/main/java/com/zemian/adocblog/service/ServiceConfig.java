@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
 import javax.sql.DataSource;
 
@@ -34,17 +33,4 @@ public class ServiceConfig {
         Asciidoctor bean = Asciidoctor.Factory.create();
         return bean;
     }
-
-//    @Bean
-//    public PageTemplateLoader pageTemplateLoader() {
-//        PageTemplateLoader bean = new PageTemplateLoader();
-//        return bean;
-//    }
-//
-//    @Bean("serviceFreeMarkerConfigurationFactoryBean")
-//    public FreeMarkerConfigurationFactoryBean freeMarkerConfigurationFactoryBean() {
-//        FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
-//        bean.setPostTemplateLoaders(pageTemplateLoader());
-//        return bean;
-//    }
 }
