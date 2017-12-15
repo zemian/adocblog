@@ -35,6 +35,10 @@ public class SettingService {
         settingDAO.delete(settingId);
     }
 
+    public void update(Setting setting) {
+        settingDAO.update(setting);
+    }
+
     public List<Setting> findByCategory(String category) {
         return settingDAO.findByCategory(category);
     }
@@ -42,5 +46,13 @@ public class SettingService {
     public Map<String, Setting> getCategoryMap(String category) {
         return settingDAO.findByCategory(category).stream().collect(
                 Collectors.toMap(Setting::getName, Function.identity()));
+    }
+
+    public int count() {
+        return settingDAO.count();
+    }
+
+    public boolean exists(String category, String name) {
+        return settingDAO.exists(category, name);
     }
 }

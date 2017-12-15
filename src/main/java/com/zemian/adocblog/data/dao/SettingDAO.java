@@ -18,24 +18,20 @@ import java.util.List;
 
 @Repository
 public class SettingDAO extends AbstractDAO {
+
     private static Logger LOG = LoggerFactory.getLogger(SettingDAO.class);
 
-    @Autowired
-    private JdbcTemplate jdbc;
-
     public static class SettingRowMapper implements RowMapper<Setting> {
-
-        @Nullable
         @Override
         public Setting mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Setting a = new Setting();
-            a.setSettingId(rs.getInt("setting_id"));
-            a.setCategory(rs.getString("category"));
-            a.setName(rs.getString("name"));
-            a.setValue(rs.getString("value"));
-            a.setDescription(rs.getString("description"));
-            a.setType(Setting.Type.valueOf(rs.getString("type")));
-            return a;
+            Setting ret = new Setting();
+            ret.setSettingId(rs.getInt("setting_id"));
+            ret.setCategory(rs.getString("category"));
+            ret.setName(rs.getString("name"));
+            ret.setValue(rs.getString("value"));
+            ret.setDescription(rs.getString("description"));
+            ret.setType(Setting.Type.valueOf(rs.getString("type")));
+            return ret;
         }
     }
 
@@ -67,18 +63,20 @@ public class SettingDAO extends AbstractDAO {
     }
 
     public void delete(Integer settingId) {
-        int ret = jdbc.update("DELETE FROM settings WHERE setting_id = ?", settingId);
+        String sql = "DELETE FROM settings WHERE setting_id = ?";
+        int ret = jdbc.update(sql, settingId);
         LOG.debug("Deleted setting_id={} result={}", settingId, ret);
     }
 
     public void update(Setting setting) {
-        int ret = jdbc.update("UPDATE settings SET" +
+        String sql = "UPDATE settings SET" +
                 " category = ?," +
                 " name = ?," +
                 " value = ?," +
                 " type = ?," +
                 " description = ?" +
-                " WHERE setting_id = ?",
+                " WHERE setting_id = ?";
+        int ret = jdbc.update(sql,
                 setting.getCategory(),
                 setting.getName(),
                 setting.getValue(),
@@ -100,5 +98,16 @@ public class SettingDAO extends AbstractDAO {
         List<Setting> ret = jdbc.query(sql, new SettingRowMapper(), category);
         LOG.debug("Found {} Settings with category={}.", ret.size(), category);
         return ret;
+    }
+
+    public int count() {
+        String sql = "SELECT COUNT(*) FROM settings";
+        int totalCount = jdbc.queryForObject(sql, Number.class).intValue();
+        return totalCount;
+    }
+
+    public boolean exists(String category, String name) {
+        String sql = "SELECT EXISTS(SELECT name FROM settings WHERE category = ? AND name = ?)";
+        return jdbc.queryForObject(sql, Boolean.class, category, name);
     }
 }

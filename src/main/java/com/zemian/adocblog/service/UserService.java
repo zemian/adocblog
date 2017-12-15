@@ -1,8 +1,10 @@
 package com.zemian.adocblog.service;
 
 import com.zemian.adocblog.cipher.PasswordHasher;
-import com.zemian.adocblog.data.domain.User;
+import com.zemian.adocblog.data.dao.Paging;
+import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.dao.UserDAO;
+import com.zemian.adocblog.data.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,14 @@ public class UserService {
         LOG.debug("{} created", user);
     }
 
+    public void markForDelete(String username) {
+        userDAO.markForDelete(username);
+    }
+
+    public PagingList<User> findAll(Paging paging) {
+        return userDAO.findAll(paging);
+    }
+
     public boolean exists(String username) {
         return userDAO.exists(username);
     }
@@ -36,15 +46,11 @@ public class UserService {
         return userDAO.get(username);
     }
 
-    public void markForDelete(String username) {
+    public void delete(String username) {
         userDAO.markForDelete(username);
     }
 
     public boolean verifyPassword(String plainPassword, String hashedPassword) {
         return passwordHasher.verifyPassword(plainPassword, hashedPassword);
-    }
-
-    public void delete(String username) {
-        userDAO.delete(username);
     }
 }
