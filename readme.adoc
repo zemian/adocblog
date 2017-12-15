@@ -1,8 +1,29 @@
-= Asciidoc Blog
+= ADocBlog
 
 A blog application that supports asciidoc format.
 
 https://github.com/zemian/adocblog
+
+== Features
+
+The `adocblog` is a simple Java based web application for authors to publish and manage their
+`Blog` posts. The application also allows admins to edit and manage the site as `Page` document.
+
+.Blog managment
+* Write blog post using `asciidoc` or `html` format.
+* Store blog post in Postgres DB
+* Updated blog post should be versioned.
+* Allow specific content version to be published or unpublished.
+* Provide UI to manage posts as admin users.
+* Provide UI to view posts as public users.
+
+.Page (site) management
+* Write page doc using `FTL` (FreeMarker Template) format
+* Store page doc in Postgres DB
+* Updated page doc should be versioned.
+* Allow specific content version to be published or unpublished.
+* Provide UI to manage page docs as admin users.
+* Provide UI to view page docs as public users.
 
 == Requirements
 
@@ -24,7 +45,18 @@ host env.
 
 == User Guide
 
-Once deployed, for example on a localhost, you may open brower to
+=== Setup
+
+After a success build, you may create an admin user like this:
+
+  mvn exec:java -Dexec.mainClass=com.zemian.adocblog.app.CreateUser -Dexec.args="--adminUser=true admin admin123"
+
+
+=== Deployment
+
+If you are using Apache Tomcat server, then simply copy the
+
+Once deployed, for example on a localhost, you may open browser to
 
   http://localhost:8080/
 
@@ -33,21 +65,10 @@ your home page is the Public Users Viewing of blogger home. It should show lates
 menu to older posts. User should able to search all posts for specific interests.
 
 Majority part of the application functionalitie is at the Admin UI (eg: `http://localhost:8080/admin`).
-Throught this, logged in users (authors) may Create, Edit, Publish and manage their blog posts.
+Throught this, logged in users (authors or admins) may Create, Edit, Publish and manage their blog posts
+or page documents.
 
 == Design and Implementation
-
-The `adocblog` is a Java based web application for blogger and writer to publish and manage their
-content or posts.
-
-The blog app should have the following goals:
-
-* Write posts using `asciidoc` format. 
-* Store posts in Postgres DB
-* Posts should be versioned.
-* Allow selected version to be published.
-* Provide UI to manage posts.
-* Provide UI to view posts.
 
 Development goals:
 
@@ -68,39 +89,21 @@ The following are choosen to implement the application.
 
 === Data and Domain Model Design
 
-* Content should be stored as independent table
-* Separate Content into metadata and contentText
-* Blog is extention of Content
-* Track content versions and publication at blog level
-* Public viewers (users) should able to see, browse and search blog posts
-* Admin users (blog author) is allowed to login and manage blogs
-* App should have a settings table to allow customization at runtime
-* App should provide some system inforation as application health monitoring
+* A Settings table to allow configuration of application.
+* A Users table to track blog authors and site admins.
+* A general Doc and Content are defined to store content.
+* A Doc may have one or more "versioned" Content.
+* A Page is an Doc.
+* A Blog is an extension of Doc with additional meta data.
+* A Doc always has a associated "latest" Content version.
+* A Doc may have an optional "published" Content version.
 
-=== About Content/Blog Management
+=== Blog and Page Content Management
 
 App should allow user to write blog post in ASCIIDOC format. So the content is stored in `ADOC` format.
-Other `HTML` and `TXT` formats should also be supported for easy import and migration of older blog posts.
+We also allow `HTML` format to be store as well.
 
-At this point, versioning of content is simply anther copy of the full content text. Every update
-to the post will resulted in a new version. And the app allows you to publish with specific
+At this point, versionning of a content is simply anther copy of the full content text. Every update
+to the content will resulted in a new version. And the app allows you to publish with specific
 version, while you may edit a new version as draft.
 
-=== UI Links and Navigation
-
-Public Viewer UI
-
-* /blogs => List of published blogs for public viewers (User's landing page)
-* /blog/[id] => View single blog post
-
-Admin UI
-
-* /admin/blog/list => List of all blogs for author to manage (edit/create) them (Admin's landing page)
-* /admin/blog/preview/[id] => Preview a blog post
-* /admin/blog/create => Create new blog post
-* /admin/blog/edit/[id] => Edit a blog post
-* /admin/blog/publish/[id]/[contentId] => Publish a blog post with a specific version
-
-=== Layer and Package layout
-
-The app is divided into Data, Service and Web layer that separated by Java packages.
