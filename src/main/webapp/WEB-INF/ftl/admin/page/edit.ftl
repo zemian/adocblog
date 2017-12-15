@@ -23,7 +23,12 @@
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
-                <input type="input" class="form-control" id="format" name="format" value="${page.latestContent.format}">
+                <div class="form-group">
+                    <label for="format">Format:</label>
+                    <select class="form-control" id="format" name="format">
+                        <option selected="true" value="${page.latestContent.format}">${page.latestContent.format}</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label for="path">Path:</label>

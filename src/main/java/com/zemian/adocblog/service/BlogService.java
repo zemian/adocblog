@@ -4,6 +4,9 @@ import com.zemian.adocblog.data.dao.BlogDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.domain.Doc;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +19,6 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 public class BlogService extends DocService {
-
     @Autowired
     private BlogDAO blogDAO;
 
@@ -29,8 +31,17 @@ public class BlogService extends DocService {
         return docDAO.findPublished(paging, Doc.Type.BLOG);
     }
 
+    /*
+    We simplify searchTerms - only words and we join with OR operator.
+     */
     public PagingList<Doc> searchPublished(Paging paging, String searchTerms) {
-        return docDAO.searchPublished(paging, Doc.Type.BLOG, searchTerms);
+        String[] terms = searchTerms.split("\\s+");
+        String fullTextQuery = StringUtils.join(terms, "|");
+        try {
+            return docDAO.searchPublished(paging, Doc.Type.BLOG, fullTextQuery);
+        } catch (RuntimeException e) {
+            return new PagingList<>();
+        }
     }
 
     // == Blog specific methods

@@ -27,7 +27,9 @@
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
-                <input type="input" class="form-control" id="format" name="format" value="ADOC">
+                <select class="form-control" id="format" name="format">
+                    <option selected="true" value="FTL">FTL</option>
+                </select>
             </div>
             <div class="form-group">
                 <textarea id="contentText" name="contentText" rows="30" cols="100"></textarea>

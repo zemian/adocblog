@@ -108,7 +108,7 @@ public class BlogController {
     Search of published blogs using POSTGRES search ts_query terms
      */
     @RequestMapping(value = "/search", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView blogs(Paging paging, HttpServletRequest req) {
+    public ModelAndView search(Paging paging, HttpServletRequest req) {
         String searchTerms = req.getParameter("searchTerms");
         PagingList<Doc> blogs = blogService.searchPublished(paging, searchTerms);
         ModelAndView result = new ModelAndView(getThemeViewName("/search"));

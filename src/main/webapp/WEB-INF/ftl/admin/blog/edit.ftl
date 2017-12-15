@@ -23,7 +23,10 @@
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
-                <input type="input" class="form-control" id="format" name="format" value="${blog.latestContent.format}">
+                <select class="form-control" id="format" name="format">
+                    <option <#if blog.latestContent.format == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
+                    <option <#if blog.latestContent.format == 'HTML'>selected="true"</#if>value="HTML">HTML</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="reasonForEdit">Reason For Edit:</label>

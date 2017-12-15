@@ -7,7 +7,6 @@ import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
 import com.zemian.adocblog.data.support.DataUtils;
-import com.zemian.adocblog.service.AsciidocService;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.service.PageService;
 import com.zemian.adocblog.web.listener.UserSession;
@@ -39,9 +38,6 @@ public class AdminPageController {
 
     @Autowired
     private ContentService contentService;
-
-    @Autowired
-    private AsciidocService asciidocService;
 
     @GetMapping("/admin/page/list")
     public ModelAndView list(Paging paging) {
@@ -171,8 +167,7 @@ public class AdminPageController {
     @GetMapping("/admin/page/preview/{pageId}/{contentId}")
     public ModelAndView preview(@PathVariable Integer pageId, @PathVariable Integer contentId) {
         Doc page = pageService.get(pageId);
-        String ct = contentService.getContentText(contentId);
-        String pageContentText = asciidocService.toHtml(ct);
+        String pageContentText = contentService.getContentHtml(page.getLatestContent());
 
         ModelAndView result = new ModelAndView("/admin/page/preview");
         result.addObject("page", page);
