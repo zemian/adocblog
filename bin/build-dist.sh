@@ -59,6 +59,7 @@ mkdir -p $PACKAGE_DIR
 mkdir -p $PACKAGE_DIR/bin
 cp -vf $PROJ_HOME/bin/server.sh $PACKAGE_DIR/bin
 cp -vf $PROJ_HOME/bin/create-user.sh $PACKAGE_DIR/bin
+cp -vf $PROJ_HOME/bin/init-db.sh $PACKAGE_DIR/bin
 
 # Copy config files
 mkdir -p $PACKAGE_DIR/config/adocblog
