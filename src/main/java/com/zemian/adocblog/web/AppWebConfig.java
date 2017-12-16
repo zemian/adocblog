@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -37,16 +38,6 @@ public class AppWebConfig implements WebMvcConfigurer {
     @Autowired
     private freemarker.template.Configuration freemarkerConfig;
 
-    @Autowired
-    private Environment env;
-
-    @PostConstruct
-    public void initFreemarkerConfig() throws Exception {
-        freemarkerConfig.setNumberFormat("computer");
-        freemarkerConfig.setObjectWrapper(new Java8ObjectWrapper(freemarker.template.Configuration.VERSION_2_3_27));
-        freemarkerConfig.setSharedVariable("blogDateFormat", env.getProperty("app.web.blogDateFormat"));
-    }
-
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/error").setViewName("error");
@@ -66,6 +57,7 @@ public class AppWebConfig implements WebMvcConfigurer {
         FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
         bean.setPreTemplateLoaders(pageTemplateLoader());
         bean.setTemplateLoaderPath("/WEB-INF/ftl/");
+        bean.setConfigLocation(new ClassPathResource("/adocblog/freemarker.properties"));
         return bean;
     }
 

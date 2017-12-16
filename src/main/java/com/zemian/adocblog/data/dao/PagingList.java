@@ -1,5 +1,6 @@
 package com.zemian.adocblog.data.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PagingList<T> {
@@ -8,6 +9,9 @@ public class PagingList<T> {
     private Paging paging; // Store input paging if there is any
 
     public PagingList() {
+        this.list = new ArrayList<>();
+        this.isMore = false;
+        this.paging = new Paging(0, 0);
     }
 
     public PagingList(List<T> list, boolean isMore, Paging paging) {

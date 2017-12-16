@@ -9,6 +9,5 @@
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
-    <logger name="com.zemian.adocblog" level="INFO"/>
-    <!--<logger name="org.springframework.web" level="DEBUG"/>-->
+    <logger name="com.zemian.adocblog" level="DEBUG"/>
 </configuration>

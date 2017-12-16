@@ -10,7 +10,7 @@
     <div class="app-content">
         <#if blog??>
             <h1>${blog.publishedContent.title}</h1>
-            <p>${blog.publishedDt.format(blogDateFormat)} by ${blog.publishedContent.authorFullName}</p>
+            <p>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by ${blog.publishedContent.authorFullName}</p>
             <div class="blog-post">
             ${blog.publishedContent.contentText}
             </div>
@@ -24,7 +24,7 @@
                 <#list blogs.list as blog>
                     <li>
                         <a href="${app.contextPath}/blog/${blog.docId}">${blog.publishedContent.title}</a>
-                        ${blog.publishedDt.format(blogDateFormat)} by ${blog.publishedContent.authorFullName}
+                        ${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by ${blog.publishedContent.authorFullName}
                     </li>
                 </#list>
                 <#if blogs.more>

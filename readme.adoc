@@ -113,8 +113,8 @@ The following are choosen to implement the application.
 
 === Blog and Page Content Management
 
-App should allow user to write blog post in ASCIIDOC format. So the content is stored in `ADOC` format.
-We also allow `HTML` format to be store as well.
+App should allow user to write blog post in http://asciidoctor.org/[AsciiDoc] format. So the content is
+stored in `ADOC` format. We also allow `HTML` format to be store as well.
 
 At this point, versionning of a content is simply anther copy of the full content text. Every update
 to the content will resulted in a new version. And the app allows you to publish with specific

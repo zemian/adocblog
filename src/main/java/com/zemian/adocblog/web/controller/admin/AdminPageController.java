@@ -1,5 +1,6 @@
 package com.zemian.adocblog.web.controller.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
@@ -7,23 +8,33 @@ import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
 import com.zemian.adocblog.data.support.DataUtils;
-import com.zemian.adocblog.service.AsciidocService;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.service.PageService;
 import com.zemian.adocblog.web.listener.UserSession;
 import com.zemian.adocblog.web.listener.UserSessionUtils;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Admin - Page Management UI
@@ -41,7 +52,13 @@ public class AdminPageController {
     private ContentService contentService;
 
     @Autowired
-    private AsciidocService asciidocService;
+    private Configuration freeMarkerConfig;
+
+    @Autowired
+    private ServletContext servletContext;
+
+    @Autowired
+    private ObjectMapper jsonMapper;
 
     @GetMapping("/admin/page/list")
     public ModelAndView list(Paging paging) {
@@ -168,15 +185,58 @@ public class AdminPageController {
         return list(DEFAULT_PAGING);
     }
 
+    /*
+     * A plain Page (FTL) rendering directly to the http response object for rendering. This can
+     * be used as a simple "preview" feature when editing `Page` document.
+     *
+     * We automatically provide dataModel to the template for request, session and servletContext attributes.
+     * If you need more data to preview the template Page, you may use "dataPath" parameter to specify
+     * a test data Page (JSON) with the path equals to same name.
+     */
     @GetMapping("/admin/page/preview/{pageId}/{contentId}")
-    public ModelAndView preview(@PathVariable Integer pageId, @PathVariable Integer contentId) {
+    public void preview(@PathVariable Integer pageId,
+                        @PathVariable Integer contentId,
+                        @RequestParam(value = "dataPath", defaultValue = "") String dataPath,
+                        HttpServletRequest req,
+                        HttpServletResponse resp) throws Exception {
         Doc page = pageService.get(pageId);
         String ct = contentService.getContentText(contentId);
-        String pageContentText = asciidocService.toHtml(ct);
 
-        ModelAndView result = new ModelAndView("/admin/page/preview");
-        result.addObject("page", page);
-        result.addObject("pageContentText", pageContentText);
-        return result;
+        HashMap dataModel = new HashMap<>();
+
+        // Get req attr
+        Enumeration<String> names = req.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            dataModel.put(name, req.getAttribute(name));
+        }
+
+        // Get session attr
+        HttpSession session = req.getSession();
+        names = session.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            dataModel.put(name, session.getAttribute(name));
+        }
+
+        // Get context attr
+        names = servletContext.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            dataModel.put(name, servletContext.getAttribute(name));
+        }
+
+        // Check for addition data from dataPath param
+        if (StringUtils.isNotEmpty(dataPath)) {
+            Doc dataDoc = pageService.getByPath(dataPath);
+            if (dataDoc.getLatestContent().getFormat() == Content.Format.JSON) {
+                String dataCt = contentService.getContentText(dataDoc.getLatestContent().getContentId());
+                Map<String, Object> jsonData = jsonMapper.readValue(dataCt, Map.class);
+                dataModel.putAll(jsonData);
+            }
+        }
+
+        Template template = new Template(page.getPath(), ct, freeMarkerConfig);
+        template.process(dataModel, resp.getWriter());
     }
 }

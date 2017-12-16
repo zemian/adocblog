@@ -27,6 +27,7 @@ public class WebInit {
         config.put("app.web.name", env.getProperty("app.web.name"));
         config.put("app.web.title", env.getProperty("app.web.title"));
         config.put("app.web.blogTitle", env.getProperty("app.web.blogTitle"));
+        config.put("app.web.blogDateFormat", env.getProperty("app.web.blogDateFormat"));
 
         // Setup global context app variables for easy access in view layer.
         Map<String, Object> app = new HashMap<>();

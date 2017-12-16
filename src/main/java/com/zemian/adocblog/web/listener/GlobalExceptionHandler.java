@@ -12,6 +12,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception ex) throws Exception {
         ModelAndView ret = new ModelAndView("/error");
+        // A cleaner version of the error message
+        ret.addObject("errorMessage", ExceptionUtils.getRootCauseMessage(ex));
+        // A full stacktrace for debug purpose
         ret.addObject("exceptionStacktrace", ExceptionUtils.getStackTrace(ex));
         return ret;
     }
