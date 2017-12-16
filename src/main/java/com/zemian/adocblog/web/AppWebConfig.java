@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
@@ -51,6 +50,9 @@ public class AppWebConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/error").setViewName("error");
+
+        // Map admin related urls
+        registry.addViewController("/admin/restricted").setViewName("/admin/restricted");
     }
 
     @Bean
@@ -91,14 +93,30 @@ public class AppWebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Protect all admin URLs
+        // Protect all admin URLs - for any logged in users
         registry.addInterceptor(userLoginInterceptor()).addPathPatterns("/admin/**");
+
+        // Protect admin users only URLs - for 'admin=true' users
+        registry.addInterceptor(adminUserLoginInterceptor()).
+                addPathPatterns("/admin/page/**",
+                        "/admin/settings/**",
+                        "/admin/system-info**");
     }
 
-    @Bean
+    @Bean("userLoginInterceptor")
     public UserSessionInterceptor userLoginInterceptor() {
         UserSessionInterceptor bean =  new UserSessionInterceptor();
         bean.setLoginUrl("/login");
+        bean.setCheckIsUserAdmin(false);
+        return bean;
+    }
+
+    @Bean("adminUserLoginInterceptor")
+    public UserSessionInterceptor adminUserLoginInterceptor() {
+        UserSessionInterceptor bean =  new UserSessionInterceptor();
+        bean.setLoginUrl("/login");
+        bean.setCheckIsUserAdmin(true);
+        bean.setAdminRestrictedUrl("/admin/restricted");
         return bean;
     }
 

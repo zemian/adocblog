@@ -6,10 +6,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UserSessionInterceptor extends HandlerInterceptorAdapter {
+    private boolean checkIsUserAdmin;
     private String loginUrl;
+    private String adminRestrictedUrl;
 
     public void setLoginUrl(String loginUrl) {
         this.loginUrl = loginUrl;
+    }
+
+    public void setCheckIsUserAdmin(boolean checkIsUserAdmin) {
+        this.checkIsUserAdmin = checkIsUserAdmin;
+    }
+
+    public void setAdminRestrictedUrl(String notAdminUrl) {
+        this.adminRestrictedUrl = notAdminUrl;
     }
 
     @Override
@@ -21,7 +31,14 @@ public class UserSessionInterceptor extends HandlerInterceptorAdapter {
             String contextPath = request.getContextPath();
             response.sendRedirect(contextPath + loginUrl);
             return false;
+        } else {
+            if (checkIsUserAdmin && !(userSession.getUser().isAdmin())) {
+                String contextPath = request.getContextPath();
+                response.sendRedirect(contextPath + adminRestrictedUrl);
+                return false;
+            }
         }
+
         return true;
     }
 }
