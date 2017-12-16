@@ -12,7 +12,7 @@
             <p class="alert alert-danger">${errorMessage}</p>
         <#else>
             <h1>${blog.publishedContent.title}</h1>
-            <p>${blog.publishedDt.format(blogDateFormat)} by ${blog.publishedContent.authorFullName}</p>
+            <p>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by ${blog.publishedContent.authorFullName}</p>
             <div class="blog-post">
                 ${blog.publishedContent.contentText}
             </div>

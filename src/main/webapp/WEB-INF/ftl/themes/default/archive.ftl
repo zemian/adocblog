@@ -18,7 +18,7 @@
             <#list blogs.list as blog>
                 <tr>
                     <td><a href="${app.contextPath}/blog/${blog.docId}">${blog.latestContent.title}</a></td>
-                    <td>${blog.publishedDt.format(blogDateFormat)}</td>
+                    <td>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])}</td>
                     <td>${blog.publishedContent.authorFullName}</td>
                 </tr>
             </#list>
