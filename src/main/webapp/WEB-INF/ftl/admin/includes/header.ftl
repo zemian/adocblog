@@ -8,6 +8,7 @@
                 <li id="list"><a href="${app.contextPath}/admin/blog/list">Blogs</a></li>
                 <#if userSession.user.admin>
                     <li id="list"><a href="${app.contextPath}/admin/page/list">Pages</a></li>
+                    <li id="users"><a href="${app.contextPath}/admin/users">Users</a></li>
                     <li id="settings"><a href="${app.contextPath}/admin/settings">Settings</a></li>
                     <li id="system-info"><a href="${app.contextPath}/admin/system-info">SystemInfo</a></li>
                 </#if>
