@@ -43,19 +43,19 @@ public class CreateUser {
 
     public void run(String[] args) {
         if (args.length < 2) {
-            throw new AppException("Wrong args: [--adminUser=true] <username> <password>");
+            throw new AppException("Wrong args:" +
+                    " java [-DadminUser=true] [-DfirstName=NAME] [-DlastName=NAME] <username> <password>");
         }
 
-        // Look for --adminUser=true option
         String username = args[0];
         String password = args[1];
-        boolean isAdmin = false;
 
-        if (args.length == 3 && equals(args[0].startsWith("--adminUser"))) {
-            isAdmin = true;
-            username = args[1];
-            password = args[2];
-        }
+        boolean isAdmin = Boolean.parseBoolean(System.getProperty("adminUser", "false"));
+
+        // Use two sys props to set full name since script is having hard time set sys props with space!
+        String firstName = System.getProperty("firstName", "User ");
+        String lastName = System.getProperty("lastName", username);
+        String fullName = firstName + " " + lastName;
 
         LOG.info("Create new user: {}", username);
 
@@ -63,6 +63,7 @@ public class CreateUser {
         user.setUsername(username);
         user.setPassword(password);
         user.setAdmin(isAdmin);
+        user.setFullName(fullName);
         userService.create(user);
 
         LOG.info("{} has been created successfully.", user);

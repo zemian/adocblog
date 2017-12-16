@@ -174,6 +174,7 @@
 		<profile>
 			<id>package-zip</id>
 			<build>
+				<!-- Move apps.properties files into a config directory
 				<resources>
 					<resource>
 						<directory>src/main/resources</directory>
@@ -181,9 +182,10 @@
 							<exclude>adocblog/app*.properties</exclude>
 						</excludes>
 					</resource>
-				</resources>
+				</resources> -->
+
 				<plugins>
-					<!-- Create a skinny war, exclude all jars except our own app code -->
+					<!-- Create a skinny war, exclude all jars except our own app code
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
 						<version>3.2.0</version>
@@ -193,6 +195,7 @@
 							</packagingExcludes>
 						</configuration>
 					</plugin>
+					-->
 
 					<!-- Include webapp-runner during packaging -->
 					<plugin>

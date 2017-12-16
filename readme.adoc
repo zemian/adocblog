@@ -49,7 +49,8 @@ host env.
 
 After a success build, you may create an admin user like this:
 
-  mvn exec:java -Dexec.mainClass=com.zemian.adocblog.app.CreateUser -Dexec.args="--adminUser=true admin admin123"
+  mvn exec:java -DadminUser=true -DfirstName=First -DlastName=Last \
+  -Dexec.mainClass=com.zemian.adocblog.app.CreateUser -Dexec.args="admin admin123"
 
 
 === Deployment

@@ -55,18 +55,27 @@ fi
 echo "Creating new release package $PACKAGE_DIR"
 mkdir -p $PACKAGE_DIR
 
+# Copy bin files
+mkdir -p $PACKAGE_DIR/bin
+cp -vf $PROJ_HOME/bin/server.sh $PACKAGE_DIR/bin
+cp -vf $PROJ_HOME/bin/create-user.sh $PACKAGE_DIR/bin
+
 # Copy config files
-mkdir -p $PACKAGE_DIR/config
-cp -rvf $PROJ_HOME/src/main/resources/adocblog/app*.properties $PACKAGE_DIR/config
+mkdir -p $PACKAGE_DIR/config/adocblog
+#cp -rvf $PROJ_HOME/src/main/resources/adocblog/app*.properties $PACKAGE_DIR/config/adocblog
 
 # Copy war
-FINAL_PKG_FILE=$PACKAGE_DIR/adocblog-$VERSION.war
-cp -vf $PROJ_HOME/target/adocblog.war $FINAL_PKG_FILE
+cp -vf $PROJ_HOME/target/adocblog.war $PACKAGE_DIR/adocblog.war
 
-# Copy dependency
+# Copy extra dependency
 mkdir -p $PACKAGE_DIR/lib
 cp -vf $PROJ_HOME/target/dependency/* $PACKAGE_DIR/lib
-cp -vf $PROJ_HOME/target/adocblog/WEB-INF/lib/* $PACKAGE_DIR/lib
+
+# This is only needed to support skinny-war packaging
+#cp -vf $PROJ_HOME/target/adocblog/WEB-INF/lib/* $PACKAGE_DIR/lib
+
+# Copy app jar itself for utility purpose
+#cp -vf $PROJ_HOME/target/adocblog/WEB-INF/adocblog*.jar $PACKAGE_DIR/lib
 
 # Zip it up
 zip -r $PACKAGE_DIR.zip $PACKAGE_DIR
