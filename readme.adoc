@@ -4,6 +4,7 @@ A blog application that supports asciidoc format.
 
 https://github.com/zemian/adocblog
 
+
 == Features
 
 The `adocblog` is a simple Java based web application for authors to publish and manage their
@@ -25,6 +26,7 @@ The `adocblog` is a simple Java based web application for authors to publish and
 * Provide UI to manage page docs as admin users.
 * Provide UI to view page docs as public users.
 
+
 == Requirements
 
 * JDK8
@@ -32,35 +34,47 @@ The `adocblog` is a simple Java based web application for authors to publish and
 * Tomcat8
 * PostgreSQL9
 
+
 == Build
 
-  mvn package
+To build a local `target/adocblog.war` package:
 
-== Application Deployment
+  mvn package -PskipTests
 
-The application is packaged into a `target/adocblog.war` for distribution, and it should able to run in
-any Servlet container hosting environment. There is a default `app.properties`
-file that provide environment specific values. User should override this with they values in their
-host env.
+To build a distribution `target/release-package/adocblog-<version>.zip` package:
+
+  bin/build-dist.sh
+
 
 == User Guide
 
-=== Setup
+Get a release distribution package and unzip it:
 
-After a success build, you may create an admin user like this:
+  cd $HOME/apps
+  unzip adocblog-<version>.zip
+  cd adocblog-<version>
 
-  mvn exec:java -DadminUser=true -DfirstName=First -DlastName=Last \
-  -Dexec.mainClass=com.zemian.adocblog.app.CreateUser -Dexec.args="admin admin123"
+
+=== Setup Database
+
+Initialize a new PostgreSQL database.
+
+  bin/init-db.sh
 
 
-=== Deployment
+=== Add application users
 
-If you are using Apache Tomcat server, then simply copy the `target/adocblog.war` file into
-`$CATALINA_BASE/webapps` and start your server.
+  bin/create-user.sh
+
+
+=== Setup the bundled server
+
+  bin/server.sh --port 8080
+
 
 Once deployed, for example on a localhost, you may open browser to
 
-  http://localhost:8080/adocblog
+  http://localhost:8080/
 
 The application is very easy to use with self-guided navigation. When you run it on a Servlet server,
 your home page is the Public Users Viewing of blogger home. It should show latest posts with navigation
@@ -80,6 +94,15 @@ NOTE: The Path of a `Page` is important, and they are being mapped in the applic
 it, it will not find your version of the page.
 
 NOTE: You must publish the `Page` before it can be viewed by the application!
+
+
+=== Setup remote host deployment
+
+The `adocblog.war` can be run in any Servlet container hosting environment. There is a
+default `app.properties` file that provide environment specific values. User should override
+this with they own values. You can pre-package a host specific Spring profile and activate
+to override these values as well.
+
 
 == Design and Implementation
 
