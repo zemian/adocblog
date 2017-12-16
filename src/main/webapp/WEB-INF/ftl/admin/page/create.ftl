@@ -29,6 +29,10 @@
                 <label for="format">Format:</label>
                 <select class="form-control" id="format" name="format">
                     <option selected="true" value="FTL">FTL</option>
+                    <option value="ADOC">ADOC</option>
+                    <option value="HTML">HTML</option>
+                    <option value="TEXT">TEXT</option>
+                    <option value="JSON">JSON</option>
                 </select>
             </div>
             <div class="form-group">

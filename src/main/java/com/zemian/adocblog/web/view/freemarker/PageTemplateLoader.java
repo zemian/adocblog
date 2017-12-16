@@ -1,5 +1,6 @@
 package com.zemian.adocblog.web.view.freemarker;
 
+import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.service.PageService;

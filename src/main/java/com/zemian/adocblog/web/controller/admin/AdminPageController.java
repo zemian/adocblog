@@ -1,5 +1,6 @@
 package com.zemian.adocblog.web.controller.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletContext;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Admin - Page Management UI
@@ -53,6 +56,9 @@ public class AdminPageController {
 
     @Autowired
     private ServletContext servletContext;
+
+    @Autowired
+    private ObjectMapper jsonMapper;
 
     @GetMapping("/admin/page/list")
     public ModelAndView list(Paging paging) {
@@ -184,9 +190,13 @@ public class AdminPageController {
      * be used as a simple "preview" feature when editing `Page` document.
      *
      * We automatically provide dataModel to the template for request, session and servletContext attributes.
+     * If you need more data to preview the template Page, you may use "dataPath" parameter to specify
+     * a test data Page (JSON) with the path equals to same name.
      */
     @GetMapping("/admin/page/preview/{pageId}/{contentId}")
-    public void preview(@PathVariable Integer pageId, @PathVariable Integer contentId,
+    public void preview(@PathVariable Integer pageId,
+                        @PathVariable Integer contentId,
+                        @RequestParam(value = "dataPath", defaultValue = "") String dataPath,
                         HttpServletRequest req,
                         HttpServletResponse resp) throws Exception {
         Doc page = pageService.get(pageId);
@@ -214,6 +224,16 @@ public class AdminPageController {
         while (names.hasMoreElements()) {
             String name = names.nextElement();
             dataModel.put(name, servletContext.getAttribute(name));
+        }
+
+        // Check for addition data from dataPath param
+        if (StringUtils.isNotEmpty(dataPath)) {
+            Doc dataDoc = pageService.getByPath(dataPath);
+            if (dataDoc.getLatestContent().getFormat() == Content.Format.JSON) {
+                String dataCt = contentService.getContentText(dataDoc.getLatestContent().getContentId());
+                Map<String, Object> jsonData = jsonMapper.readValue(dataCt, Map.class);
+                dataModel.putAll(jsonData);
+            }
         }
 
         Template template = new Template(page.getPath(), ct, freeMarkerConfig);

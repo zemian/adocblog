@@ -210,10 +210,15 @@ public class DocDAO extends AbstractDAO {
 
     // == DAO Updates
     public void update(Doc doc) {
-        contentDAO.create(doc.getLatestContent());
-        createDocContents(doc.getDocId(), doc.getLatestContent().getContentId());
+        // Check to see if content text has changed first
+        String oldCt = contentDAO.getContentText(doc.getLatestContent().getContentId());
+        if (!oldCt.equals(doc.getLatestContent().getContentText())) {
+            contentDAO.create(doc.getLatestContent());
+            createDocContents(doc.getDocId(), doc.getLatestContent().getContentId());
+            LOG.debug("Updating doc with new content text in contentId={}", doc.getLatestContent().getContentId());
+        }
 
-        final String sql = "UPDATE docs SET" +
+        String sql = "UPDATE docs SET" +
                 " path = ?," +
                 " type = ?," +
                 " latest_content_id = ?" +
@@ -223,7 +228,8 @@ public class DocDAO extends AbstractDAO {
                 doc.getType().name(),
                 doc.getLatestContent().getContentId(),
                 doc.getDocId());
-        LOG.info("Updated {}. result: {}", doc, ret);
+
+        LOG.info("Updated {} with new content text. result: {}", doc, ret);
     }
 
     public void publish(Doc doc) {

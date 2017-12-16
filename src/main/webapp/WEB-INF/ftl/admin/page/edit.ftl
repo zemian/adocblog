@@ -26,7 +26,11 @@
                 <div class="form-group">
                     <label for="format">Format:</label>
                     <select class="form-control" id="format" name="format">
-                        <option selected="true" value="${page.latestContent.format}">${page.latestContent.format}</option>
+                        <option <#if page.latestContent.format == 'FTL'>selected="true"</#if> value="ADOC">FTL</option>
+                        <option <#if page.latestContent.format == 'ADOC'>selected="true"</#if>value="HTML">ADOC</option>
+                        <option <#if page.latestContent.format == 'HTML'>selected="true"</#if>value="HTML">HTML</option>
+                        <option <#if page.latestContent.format == 'TEXT'>selected="true"</#if>value="HTML">TEXT</option>
+                        <option <#if page.latestContent.format == 'JSON'>selected="true"</#if>value="HTML">JSON</option>
                     </select>
                 </div>
             </div>
