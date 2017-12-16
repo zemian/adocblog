@@ -36,7 +36,7 @@
                     <td>${content.format}</td>
                     <td>${(content.contentId == pageHistory.publishedContentId!(0))?string('Yes', 'No')}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/page/preview/${pageHistory.docId}/${content.contentId}">Preview</a> |
+                        <a href="${app.contextPath}/admin/page/preview/${page.docId}/${content.contentId}">Preview</a> |
                         <a href="${app.contextPath}/admin/page/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
                 </tr>

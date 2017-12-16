@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Public User Viewing of the Doc App. It will return view based on a themeName.
+ * Public User Viewing of the Blog App. It will return a view based on a themeName.
  */
 @Controller
 public class BlogController {
@@ -91,7 +91,7 @@ public class BlogController {
             Doc blog = blogService.get(blogId);
             Content publishedContent = blog.getPublishedContent();
             if (publishedContent == null) {
-                throw new AppException("Doc is not published yet.");
+                throw new AppException("Blog is not published yet.");
             }
             String ct = contentService.getContentHtml(publishedContent);
             blog.getPublishedContent().setContentText(ct);

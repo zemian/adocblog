@@ -11,18 +11,27 @@ import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.service.PageService;
 import com.zemian.adocblog.web.listener.UserSession;
 import com.zemian.adocblog.web.listener.UserSessionUtils;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Enumeration;
+import java.util.HashMap;
 
 /**
  * Admin - Page Management UI
@@ -38,6 +47,12 @@ public class AdminPageController {
 
     @Autowired
     private ContentService contentService;
+
+    @Autowired
+    private Configuration freeMarkerConfig;
+
+    @Autowired
+    private ServletContext servletContext;
 
     @GetMapping("/admin/page/list")
     public ModelAndView list(Paging paging) {
@@ -164,14 +179,44 @@ public class AdminPageController {
         return list(DEFAULT_PAGING);
     }
 
+    /*
+     * A plain Page (FTL) rendering directly to the http response object for rendering. This can
+     * be used as a simple "preview" feature when editing `Page` document.
+     *
+     * We automatically provide dataModel to the template for request, session and servletContext attributes.
+     */
     @GetMapping("/admin/page/preview/{pageId}/{contentId}")
-    public ModelAndView preview(@PathVariable Integer pageId, @PathVariable Integer contentId) {
+    public void preview(@PathVariable Integer pageId, @PathVariable Integer contentId,
+                        HttpServletRequest req,
+                        HttpServletResponse resp) throws Exception {
         Doc page = pageService.get(pageId);
-        String pageContentText = contentService.getContentHtml(page.getLatestContent());
+        String ct = contentService.getContentText(contentId);
 
-        ModelAndView result = new ModelAndView("/admin/page/preview");
-        result.addObject("page", page);
-        result.addObject("pageContentText", pageContentText);
-        return result;
+        HashMap dataModel = new HashMap<>();
+
+        // Get req attr
+        Enumeration<String> names = req.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            dataModel.put(name, req.getAttribute(name));
+        }
+
+        // Get session attr
+        HttpSession session = req.getSession();
+        names = session.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            dataModel.put(name, session.getAttribute(name));
+        }
+
+        // Get context attr
+        names = servletContext.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            dataModel.put(name, servletContext.getAttribute(name));
+        }
+
+        Template template = new Template(page.getPath(), ct, freeMarkerConfig);
+        template.process(dataModel, resp.getWriter());
     }
 }

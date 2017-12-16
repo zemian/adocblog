@@ -157,8 +157,11 @@ public class AdminBlogController {
 
     @GetMapping("/admin/blog/preview/{blogId}/{contentId}")
     public ModelAndView preview(@PathVariable Integer blogId, @PathVariable Integer contentId) {
+        // This get will serve as validation.
         Doc blog = blogService.get(blogId);
-        String blogContentText = contentService.getContentHtml(blog.getLatestContent());
+
+        Content content = contentService.get(contentId);
+        String blogContentText = contentService.getContentHtml(content);
 
         ModelAndView result = new ModelAndView("/admin/blog/preview");
         result.addObject("blog", blog);
