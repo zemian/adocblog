@@ -6,8 +6,8 @@
 #  - Generate all dependency jars in lib directory
 #  - Move all app*.properties files into config directory
 #
-# Usage: package.sh [GIT_TAG_NAME]
-#   The optional argument GIT_TAG_NAME is default to 'HEAD'.
+# Usage: build-dist.sh [GIT_TAG_NAME]
+#     GIT_TAG_NAME - an optional argument to specify Git tag name. Default to current branch 'HEAD'.
 #
 # Env variable options:
 #   VERSION Define explicit package version label. Default to first 7 chars of sha1 id of git commit.

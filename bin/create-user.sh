@@ -2,7 +2,8 @@
 #
 # Utility to create user for application.
 #
-# Usage: JAVA_OPTS="-DadminUser=true -DfirstName=First -DlastName=Last" create-user.sh <username> <password>
+# Usage:
+#   JAVA_OPTS="-DadminUser=true -DfirstName=First -DlastName=Last" create-user.sh <username> <password>
 #
 
 # OS specific support.	$var _must_ be set to either true or false.

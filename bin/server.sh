@@ -3,6 +3,9 @@
 # Start a standalone servlet server using webapp-runner.jar
 #   https://github.com/jsimone/webapp-runner
 #
+# Usage:
+#  server.sh --port 8080
+#
 
 # OS specific support.	$var _must_ be set to either true or false.
 IS_CYGWIN=false

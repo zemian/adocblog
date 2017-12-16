@@ -2,6 +2,9 @@
 #
 # Setup and initialize a new PostgreSQL DB named `adocblog` and a DB userid=`adocblog`.
 #
+# Usage:
+#  init-db.sh
+#
 
 # Create a new DB user and a database
 SCRIPT_DIR=$(cd `dirname $0` && pwd)
