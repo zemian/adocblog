@@ -55,6 +55,10 @@ fi
 echo "Creating new release package $PACKAGE_DIR"
 mkdir -p $PACKAGE_DIR
 
+# Copy root files
+cp -vf $PROJ_HOME/readme.adoc $PACKAGE_DIR
+cp -vf $PROJ_HOME/LICENSE $PACKAGE_DIR
+
 # Copy bin files
 mkdir -p $PACKAGE_DIR/bin
 cp -vf $PROJ_HOME/bin/server.sh $PACKAGE_DIR/bin

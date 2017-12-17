@@ -4,48 +4,6 @@ A blog application that supports asciidoc format.
 
 https://github.com/zemian/adocblog
 
-
-== Features
-
-The `adocblog` is a simple Java based web application for authors to publish and manage their
-`Blog` posts. The application also allows admins to edit and manage the site as `Page` document.
-
-.Blog managment
-* Write blog post using `asciidoc` or `html` format.
-* Store blog post in Postgres DB
-* Updated blog post should be versioned.
-* Allow specific content version to be published or unpublished.
-* Provide UI to manage posts as admin users.
-* Provide UI to view posts as public users.
-
-.Page (site) management
-* Write page doc using `FTL` (FreeMarker Template) format
-* Store page doc in Postgres DB
-* Updated page doc should be versioned.
-* Allow specific content version to be published or unpublished.
-* Provide UI to manage page docs as admin users.
-* Provide UI to view page docs as public users.
-
-
-== Requirements
-
-* JDK8
-* Maven3
-* Tomcat8
-* PostgreSQL9
-
-
-== Build
-
-To build a local `target/adocblog.war` package:
-
-  mvn package -PskipTests
-
-To build a distribution `target/release-package/adocblog-<version>.zip` package:
-
-  bin/build-dist.sh
-
-
 == User Guide
 
 Get a release distribution package and unzip it:
@@ -64,7 +22,7 @@ Initialize a new PostgreSQL database.
 
 === Add application users
 
-  bin/create-user.sh
+  JAVA_OPTS="-DadminUser=true -DfirstName=First -DlastName=Last" bin/create-user.sh admin admin123
 
 
 === Setup the bundled server
@@ -94,52 +52,3 @@ NOTE: The Path of a `Page` is important, and they are being mapped in the applic
 it, it will not find your version of the page.
 
 NOTE: You must publish the `Page` before it can be viewed by the application!
-
-
-=== Setup remote host deployment
-
-The `adocblog.war` can be run in any Servlet container hosting environment. There is a
-default `app.properties` file that provide environment specific values. User should override
-this with they own values. You can pre-package a host specific Spring profile and activate
-to override these values as well.
-
-
-== Design and Implementation
-
-Development goals:
-
-* Keep things simple, small and practical.
-* Provide sensible default values.
-* Allow extention if possible, but do not add complexity.
-
-=== Technology Stack and Libraries
-
-The following are choosen to implement the application.
-
-* PostgreSQL 9.6
-* JDK 8
-* Spring 5 (MVC + JDBC modules only, no ORM for simplicity)
-* Servlet 3.1
-* FreeMarker Template 2.3
-* Bootstrap + jQuery and webjars
-* AsciidoctorJ
-
-=== Data and Domain Model Design
-
-* A Settings table to allow configuration of application.
-* A Users table to track blog authors and site admins.
-* A general Doc and Content are defined to store content.
-* A Doc may have one or more "versioned" Content.
-* A Page is an Doc.
-* A Blog is an extension of Doc with additional meta data.
-* A Doc always has a associated "latest" Content version.
-* A Doc may have an optional "published" Content version.
-
-=== Blog and Page Content Management
-
-App should allow user to write blog post in http://asciidoctor.org/[AsciiDoc] format. So the content is
-stored in `ADOC` format. We also allow `HTML` format to be store as well.
-
-At this point, versionning of a content is simply anther copy of the full content text. Every update
-to the content will resulted in a new version. And the app allows you to publish with specific
-version, while you may edit a new version as draft.
