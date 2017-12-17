@@ -9,12 +9,7 @@
 # the one from pom.xml will not work!
 #
 # Usage:
-#   build-release.sh [GIT_TAG_NAME]
-#     GIT_TAG_NAME - an optional argument to specify Git tag name. Default to current branch 'HEAD'.
-#
-# Usage:
-#   SKIP_DIST=1 build-release.sh
-#     Perform mvn release only and not run build-dist.sh
+#   build-release.sh
 #
 
 # OS specific support.	$var _must_ be set to either true or false.
@@ -33,7 +28,3 @@ echo "Using project directory: $PROJ_HOME"
 mvn release:prepare -DpushChanges=false -Darguments="-DskipTests" || exit 1
 mvn release:perform -Dgoals=install -Darguments="-DskipTests" -DconnectionUrl=scm:git:file://$PROJ_HOME || exit 1
 #git push && git push --tags || exit 1
-
-if [[ -ne $SKIP_DIST ]]; then
-    $PROJ_HOME/bin/build-dist.sh "$@"
-fi
