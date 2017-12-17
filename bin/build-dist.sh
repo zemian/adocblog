@@ -61,8 +61,10 @@ cp -vf $PROJ_HOME/LICENSE $PACKAGE_DIR
 
 # Copy bin files
 mkdir -p $PACKAGE_DIR/bin
-cp -vf $PROJ_HOME/bin/server.sh $PACKAGE_DIR/bin
+cp -vf $PROJ_HOME/bin/setenv.sh $PACKAGE_DIR/bin
+cp -vf $PROJ_HOME/bin/version.sh $PACKAGE_DIR/bin
 cp -vf $PROJ_HOME/bin/create-user.sh $PACKAGE_DIR/bin
+cp -vf $PROJ_HOME/bin/server.sh $PACKAGE_DIR/bin
 cp -vf $PROJ_HOME/bin/init-db.sh $PACKAGE_DIR/bin
 
 # Copy config files

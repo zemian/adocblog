@@ -9,7 +9,7 @@
 # the one from pom.xml will not work!
 #
 # Usage:
-#   build-release.sh
+#   release.sh
 #
 
 # Ensure script exit upon any error from any commands

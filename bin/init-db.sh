@@ -6,6 +6,9 @@
 #  init-db.sh
 #
 
+# Ensure script exit upon any error from any commands
+set -e
+
 # Create a new DB user and a database
 SCRIPT_DIR=$(cd `dirname $0` && pwd)
 psql -U postgres -f $SCRIPT_DIR/../db/create-db.sql
