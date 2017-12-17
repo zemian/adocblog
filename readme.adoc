@@ -22,7 +22,7 @@ Initialize a new PostgreSQL database.
 
 === Add application users
 
-  JAVA_OPTS="-DadminUser=true -DfirstName=First -DlastName=Last" bin/create-user.sh admin admin123
+  bin/create-user.sh --adminUser=true --fullName="Mr. Admin" admin admin123
 
 
 === Setup the bundled server

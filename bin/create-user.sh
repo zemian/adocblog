@@ -3,7 +3,7 @@
 # Utility to create user for application.
 #
 # Usage:
-#   JAVA_OPTS="-DadminUser=true -DfirstName=First -DlastName=Last" create-user.sh <username> <password>
+#   create-user.sh [--adminUser=true] [--fullName=NAME] <username> <password>
 #
 
 # Ensure script exit upon any error from any commands

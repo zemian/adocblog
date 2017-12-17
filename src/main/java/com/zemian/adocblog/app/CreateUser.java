@@ -2,6 +2,7 @@ package com.zemian.adocblog.app;
 
 import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.CommonConfig;
+import com.zemian.adocblog.app.support.CmdOpts;
 import com.zemian.adocblog.data.domain.User;
 import com.zemian.adocblog.service.ServiceConfig;
 import com.zemian.adocblog.service.UserService;
@@ -42,22 +43,20 @@ public class CreateUser {
     private UserService userService;
 
     public void run(String[] args) {
-        if (args.length < 2) {
+        CmdOpts opts = new CmdOpts(args);
+
+        if (opts.getArgsSize() < 2) {
             throw new AppException("Wrong args:" +
-                    " java [-DadminUser=true] [-DfirstName=NAME] [-DlastName=NAME] <username> <password>");
+                    " java [--adminUser=true] [--fullName=NAME] <username> <password>");
         }
 
-        String username = args[0];
-        String password = args[1];
+        String username = opts.getArg(0);
+        String password = opts.getArg(1);
 
-        boolean isAdmin = Boolean.parseBoolean(System.getProperty("adminUser", "false"));
+        boolean isAdmin = opts.getBooleanOpt("adminUser", false);
+        String fullName = opts.getOpt("fullName", "User " + username);
 
-        // Use two sys props to set full name since script is having hard time set sys props with space!
-        String firstName = System.getProperty("firstName", "User ");
-        String lastName = System.getProperty("lastName", username);
-        String fullName = firstName + " " + lastName;
-
-        LOG.info("Create new user: {}", username);
+        LOG.debug("Creating new user: {}", username);
 
         User user = new User();
         user.setUsername(username);
