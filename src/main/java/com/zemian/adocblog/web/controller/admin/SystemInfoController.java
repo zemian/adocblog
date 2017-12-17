@@ -1,5 +1,6 @@
 package com.zemian.adocblog.web.controller.admin;
 
+import com.zemian.adocblog.support.AppUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +31,12 @@ public class SystemInfoController {
                     sysInfo.put(name, sysProps.getProperty(name));
                 }
             }
+        }
+
+        // Add release info
+        Properties relProps = AppUtils.getReleaseProps();
+        for (String name : relProps.stringPropertyNames()) {
+            sysInfo.put("adocblog." + name, relProps.getProperty(name));
         }
 
         ModelAndView result = new ModelAndView("/admin/system-info");

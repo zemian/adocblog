@@ -1,8 +1,11 @@
 <footer class="footer">
     <div class="footer-copyright">
         <div class="container-fluid">
-            This application is brought to you by
-            <a href="https://github.com/zemian/adocblog">ADocBlog</a> | ${app.config['app.env']}
+        This application is brought to you by
+        ${app.config['app.name']} |
+        ${app.release['version']} |
+        ${app.release['build-date']} |
+        ${app.config['app.env']}
         </div>
     </div>
 </footer>
