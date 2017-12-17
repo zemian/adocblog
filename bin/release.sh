@@ -12,6 +12,9 @@
 #   build-release.sh
 #
 
+# Ensure script exit upon any error from any commands
+set -e
+
 # OS specific support.	$var _must_ be set to either true or false.
 IS_CYGWIN=false
 case "`uname`" in
@@ -20,11 +23,11 @@ esac
 
 SCRIPT_DIR=$(cd `dirname $0` && pwd)
 PROJ_HOME=$SCRIPT_DIR/..
-if [[ $IS_CYGWIN ]]; then
+if [[ "$IS_CYGWIN" = true ]]; then
     PROJ_HOME=`cygpath -wm $PROJ_HOME`
 fi
 
 echo "Using project directory: $PROJ_HOME"
-mvn release:prepare -DpushChanges=false -Darguments="-DskipTests" || exit 1
-mvn release:perform -Dgoals=install -Darguments="-DskipTests" -DconnectionUrl=scm:git:file://$PROJ_HOME || exit 1
-#git push && git push --tags || exit 1
+mvn release:prepare -DpushChanges=false -Darguments="-DskipTests"
+mvn release:perform -Dgoals=install -Darguments="-DskipTests" -DconnectionUrl=scm:git:file://$PROJ_HOME
+#git push && git push --tags
