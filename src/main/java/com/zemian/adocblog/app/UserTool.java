@@ -49,7 +49,7 @@ public class UserTool {
                 "Usage: (update new user)\n" +
                 "  UserTool --update [--adminUser=true] [--fullName=NAME] <username> <password>\n" +
                 "\n" +
-                "Usage: (print encrypted password only)\n" +
+                "Usage: (print hashed password only)\n" +
                 "  UserTool --hashPassword=PASSWORD\n" +
                 "\n");
     }
@@ -60,7 +60,7 @@ public class UserTool {
         if(opts.hasOpt("help")) {
             printHelp();
             System.exit(0);
-        } else if(opts.hasOpt("encryptPassword")) {
+        } else if(opts.hasOpt("hashPassword")) {
             String password = opts.getOpt("encryptPassword");
             String encryptedPassword = PasswordHasher.createHash(password);
             System.out.println("Password: " + encryptedPassword);
