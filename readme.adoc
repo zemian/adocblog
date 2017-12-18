@@ -22,7 +22,7 @@ Initialize a new PostgreSQL database.
 
 === Add application users
 
-  bin/create-user.sh --adminUser=true --fullName="Mr. Admin" admin admin123
+  bin/user-tool.sh --create --adminUser=true --fullName="Mr. Admin" admin admin123
 
 
 === Setup the bundled server

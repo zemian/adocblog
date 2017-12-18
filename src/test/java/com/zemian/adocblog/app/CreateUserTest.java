@@ -20,7 +20,7 @@ public class CreateUserTest extends SpringTestBase {
     @Test
     public void createNormalUser() {
         String username = "CreateUserTest";
-        CreateUser.main(new String[]{username, "test"});
+        UserTool.main(new String[]{username, "test"});
         User user = userDAO.get(username);
         try {
             assertThat(user.getUsername(), is(username));
@@ -35,7 +35,7 @@ public class CreateUserTest extends SpringTestBase {
     @Test
     public void createNormalUserWithFullName() {
         String username = "CreateUserTest";
-        CreateUser.main(new String[]{"--fullName=Zemian Deng", username, "test"});
+        UserTool.main(new String[]{"--fullName=Zemian Deng", username, "test"});
         User user = userDAO.get(username);
         try {
             assertThat(user.getUsername(), is(username));
@@ -50,7 +50,7 @@ public class CreateUserTest extends SpringTestBase {
     @Test
     public void createAdminUserWithFullName() {
         String username = "CreateUserTest";
-        CreateUser.main(new String[]{"--adminUser=true", "--fullName=Zemian Deng", username, "test"});
+        UserTool.main(new String[]{"--adminUser=true", "--fullName=Zemian Deng", username, "test"});
         User user = userDAO.get(username);
         try {
             assertThat(user.getUsername(), is(username));

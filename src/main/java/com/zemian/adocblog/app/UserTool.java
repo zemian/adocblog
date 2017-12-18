@@ -20,11 +20,11 @@ import org.springframework.context.annotation.Import;
  *
  * You may use "--adminUser=true" option to create admin users.
  */
-public class CreateUser {
+public class UserTool {
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext spring = new AnnotationConfigApplicationContext(Config.class);
-        CreateUser main = spring.getBean(CreateUser.class);
+        UserTool main = spring.getBean(UserTool.class);
         main.run(args);
         spring.close();
     }
@@ -33,12 +33,12 @@ public class CreateUser {
     @Import({ServiceConfig.class, CommonConfig.class})
     public static class Config {
         @Bean
-        public CreateUser createUser() {
-            return new CreateUser();
+        public UserTool createUser() {
+            return new UserTool();
         }
     }
 
-    private static Logger LOG = LoggerFactory.getLogger(CreateUser.class);
+    private static Logger LOG = LoggerFactory.getLogger(UserTool.class);
 
     @Autowired
     private UserService userService;
@@ -50,28 +50,33 @@ public class CreateUser {
         System.out.println("User management tool.\n" +
                 "\n" +
                 "Usage: (create new user)\n" +
-                "  java [--adminUser=true] [--fullName=NAME] <username> <password>\n" +
+                "  UserTool --create [--adminUser=true] [--fullName=NAME] <username> <password>\n" +
                 "\n" +
                 "Usage: (update new user)\n" +
-                "  java --update [--adminUser=true] [--fullName=NAME] <username> <password>\n" +
+                "  UserTool --update [--adminUser=true] [--fullName=NAME] <username> <password>\n" +
                 "\n" +
                 "Usage: (print encrypted password only)\n" +
-                        "  java --encryptPassword=PASSWORD\n"
-        );
+                "  UserTool --encryptPassword=PASSWORD\n" +
+                "\n");
     }
 
     public void run(String[] args) {
         CmdOpts opts = new CmdOpts(args);
 
-        if(opts.hasOpt("encryptPassword")) {
+        if(opts.hasOpt("help")) {
+            printHelp();
+            System.exit(0);
+        } else if(opts.hasOpt("encryptPassword")) {
             String password = opts.getOpt("encryptPassword");
             String encryptedPassword = crypto.encrypt(password);
             System.out.println("Password: " + encryptedPassword);
             System.exit(0);
-        } else {
+        } else if (opts.hasOpt("create") ||
+                opts.hasOpt("update")) {
             if (opts.getArgsSize() < 2) {
-                throw new AppException("Wrong args:" +
-                        " ");
+                System.out.println("ERROR: Invalid arguments.");
+                printHelp();
+                System.exit(1);
             }
 
             String username = opts.getArg(0);
@@ -103,6 +108,10 @@ public class CreateUser {
 
                 LOG.info("{} (fullName={}) has been created successfully.", user, fullName);
             }
+        } else {
+            System.out.println("ERROR: Invalid options.");
+            printHelp();
+            System.exit(1);
         }
     }
 }
