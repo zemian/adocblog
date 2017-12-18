@@ -10,6 +10,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  */
 @Configuration
 @PropertySource("classpath:/adocblog/app.properties")
+@PropertySource(value = "classpath:/adocblog/${adocblog.env}/app.properties", ignoreResourceNotFound = true)
 public class CommonConfig {
     /* This special bean needs to be static to resolve `${variable}` in @Value injection. */
     @Bean

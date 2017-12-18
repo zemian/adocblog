@@ -111,6 +111,13 @@
 			<version>3.3.7-1</version>
 		</dependency>
 
+		<!-- DB Pool -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>8.5.14</version>
+		</dependency>
+
 		<!-- DB -->
 		<dependency>
 			<groupId>org.springframework</groupId>

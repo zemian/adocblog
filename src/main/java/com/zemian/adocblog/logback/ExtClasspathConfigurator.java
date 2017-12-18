@@ -4,11 +4,9 @@ import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.Configurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.support.AppUtils;
-
-import java.net.URL;
+import org.springframework.core.io.Resource;
 
 /**
  * Logback will automatically look for a classpath:/META-INF/services/ch.qos.logback.classic.spi.Configurator
@@ -23,27 +21,19 @@ public class ExtClasspathConfigurator extends JoranConfigurator implements Confi
 
     @Override
     public void configure(LoggerContext loggerContext) {
-        // Get logback.xml from the application's namespace in classpath. If an env name is given, it will be
-        // added as suffix with "_" as separator, else it will be empty string.
+        // Get logback.xml from the application's namespace in classpath.
         //
         // Example: (default)
-        //  classpath:/<appname>/logback.xml
-        //
-        // Example: -D<appname>.env=qa
-        //   classpath:/<appname>/logback-qa.xml
-        String env = System.getProperty(AppUtils.APP_NAME + ".env");
-        String resource = AppUtils.APP_NAME + ((env != null) ? "_" + env : "") +"/logback.xml";
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL url = cl.getResource(resource);
-
+        //  classpath:/<appname>/logback.xml Or classpath:/<appname>/<env>/logback-qa.xml.
+        Resource resource = AppUtils.getEnvResource("logback.xml");
         try {
-            if (url != null) {
-                doConfigure(url);
+            if (resource != null) {
+                doConfigure(resource.getURL());
             } else {
                 new BasicConfigurator().configure(loggerContext);
             }
-        } catch (JoranException e) {
-            throw new AppException("Failed to load logback config " + url, e);
+        } catch (Exception e) {
+            throw new AppException("Failed to load logback config " + resource.getFilename(), e);
         }
     }
 }
