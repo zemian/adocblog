@@ -1,19 +1,15 @@
 package com.zemian.adocblog.app;
 
-import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.CommonConfig;
 import com.zemian.adocblog.app.support.CmdOpts;
-import com.zemian.adocblog.cipher.Crypto;
+import com.zemian.adocblog.cipher.PasswordHasher;
 import com.zemian.adocblog.data.domain.User;
 import com.zemian.adocblog.service.ServiceConfig;
 import com.zemian.adocblog.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 /**
  * Create a user (author) for the application to manage content.
@@ -41,10 +37,8 @@ public class UserTool {
     private static Logger LOG = LoggerFactory.getLogger(UserTool.class);
 
     @Autowired
+    @Lazy
     private UserService userService;
-
-    @Autowired
-    private Crypto crypto;
 
     private void printHelp() {
         System.out.println("User management tool.\n" +
@@ -56,7 +50,7 @@ public class UserTool {
                 "  UserTool --update [--adminUser=true] [--fullName=NAME] <username> <password>\n" +
                 "\n" +
                 "Usage: (print encrypted password only)\n" +
-                "  UserTool --encryptPassword=PASSWORD\n" +
+                "  UserTool --hashPassword=PASSWORD\n" +
                 "\n");
     }
 
@@ -68,7 +62,7 @@ public class UserTool {
             System.exit(0);
         } else if(opts.hasOpt("encryptPassword")) {
             String password = opts.getOpt("encryptPassword");
-            String encryptedPassword = crypto.encrypt(password);
+            String encryptedPassword = PasswordHasher.createHash(password);
             System.out.println("Password: " + encryptedPassword);
             System.exit(0);
         } else if (opts.hasOpt("create") ||
