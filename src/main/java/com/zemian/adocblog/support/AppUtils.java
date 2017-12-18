@@ -61,19 +61,18 @@ public class AppUtils {
 
     public static Properties getResourceProperties(String propsResourceName) {
         Resource resource = getEnvResource(propsResourceName);
+        if (resource == null) {
+            throw new AppException("Properties env resource " + propsResourceName + " not found.");
+        }
         return getResourceProperties(resource);
     }
 
     public static Properties getResourceProperties(Resource resource) {
         Properties ret = new Properties();
-        if (resource == null) {
-            throw new AppException("Properties resource " + resource.getFilename() + " not found.");
-        }
-
         try (InputStream inputStream = resource.getInputStream()) {
             ret.load(inputStream);
         } catch (IOException e) {
-            throw new AppException("Failed to load properties resource " + resource.getFilename(), e);
+            throw new AppException("Failed to load properties env resource " + resource.getFilename(), e);
         }
 
         return ret;
