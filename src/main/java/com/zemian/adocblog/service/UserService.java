@@ -30,6 +30,10 @@ public class UserService {
         LOG.debug("{} created", user);
     }
 
+    public void update(User user) {
+        userDAO.update(user);
+    }
+
     public void markForDelete(String username) {
         userDAO.markForDelete(username);
     }

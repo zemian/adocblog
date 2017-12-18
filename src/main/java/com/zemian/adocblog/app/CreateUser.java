@@ -56,15 +56,28 @@ public class CreateUser {
         boolean isAdmin = opts.getBooleanOpt("adminUser", false);
         String fullName = opts.getOpt("fullName", "User " + username);
 
-        LOG.debug("Creating new user: {}", username);
+        if(opts.hasOpt("update")) {
+            LOG.debug("Updating existing user: {}", username);
 
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setAdmin(isAdmin);
-        user.setFullName(fullName);
-        userService.create(user);
+            User user = userService.get(username);
+            user.setPassword(password);
+            user.setAdmin(isAdmin);
+            user.setFullName(fullName);
 
-        LOG.info("{} has been created successfully.", user);
+            userService.update(user);
+
+            LOG.info("{} (fullName={}) has been updated successfully.", user, fullName);
+        } else {
+            LOG.debug("Creating new user: {}", username);
+
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(password);
+            user.setAdmin(isAdmin);
+            user.setFullName(fullName);
+            userService.create(user);
+
+            LOG.info("{} (fullName={}) has been created successfully.", user, fullName);
+        }
     }
 }

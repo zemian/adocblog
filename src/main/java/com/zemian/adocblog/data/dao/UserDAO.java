@@ -37,6 +37,16 @@ public class UserDAO extends AbstractDAO {
         LOG.info("Insert user {} result: {}", user.getUsername(), ret);
     }
 
+    public void update(User user) {
+        String sql = "UPDATE users SET password = ?, full_name = ?, is_admin = ? WHERE username = ?";
+        int ret = jdbc.update(sql,
+                user.getPassword(),
+                user.getFullName(),
+                user.isAdmin(),
+                user.getUsername());
+        LOG.info("Updated user {} result: {}", user.getUsername(), ret);
+    }
+
     public User get(String username) {
         String sql = "SELECT * FROM users WHERE username = ? AND deleted = FALSE";
         return jdbc.queryForObject(sql, new UserRowMapper(), username);
