@@ -23,16 +23,13 @@
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
-                <div class="form-group">
-                    <label for="format">Format:</label>
-                    <select class="form-control" id="format" name="format">
-                        <option <#if page.latestContent.format == 'FTL'>selected="true"</#if> value="ADOC">FTL</option>
-                        <option <#if page.latestContent.format == 'ADOC'>selected="true"</#if>value="HTML">ADOC</option>
-                        <option <#if page.latestContent.format == 'HTML'>selected="true"</#if>value="HTML">HTML</option>
-                        <option <#if page.latestContent.format == 'TEXT'>selected="true"</#if>value="HTML">TEXT</option>
-                        <option <#if page.latestContent.format == 'JSON'>selected="true"</#if>value="HTML">JSON</option>
-                    </select>
-                </div>
+                <select class="form-control" id="format" name="format">
+                    <option <#if page.latestContent.format == 'FTL'>selected="true"</#if> value="FTL">FTL</option>
+                    <option <#if page.latestContent.format == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
+                    <option <#if page.latestContent.format == 'HTML'>selected="true"</#if> value="HTML">HTML</option>
+                    <option <#if page.latestContent.format == 'TEXT'>selected="true"</#if> value="TEXT">TEXT</option>
+                    <option <#if page.latestContent.format == 'JSON'>selected="true"</#if> value="JSON">JSON</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="path">Path:</label>
@@ -43,7 +40,7 @@
                 <input type="input" class="form-control" id="reasonForEdit" name="reasonForEdit">
             </div>
             <div class="form-group">
-                <textarea id="contentText" name="contentText" rows="30" cols="100">${pageContentText}</textarea>
+                <textarea id="contentText" name="contentText" rows="30" cols="100">${page.latestContent.contentText}</textarea>
             </div>
             <button class="btn btn-success">Submit</button>
             <input type="hidden" name="pageId" value="${page.docId}">

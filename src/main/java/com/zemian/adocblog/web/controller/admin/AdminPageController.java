@@ -67,6 +67,10 @@ public class AdminPageController {
         result.addObject("pages", pages);
         return result;
     }
+    
+    public ModelAndView list() {
+        return list(DEFAULT_PAGING);
+    }
 
     @GetMapping("/admin/page/publish/{pageId}/{contentId}")
     public ModelAndView publish(@PathVariable Integer pageId, @PathVariable Integer contentId,
@@ -86,7 +90,7 @@ public class AdminPageController {
                 pageId, contentId, userSession.getUser().getUsername());
 
         req.setAttribute("actionSuccessMessage", "Doc " + pageId + " with contentId " + contentId + " has published successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/page/unpublish/{pageId}")
@@ -102,7 +106,7 @@ public class AdminPageController {
                 pageId, contentId, userSession.getUser().getUsername());
 
         req.setAttribute("actionSuccessMessage", "Doc " + pageId + " with contentId " + contentId + " has unpublished successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/page/delete/{pageId}")
@@ -111,7 +115,7 @@ public class AdminPageController {
         pageService.markForDelete(pageId, reasonForDelete);
 
         req.setAttribute("actionSuccessMessage", "Doc " + pageId + " has deleted successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/page/history/{pageId}")
@@ -137,6 +141,18 @@ public class AdminPageController {
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
 
+        if (StringUtils.isEmpty(title) ||
+                StringUtils.isEmpty(path) ||
+                StringUtils.isEmpty(contentText)) {
+            req.setAttribute("title", title);
+            req.setAttribute("contentText", contentText);
+            req.setAttribute("format", format);
+            req.setAttribute("path", path);
+
+            req.setAttribute("actionErrorMessage", "Invalid inputs");
+            return create();
+        }
+
         Doc page = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.valueOf(format),
                 userSession.getUser().getUsername(), title, contentText);
         if (StringUtils.isNotEmpty(path)) {
@@ -144,16 +160,20 @@ public class AdminPageController {
         }
         pageService.create(page);
         req.setAttribute("actionSuccessMessage", "Doc " + page.getDocId() + " created successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/page/edit/{pageId}")
     public ModelAndView edit(@PathVariable Integer pageId) {
         Doc page = pageService.get(pageId);
         String ct = contentService.getContentText(page.getLatestContent().getContentId());
+        page.getLatestContent().setContentText(ct);
+        return edit(page);
+    }
+
+    private ModelAndView edit(Doc page) {
         ModelAndView result = new ModelAndView("/admin/page/edit");
         result.addObject("page", page);
-        result.addObject("pageContentText", ct);
         return result;
     }
 
@@ -169,20 +189,30 @@ public class AdminPageController {
         String reasonForEdit = req.getParameter("reasonForEdit");
 
         Doc page = pageService.get(pageId);
-        if (StringUtils.isNotEmpty(path)) {
-            page.setPath(path);
-        }
         page.getLatestContent().setTitle(title);
         page.getLatestContent().setCreatedUser(userSession.getUser().getUsername());
         page.getLatestContent().setCreatedDt(LocalDateTime.now());
         page.getLatestContent().setFormat(Content.Format.valueOf(format));
         page.getLatestContent().setReasonForEdit(reasonForEdit);
         page.getLatestContent().setContentText(contentText);
+
+        if (StringUtils.isEmpty(title) ||
+                StringUtils.isEmpty(path) ||
+                StringUtils.isEmpty(contentText)) {
+            req.setAttribute("page", page);
+            req.setAttribute("actionErrorMessage", "Invalid inputs");
+            return edit(page);
+        }
+
+
+        if (StringUtils.isNotEmpty(path)) {
+            page.setPath(path);
+        }
         pageService.update(page);
 
         Integer contentId = page.getLatestContent().getContentId();
         req.setAttribute("actionSuccessMessage", "Doc " + pageId + " with contentId " + contentId + " edited successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     /*

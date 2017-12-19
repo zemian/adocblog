@@ -19,17 +19,17 @@
         <form class="form-horizontal" action="${app.contextPath}/admin/blog/create" method="post">
             <div class="form-group">
                 <label for="title">Title:</label>
-                <input type="input" class="form-control" id="title" name="title">
+                <input type="input" class="form-control" id="title" name="title" value="${title!''}">
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
                 <select class="form-control" id="format" name="format">
-                    <option selected="true" value="ADOC">ADOC</option>
-                    <option value="HTML">HTML</option>
+                    <option <#if (format!'ADOC') == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
+                    <option <#if (format!'ADOC') == 'HTML'>selected="true"</#if> value="HTML">HTML</option>
                 </select>
             </div>
             <div class="form-group">
-                <textarea id="contentText" name="contentText" rows="30" cols="100"></textarea>
+                <textarea id="contentText" name="contentText" rows="30" cols="100">${contentText!''}</textarea>
             </div>
             <button class="btn btn-success">Submit</button>
         </form>

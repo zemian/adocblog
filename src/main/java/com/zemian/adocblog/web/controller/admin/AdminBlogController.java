@@ -11,6 +11,7 @@ import com.zemian.adocblog.service.BlogService;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.web.listener.UserSession;
 import com.zemian.adocblog.web.listener.UserSessionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class AdminBlogController {
         return result;
     }
 
+    private ModelAndView list()  {
+        return list(DEFAULT_PAGING);
+    }
+
     @GetMapping("/admin/blog/publish/{blogId}/{contentId}")
     public ModelAndView publish(@PathVariable Integer blogId, @PathVariable Integer contentId,
                                 HttpServletRequest req) {
@@ -64,7 +69,7 @@ public class AdminBlogController {
                 blogId, contentId, userSession.getUser().getUsername());
 
         req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " has published successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/blog/unpublish/{blogId}")
@@ -80,7 +85,7 @@ public class AdminBlogController {
                 blogId, contentId, userSession.getUser().getUsername());
 
         req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " has unpublished successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/blog/delete/{blogId}")
@@ -89,7 +94,7 @@ public class AdminBlogController {
         blogService.markForDelete(blogId, reasonForDelete);
 
         req.setAttribute("actionSuccessMessage", "Doc " + blogId + " has deleted successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/blog/history/{blogId}")
@@ -114,20 +119,34 @@ public class AdminBlogController {
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
 
+        if (StringUtils.isEmpty(title) ||
+                StringUtils.isEmpty(contentText)) {
+            req.setAttribute("title", title);
+            req.setAttribute("contentText", contentText);
+            req.setAttribute("format", format);
+
+            req.setAttribute("actionErrorMessage", "Invalid inputs");
+            return create();
+        }
+
         Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.valueOf(format),
                 userSession.getUser().getUsername(), title, contentText);
         blogService.create(blog);
         req.setAttribute("actionSuccessMessage", "Doc " + blog.getDocId() + " created successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/blog/edit/{blogId}")
     public ModelAndView edit(@PathVariable Integer blogId) {
         Doc blog = blogService.get(blogId);
         String ct = contentService.getContentText(blog.getLatestContent().getContentId());
+        blog.getLatestContent().setContentText(ct);
+        return edit(blog);
+    }
+
+    private ModelAndView edit(Doc blog) {
         ModelAndView result = new ModelAndView("/admin/blog/edit");
         result.addObject("blog", blog);
-        result.addObject("blogContentText", ct);
         return result;
     }
 
@@ -148,11 +167,19 @@ public class AdminBlogController {
         blog.getLatestContent().setFormat(Content.Format.valueOf(format));
         blog.getLatestContent().setReasonForEdit(reasonForEdit);
         blog.getLatestContent().setContentText(contentText);
+
+        if (StringUtils.isEmpty(title) ||
+                StringUtils.isEmpty(contentText)) {
+            req.setAttribute("actionErrorMessage", "Invalid inputs");
+            req.setAttribute("blog", blog);
+            return edit(blog);
+        }
+
         blogService.update(blog);
 
         Integer contentId = blog.getLatestContent().getContentId();
         req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " edited successfully.");
-        return list(DEFAULT_PAGING);
+        return list();
     }
 
     @GetMapping("/admin/blog/preview/{blogId}/{contentId}")
