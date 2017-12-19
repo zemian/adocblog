@@ -37,7 +37,6 @@ public class UserTool {
     private static Logger LOG = LoggerFactory.getLogger(UserTool.class);
 
     @Autowired
-    @Lazy
     private UserService userService;
 
     private void printHelp() {
@@ -61,7 +60,7 @@ public class UserTool {
             printHelp();
             System.exit(0);
         } else if(opts.hasOpt("hashPassword")) {
-            String password = opts.getOpt("encryptPassword");
+            String password = opts.getOpt("hashPassword");
             String encryptedPassword = PasswordHasher.createHash(password);
             System.out.println("Password: " + encryptedPassword);
             System.exit(0);
