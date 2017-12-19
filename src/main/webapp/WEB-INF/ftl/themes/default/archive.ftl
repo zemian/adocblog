@@ -11,7 +11,7 @@
         <h1>Blog Archives</h1>
         <table class="table">
             <tr>
-                <td>Subject</td>
+                <td>Title</td>
                 <td>Date</td>
                 <td>Author</td>
             </tr>
