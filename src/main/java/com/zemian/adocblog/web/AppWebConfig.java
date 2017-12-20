@@ -52,7 +52,7 @@ public class AppWebConfig implements WebMvcConfigurer {
     @Bean
     public FreeMarkerConfigurationFactoryBean freeMarkerConfigurationFactoryBean() {
         Map<String, Object> sharedVars = new HashMap<>();
-        sharedVars.put("getPageContentText", pageTemplateMethodModel());
+        sharedVars.put("getPage", pageTemplateMethodModel());
 
         FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
         bean.setPreTemplateLoaders(pageTemplateLoader());
