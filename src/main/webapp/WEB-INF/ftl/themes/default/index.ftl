@@ -9,7 +9,7 @@
 <div class="container">
     <div class="app-content">
         <#if blog??>
-            <h1>${blog.publishedContent.title}</h1>
+            <h1><a href="${app.contextPath}/blog/${blog.docId}">${blog.publishedContent.title}</a></h1>
             <p>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by ${blog.publishedContent.authorFullName}</p>
             <div class="blog-post">
             ${blog.publishedContent.contentText}

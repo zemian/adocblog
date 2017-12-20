@@ -11,9 +11,10 @@ CREATE TABLE settings (
 );
 
 -- Sample of app.properties override
--- INSERT INTO settings (category, name, value) VALUES ('APP_CONFIG_DEV', 'app.web.name', 'Zemian''s Blog');
--- INSERT INTO settings (category, name, value) VALUES ('APP_CONFIG_DEV', 'app.web.title', 'Zemian''s Blog');
--- INSERT INTO settings (category, name, value) VALUES ('APP_CONFIG_DEV', 'app.web.blogTitle', 'Writings on Java and other programming notes.');
+-- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.name', 'Zemian''s Blog');
+-- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.title', 'Zemian''s Blog');
+-- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.blogTitle', 'Writings on Java and other programming notes.');
+-- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.disqus.websiteName', 'mydisqusUniqueName');
 
 CREATE TABLE users (
   username VARCHAR(50) NOT NULL PRIMARY KEY,
