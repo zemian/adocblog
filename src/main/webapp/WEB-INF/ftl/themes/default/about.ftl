@@ -13,6 +13,8 @@
     </div>
 
     <#include "/themes/${app.themeName}/includes/footer.ftl">
+
+    <#include "/themes/${app.themeName}/includes/disqus.ftl">
 </div>
 
 <#include "/themes/${app.themeName}/includes/html-tail.ftl">
