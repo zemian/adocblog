@@ -42,7 +42,8 @@
             <div class="form-group">
                 <textarea id="contentText" name="contentText" rows="30" cols="100">${page.latestContent.contentText}</textarea>
             </div>
-            <button class="btn btn-success">Submit</button>
+            <button class="btn btn-success" name="btnAction" value="save">Save</button>
+            <button class="btn btn-success" name="btnAction" value="publish">Publish</button>
             <input type="hidden" name="pageId" value="${page.docId}">
         </form>
         <script>

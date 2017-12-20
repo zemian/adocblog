@@ -140,6 +140,7 @@ public class AdminPageController {
         String path = req.getParameter("path");
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
+        String btnAction = req.getParameter("btnAction");
 
         if (StringUtils.isEmpty(title) ||
                 StringUtils.isEmpty(path) ||
@@ -159,8 +160,30 @@ public class AdminPageController {
             page.setPath(path);
         }
         pageService.create(page);
-        req.setAttribute("actionSuccessMessage", "Doc " + page.getDocId() + " created successfully.");
+
+        String message = "Doc " + page.getDocId() + " created successfully.";
+
+        if ("publish".equals(btnAction)) {
+            publishPage(page, page.getLatestContent().getContentId(), userSession.getUser().getUsername());
+            message += " And the content has published.";
+        }
+
+        req.setAttribute("actionSuccessMessage", message);
+
         return list();
+    }
+
+    private void publishPage(Doc page, Integer contentId, String username) {
+        Content content = new Content();
+        content.setContentId(contentId);
+        page.setLatestContent(content);
+        page.setPublishedUser(username);
+        page.setPublishedDt(LocalDateTime.now());
+
+        pageService.publish(page);
+        LOG.info("Doc {} with contentId {} published by {}",
+                page.getDocId(), contentId, username);
+
     }
 
     @GetMapping("/admin/page/edit/{pageId}")
@@ -187,6 +210,7 @@ public class AdminPageController {
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
         String reasonForEdit = req.getParameter("reasonForEdit");
+        String btnAction = req.getParameter("btnAction");
 
         Doc page = pageService.get(pageId);
         page.getLatestContent().setTitle(title);
@@ -211,7 +235,16 @@ public class AdminPageController {
         pageService.update(page);
 
         Integer contentId = page.getLatestContent().getContentId();
-        req.setAttribute("actionSuccessMessage", "Doc " + pageId + " with contentId " + contentId + " edited successfully.");
+
+        String message = "Doc " + pageId + " with contentId " + contentId + " edited successfully.";
+
+        if ("publish".equals(btnAction)) {
+            publishPage(page, contentId, userSession.getUser().getUsername());
+            message += " And the content has published.";
+        }
+
+        req.setAttribute("actionSuccessMessage", message);
+
         return list();
     }
 
