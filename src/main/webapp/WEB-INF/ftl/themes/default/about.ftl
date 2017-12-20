@@ -8,9 +8,11 @@
 
 <div class="container">
     <div class="app-content">
-        This application is brought to you by Zemian Deng!
+        This application is brought to you by
+        <a href="https://github.com/zemian/adocblog">ADocBlog</a>.
     </div>
-<#include "/themes/${app.themeName}/includes/footer.ftl">
+
+    <#include "/themes/${app.themeName}/includes/footer.ftl">
 </div>
 
 <#include "/themes/${app.themeName}/includes/html-tail.ftl">

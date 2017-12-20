@@ -15,8 +15,8 @@
             <p>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by
                 ${blog.publishedContent.authorFullName}
                 <#if app.config['app.web.disqus.websiteName']?has_content>
-                <script id="dsq-count-scr" src="//${app.config['app.web.disqus.websiteName']}.disqus.com/count.js" async></script>
-                <a href="#disqus_thread">Link</a>
+                    <script id="dsq-count-scr" src="//${app.config['app.web.disqus.websiteName']}.disqus.com/count.js" async></script>
+                    <a href="#disqus_thread">Comment</a>
                 </#if>
             </p>
             <div class="blog-post">
@@ -37,7 +37,7 @@
     </div>
     <#include "/themes/${app.themeName}/includes/footer.ftl">
 
-    <#if app.config['app.web.disqus.websiteName']?has_content>
+    <#if app.config['app.web.disqus.websiteName']?has_content && !(errorMessage??)>
         <div id="disqus_thread"></div>
         <script>
 

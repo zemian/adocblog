@@ -10,7 +10,12 @@
     <div class="app-content">
         <#if blog??>
             <h1><a href="${app.contextPath}/blog/${blog.docId}">${blog.publishedContent.title}</a></h1>
-            <p>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by ${blog.publishedContent.authorFullName}</p>
+            <p>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by
+                ${blog.publishedContent.authorFullName}
+                <#if app.config['app.web.disqus.websiteName']?has_content>
+                <a href="${app.contextPath}/blog/${blog.docId}#disqus_thread">Comment</a>
+                </#if>
+            </p>
             <div class="blog-post">
             ${blog.publishedContent.contentText}
             </div>

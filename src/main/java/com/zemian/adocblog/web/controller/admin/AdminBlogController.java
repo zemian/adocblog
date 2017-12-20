@@ -57,19 +57,23 @@ public class AdminBlogController {
         UserSession userSession = UserSessionUtils.getUserSession(req);
 
         Doc blog = blogService.get(blogId);
+        publishBlog(blog, contentId, userSession.getUser().getUsername());
 
+        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " has published successfully.");
+        return list();
+    }
+
+    private void publishBlog(Doc blog, Integer contentId, String username) {
         Content content = new Content();
         content.setContentId(contentId);
         blog.setLatestContent(content);
-        blog.setPublishedUser(userSession.getUser().getUsername());
+        blog.setPublishedUser(username);
         blog.setPublishedDt(LocalDateTime.now());
 
         blogService.publish(blog);
         LOG.info("Doc {} with contentId {} published by {}",
-                blogId, contentId, userSession.getUser().getUsername());
+                blog.getDocId(), contentId, username);
 
-        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " has published successfully.");
-        return list();
     }
 
     @GetMapping("/admin/blog/unpublish/{blogId}")
@@ -118,6 +122,7 @@ public class AdminBlogController {
         String title = req.getParameter("title");
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
+        String btnAction = req.getParameter("btnAction");
 
         if (StringUtils.isEmpty(title) ||
                 StringUtils.isEmpty(contentText)) {
@@ -132,7 +137,14 @@ public class AdminBlogController {
         Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.valueOf(format),
                 userSession.getUser().getUsername(), title, contentText);
         blogService.create(blog);
-        req.setAttribute("actionSuccessMessage", "Doc " + blog.getDocId() + " created successfully.");
+        String message = "Doc " + blog.getDocId() + " created successfully.";
+
+        if ("publish".equals(btnAction)) {
+            publishBlog(blog, blog.getLatestContent().getContentId(), userSession.getUser().getUsername());
+            message += " And the content has published.";
+        }
+
+        req.setAttribute("actionSuccessMessage", message);
         return list();
     }
 
@@ -159,6 +171,7 @@ public class AdminBlogController {
         String format = req.getParameter("format");
         String contentText = req.getParameter("contentText");
         String reasonForEdit = req.getParameter("reasonForEdit");
+        String btnAction = req.getParameter("btnAction");
 
         Doc blog = blogService.get(blogId);
         blog.getLatestContent().setTitle(title);
@@ -178,7 +191,15 @@ public class AdminBlogController {
         blogService.update(blog);
 
         Integer contentId = blog.getLatestContent().getContentId();
-        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " edited successfully.");
+        String message = "Doc " + blogId + " with contentId " + contentId + " edited successfully.";
+
+        if ("publish".equals(btnAction)) {
+            publishBlog(blog, contentId, userSession.getUser().getUsername());
+            message += " And the content has published.";
+        }
+
+        req.setAttribute("actionSuccessMessage", message);
+
         return list();
     }
 

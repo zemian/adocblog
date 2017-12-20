@@ -1,5 +1,6 @@
 package com.zemian.adocblog.service;
 
+import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.data.dao.DocDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
@@ -60,6 +61,15 @@ public class DocService {
     }
 
     public void publish(Doc doc) {
+        if (doc.getPublishedDt() == null) {
+            throw new AppException("publishedDt is not set.");
+        }
+        if (doc.getPublishedUser() == null) {
+            throw new AppException("publishedUser is not set.");
+        }
+        if (doc.getLatestContent() == null) {
+            throw new AppException("publishedContent is not set.");
+        }
         docDAO.publish(doc);
     }
 
