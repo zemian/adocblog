@@ -135,7 +135,11 @@ public class DocDAO extends AbstractDAO {
 
     // == DAO Delete
     public void markForDelete(Integer docId, String reasonForDelete) {
-        int ret = jdbc.update("UPDATE docs SET deleted = TRUE, reason_for_delete = ? WHERE doc_id = ?",
+        // To keep path unique, we will append doc_id as suffix to path before mark for delete.
+        int ret = jdbc.update("UPDATE docs SET deleted = TRUE," +
+                        " reason_for_delete = ?," +
+                        " path = path || '.' || doc_id" +
+                        " WHERE doc_id = ?",
                 reasonForDelete, docId);
         LOG.debug("DocId={} marked for markForDelete. result={}", docId, ret);
     }
