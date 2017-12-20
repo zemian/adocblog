@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zemian.adocblog.service.DbPropsEnvironment;
 import com.zemian.adocblog.web.listener.UserSessionInterceptor;
 import com.zemian.adocblog.web.view.freemarker.PageTemplateLoader;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zemian.adocblog.web.view.freemarker.PageTemplateMethodModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,6 +14,9 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Web MVC Settings
@@ -25,9 +28,6 @@ public class AppWebConfig implements WebMvcConfigurer {
 
     @Value("${app.web.themeName}")
     private String themeName;
-
-    @Autowired
-    private freemarker.template.Configuration freemarkerConfig;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -44,11 +44,21 @@ public class AppWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public PageTemplateMethodModel pageTemplateMethodModel() {
+        PageTemplateMethodModel bean = new PageTemplateMethodModel();
+        return bean;
+    }
+
+    @Bean
     public FreeMarkerConfigurationFactoryBean freeMarkerConfigurationFactoryBean() {
+        Map<String, Object> sharedVars = new HashMap<>();
+        sharedVars.put("getPageContentText", pageTemplateMethodModel());
+
         FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
         bean.setPreTemplateLoaders(pageTemplateLoader());
         bean.setTemplateLoaderPath("/WEB-INF/ftl/");
         bean.setConfigLocation(new ClassPathResource("/adocblog/freemarker.properties"));
+        bean.setFreemarkerVariables(sharedVars);
         return bean;
     }
 
