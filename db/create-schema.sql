@@ -7,7 +7,8 @@ CREATE TABLE settings (
   name VARCHAR(50) NOT NULL,
   value VARCHAR(5000) NOT NULL,
   type VARCHAR(50) NOT NULL DEFAULT 'STRING',
-  description VARCHAR(1000) NULL
+  description VARCHAR(1000) NULL,
+  UNIQUE (category, name)
 );
 
 -- Sample of app.properties override
