@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.DateFormatter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Admin - Blog Management UI
@@ -32,6 +34,7 @@ public class AdminBlogController {
     private static final Logger LOG = LoggerFactory.getLogger(AdminBlogController.class);
 
     public static final Paging DEFAULT_PAGING = new Paging(0, 25);
+    public static final DateTimeFormatter YYYY_MM_DD_HH_MM = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
     @Autowired
     private BlogService blogService;
@@ -57,18 +60,36 @@ public class AdminBlogController {
         UserSession userSession = UserSessionUtils.getUserSession(req);
 
         Doc blog = blogService.get(blogId);
-        publishBlog(blog, contentId, userSession.getUser().getUsername());
+        publishBlog(blog, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
 
-        req.setAttribute("actionSuccessMessage", "Doc " + blogId + " with contentId " + contentId + " has published successfully.");
+        req.setAttribute("actionSuccessMessage",
+                "Doc " + blogId + " with contentId " + contentId + " has published successfully.");
         return list();
     }
 
-    private void publishBlog(Doc blog, Integer contentId, String username) {
+    @GetMapping("/admin/blog/publish/{blogId}/{contentId}/{publishDate}")
+    public ModelAndView publishByDate(@PathVariable Integer blogId,
+                                      @PathVariable Integer contentId,
+                                      @PathVariable String publishDate,
+                                HttpServletRequest req) {
+        UserSession userSession = UserSessionUtils.getUserSession(req);
+        LocalDateTime publishedDt = LocalDateTime.parse(publishDate, YYYY_MM_DD_HH_MM);
+
+        Doc blog = blogService.get(blogId);
+        publishBlog(blog, contentId, userSession.getUser().getUsername(), publishedDt);
+
+        req.setAttribute("actionSuccessMessage",
+                "Doc " + blogId + " with contentId " + contentId +
+                        " has published successfully and publishedDate " + publishDate + ".");
+        return list();
+    }
+
+    private void publishBlog(Doc blog, Integer contentId, String username, LocalDateTime publishedDt) {
         Content content = new Content();
         content.setContentId(contentId);
         blog.setLatestContent(content);
         blog.setPublishedUser(username);
-        blog.setPublishedDt(LocalDateTime.now());
+        blog.setPublishedDt(publishedDt);
 
         blogService.publish(blog);
         LOG.info("Doc {} with contentId {} published by {}",
@@ -140,7 +161,7 @@ public class AdminBlogController {
         String message = "Doc " + blog.getDocId() + " created successfully.";
 
         if ("publish".equals(btnAction)) {
-            publishBlog(blog, blog.getLatestContent().getContentId(), userSession.getUser().getUsername());
+            publishBlog(blog, blog.getLatestContent().getContentId(), userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
 
@@ -194,7 +215,7 @@ public class AdminBlogController {
         String message = "Doc " + blogId + " with contentId " + contentId + " edited successfully.";
 
         if ("publish".equals(btnAction)) {
-            publishBlog(blog, contentId, userSession.getUser().getUsername());
+            publishBlog(blog, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
 

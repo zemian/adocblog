@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,8 +29,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +43,7 @@ public class AdminPageController {
     private static final Logger LOG = LoggerFactory.getLogger(AdminPageController.class);
 
     public static final Paging DEFAULT_PAGING = new Paging(0, 25);
+    public static final DateTimeFormatter YYYY_MM_DD_HH_MM = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
     @Autowired
     private PageService pageService;
@@ -78,18 +78,27 @@ public class AdminPageController {
         UserSession userSession = UserSessionUtils.getUserSession(req);
 
         Doc page = pageService.get(pageId);
+        publishPage(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
 
-        Content content = new Content();
-        content.setContentId(contentId);
-        page.setLatestContent(content);
-        page.setPublishedUser(userSession.getUser().getUsername());
-        page.setPublishedDt(LocalDateTime.now());
+        req.setAttribute("actionSuccessMessage",
+                "Doc " + pageId + " with contentId " + contentId + " has published successfully.");
+        return list();
+    }
 
-        pageService.publish(page);
-        LOG.info("Doc {} with contentId {} published by {}",
-                pageId, contentId, userSession.getUser().getUsername());
+    @GetMapping("/admin/page/publish/{pageId}/{contentId}/{publishDate}")
+    public ModelAndView publishByDate(@PathVariable Integer pageId,
+                                      @PathVariable Integer contentId,
+                                      @PathVariable String publishDate,
+                                HttpServletRequest req) {
+        UserSession userSession = UserSessionUtils.getUserSession(req);
+        LocalDateTime publishedDt = LocalDateTime.parse(publishDate, YYYY_MM_DD_HH_MM);
 
-        req.setAttribute("actionSuccessMessage", "Doc " + pageId + " with contentId " + contentId + " has published successfully.");
+        Doc page = pageService.get(pageId);
+        publishPage(page, contentId, userSession.getUser().getUsername(), publishedDt);
+
+        req.setAttribute("actionSuccessMessage",
+                "Doc " + pageId + " with contentId " + contentId +
+                        " has published successfully and publishedDate " + publishDate + ".");
         return list();
     }
 
@@ -164,7 +173,7 @@ public class AdminPageController {
         String message = "Doc " + page.getDocId() + " created successfully.";
 
         if ("publish".equals(btnAction)) {
-            publishPage(page, page.getLatestContent().getContentId(), userSession.getUser().getUsername());
+            publishPage(page, page.getLatestContent().getContentId(), userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
 
@@ -173,12 +182,12 @@ public class AdminPageController {
         return list();
     }
 
-    private void publishPage(Doc page, Integer contentId, String username) {
+    private void publishPage(Doc page, Integer contentId, String username, LocalDateTime publishedDt) {
         Content content = new Content();
         content.setContentId(contentId);
         page.setLatestContent(content);
         page.setPublishedUser(username);
-        page.setPublishedDt(LocalDateTime.now());
+        page.setPublishedDt(publishedDt);
 
         pageService.publish(page);
         LOG.info("Doc {} with contentId {} published by {}",
@@ -239,7 +248,7 @@ public class AdminPageController {
         String message = "Doc " + pageId + " with contentId " + contentId + " edited successfully.";
 
         if ("publish".equals(btnAction)) {
-            publishPage(page, contentId, userSession.getUser().getUsername());
+            publishPage(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
 
