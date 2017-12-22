@@ -34,12 +34,12 @@
             </#if>
             </p>
         </#if>
+
+        <#if !(errorMessage??)>
+            <#include "/themes/${app.themeName}/includes/disqus.ftl">
+        </#if>
     </div>
     <#include "/themes/${app.themeName}/includes/footer.ftl">
-
-    <#if !(errorMessage??)>
-    <#include "/themes/${app.themeName}/includes/disqus.ftl">
-    </#if>
 </div>
 
 <#include "/themes/${app.themeName}/includes/html-tail.ftl">

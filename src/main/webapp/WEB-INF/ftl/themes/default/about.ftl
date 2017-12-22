@@ -8,13 +8,16 @@
 
 <div class="container">
     <div class="app-content">
-        This application is brought to you by
-        <a href="https://github.com/zemian/adocblog">ADocBlog</a>.
+        <p>This is a blogger application that helps you publish and manage blog posts.
+            You can also customize the pages and update the site layout, just like a CMS application.</p>
+
+        <p>If you face any issues using this application, please submit a ticket
+        <a href="https://github.com/zemian/adocblog/issues">here</a>.</p>
+
+        <#include "/themes/${app.themeName}/includes/disqus.ftl">
     </div>
 
     <#include "/themes/${app.themeName}/includes/footer.ftl">
-
-    <#include "/themes/${app.themeName}/includes/disqus.ftl">
 </div>
 
 <#include "/themes/${app.themeName}/includes/html-tail.ftl">
