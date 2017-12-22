@@ -24,7 +24,7 @@
         </#if>
 
         <#if blogs.list?size gt 0>
-            <h2>Recent Posts</h2>
+            <h2>Older Posts</h2>
             <ul>
                 <#list blogs.list as blog>
                     <li>
