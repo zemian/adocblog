@@ -9,8 +9,8 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>${page.latestContent.title}</h1>
-        ${pageContentText}
+        <h1>${doc.latestContent.title}</h1>
+        ${contentText}
     </div>
     <#include "/admin/includes/footer.ftl">
 </div>

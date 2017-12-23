@@ -27,27 +27,27 @@
                 <td>PublishedVer</td>
                 <td>Actions</td>
             </tr>
-            <#list blogs.list as blog>
+            <#list docs.list as doc>
 
                 <#assign pubActionLabel = 'Publish' >
-                <#assign pubActionPath = 'publish/${blog.docId}/${blog.latestContent.contentId}' >
+                <#assign pubActionPath = 'publish/${doc.docId}/${doc.latestContent.contentId}' >
                 <#assign pubVersion = 'NOT PUBLISHED' >
-                <#if blog.publishedContent??>
+                <#if doc.publishedContent??>
                     <#assign pubActionLabel = 'Unpublish' >
-                    <#assign pubActionPath = 'unpublish/${blog.docId}' >
-                    <#assign pubVersion = blog.publishedContent.version >
+                    <#assign pubActionPath = 'unpublish/${doc.docId}' >
+                    <#assign pubVersion = doc.publishedContent.version >
                 </#if>
                 <tr>
-                    <td>${blog.docId}</td>
-                    <td>${blog.latestContent.title}</td>
-                    <td>${blog.latestContent.createdDt}</td>
-                    <td>${blog.latestContent.version}</td>
+                    <td>${doc.docId}</td>
+                    <td>${doc.latestContent.title}</td>
+                    <td>${doc.latestContent.createdDt}</td>
+                    <td>${doc.latestContent.version}</td>
                     <td>${pubVersion}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/blog/edit/${blog.docId}">Edit</a> |
-                        <a href="${app.contextPath}/admin/blog/preview/${blog.docId}/${blog.latestContent.contentId}" target="_blank">Preview</a> |
-                        <a href="${app.contextPath}/admin/blog/history/${blog.docId}">History</a> |
-                        <a href="${app.contextPath}/admin/blog/delete/${blog.docId}" data-toggle="confirmation" data-title="Are you sure?">Delete</a> |
+                        <a href="${app.contextPath}/admin/blog/edit/${doc.docId}">Edit</a> |
+                        <a href="${app.contextPath}/admin/blog/preview/${doc.docId}/${doc.latestContent.contentId}" target="_blank">Preview</a> |
+                        <a href="${app.contextPath}/admin/blog/history/${doc.docId}">History</a> |
+                        <a href="${app.contextPath}/admin/blog/delete/${doc.docId}" data-toggle="confirmation" data-title="Are you sure?">Delete</a> |
                         <a href="${app.contextPath}/admin/blog/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
                 </tr>
@@ -56,8 +56,8 @@
 
         <!-- Pagination -->
         <p>
-        <#if blogs.paging.offset gt 0 && blogs.prevPageOffset gte 0><a href="?offset=${blogs.prevPageOffset}">Previous Page</a> <#if blogs.more>|</#if></#if>
-        <#if blogs.more><a href="?offset=${blogs.nextPageOffset}">Next Page</a></#if>
+        <#if docs.paging.offset gt 0 && docs.prevPageOffset gte 0><a href="?offset=${docs.prevPageOffset}">Previous Page</a> <#if docs.more>|</#if></#if>
+        <#if docs.more><a href="?offset=${docs.nextPageOffset}">Next Page</a></#if>
         </p>
     </div>
     <#include "/admin/includes/footer.ftl">

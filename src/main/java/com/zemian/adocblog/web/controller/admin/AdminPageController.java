@@ -1,22 +1,14 @@
 package com.zemian.adocblog.web.controller.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.data.dao.Paging;
-import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
-import com.zemian.adocblog.data.domain.DocHistory;
-import com.zemian.adocblog.data.support.DataUtils;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.service.PageService;
-import com.zemian.adocblog.web.listener.UserSession;
-import com.zemian.adocblog.web.listener.UserSessionUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +21,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,12 +29,7 @@ import java.util.Map;
  * Admin - Page Management UI
  */
 @Controller
-public class AdminPageController {
-    private static final Logger LOG = LoggerFactory.getLogger(AdminPageController.class);
-
-    public static final Paging DEFAULT_PAGING = new Paging(0, 25);
-    public static final DateTimeFormatter YYYY_MM_DD_HH_MM = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
+public class AdminPageController extends AbstractDocController {
     @Autowired
     private PageService pageService;
 
@@ -62,27 +47,14 @@ public class AdminPageController {
 
     @GetMapping("/admin/page/list")
     public ModelAndView list(Paging paging) {
-        PagingList<Doc> pages = pageService.findLatest(paging);
-        ModelAndView result = new ModelAndView("/admin/page/list");
-        result.addObject("pages", pages);
-        return result;
-    }
-    
-    public ModelAndView list() {
-        return list(DEFAULT_PAGING);
+        return list("/admin/page/list", Doc.Type.PAGE, paging);
     }
 
     @GetMapping("/admin/page/publish/{pageId}/{contentId}")
-    public ModelAndView publish(@PathVariable Integer pageId, @PathVariable Integer contentId,
+    public ModelAndView publish(@PathVariable Integer pageId,
+                                @PathVariable Integer contentId,
                                 HttpServletRequest req) {
-        UserSession userSession = UserSessionUtils.getUserSession(req);
-
-        Doc page = pageService.get(pageId);
-        publishPage(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
-
-        req.setAttribute("actionSuccessMessage",
-                "Doc " + pageId + " with contentId " + contentId + " has published successfully.");
-        return list();
+        return publish("/admin/page/list", Doc.Type.PAGE, pageId, contentId, req);
     }
 
     @GetMapping("/admin/page/publish/{pageId}/{contentId}/{publishDate}")
@@ -90,171 +62,42 @@ public class AdminPageController {
                                       @PathVariable Integer contentId,
                                       @PathVariable String publishDate,
                                 HttpServletRequest req) {
-        UserSession userSession = UserSessionUtils.getUserSession(req);
-        LocalDateTime publishedDt = LocalDateTime.parse(publishDate, YYYY_MM_DD_HH_MM);
-
-        Doc page = pageService.get(pageId);
-        publishPage(page, contentId, userSession.getUser().getUsername(), publishedDt);
-
-        req.setAttribute("actionSuccessMessage",
-                "Doc " + pageId + " with contentId " + contentId +
-                        " has published successfully and publishedDate " + publishDate + ".");
-        return list();
+        return publishByDate("/admin/page/list", Doc.Type.PAGE, pageId, contentId, publishDate, req);
     }
 
     @GetMapping("/admin/page/unpublish/{pageId}")
     public ModelAndView unpublish(@PathVariable Integer pageId, HttpServletRequest req) {
-        UserSession userSession = UserSessionUtils.getUserSession(req);
-        Doc page = pageService.get(pageId);
-        if (page.getPublishedContent() == null) {
-            throw new AppException("Doc " + pageId + " is not yet published");
-        }
-        Integer contentId = page.getPublishedContent().getContentId();
-        pageService.unpublish(pageId);
-        LOG.info("Doc {} with contentId {} unpublished by {}",
-                pageId, contentId, userSession.getUser().getUsername());
-
-        req.setAttribute("actionSuccessMessage", "Doc " + pageId + " with contentId " + contentId + " has unpublished successfully.");
-        return list();
+        return unpublish("/admin/page/list", Doc.Type.PAGE, pageId, req);
     }
 
     @GetMapping("/admin/page/delete/{pageId}")
     public ModelAndView delete(@PathVariable Integer pageId, HttpServletRequest req) {
-        String reasonForDelete = null;
-        pageService.markForDelete(pageId, reasonForDelete);
-
-        req.setAttribute("actionSuccessMessage", "Doc " + pageId + " has deleted successfully.");
-        return list();
+        return delete("/admin/page/list", Doc.Type.PAGE, pageId, req);
     }
 
     @GetMapping("/admin/page/history/{pageId}")
     public ModelAndView history(@PathVariable Integer pageId) {
-        DocHistory pageHistory = pageService.getDocHistory(pageId);
-        ModelAndView result = new ModelAndView("/admin/page/history");
-        result.addObject("pageHistory", pageHistory);
-        return result;
+        return history("/admin/page/history", pageId);
     }
 
     @GetMapping("/admin/page/create")
     public ModelAndView create() {
-        ModelAndView result = new ModelAndView("/admin/page/create");
-        return result;
+        return view("/admin/page/create");
     }
 
     @PostMapping("/admin/page/create")
     public ModelAndView createPost(HttpServletRequest req) {
-        UserSession userSession = UserSessionUtils.getUserSession(req);
-
-        String title = req.getParameter("title");
-        String path = req.getParameter("path");
-        String format = req.getParameter("format");
-        String contentText = req.getParameter("contentText");
-        String btnAction = req.getParameter("btnAction");
-
-        if (StringUtils.isEmpty(title) ||
-                StringUtils.isEmpty(path) ||
-                StringUtils.isEmpty(contentText)) {
-            req.setAttribute("title", title);
-            req.setAttribute("contentText", contentText);
-            req.setAttribute("format", format);
-            req.setAttribute("path", path);
-
-            req.setAttribute("actionErrorMessage", "Invalid inputs");
-            return create();
-        }
-
-        Doc page = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.valueOf(format),
-                userSession.getUser().getUsername(), title, contentText);
-        if (StringUtils.isNotEmpty(path)) {
-            page.setPath(path);
-        }
-        pageService.create(page);
-
-        String message = "Doc " + page.getDocId() + " created successfully.";
-
-        if ("publish".equals(btnAction)) {
-            publishPage(page, page.getLatestContent().getContentId(), userSession.getUser().getUsername(), LocalDateTime.now());
-            message += " And the content has published.";
-        }
-
-        req.setAttribute("actionSuccessMessage", message);
-
-        return list();
-    }
-
-    private void publishPage(Doc page, Integer contentId, String username, LocalDateTime publishedDt) {
-        Content content = new Content();
-        content.setContentId(contentId);
-        page.setLatestContent(content);
-        page.setPublishedUser(username);
-        page.setPublishedDt(publishedDt);
-
-        pageService.publish(page);
-        LOG.info("Doc {} with contentId {} published by {}",
-                page.getDocId(), contentId, username);
-
+        return createPost("/admin/page/list", Doc.Type.PAGE, req);
     }
 
     @GetMapping("/admin/page/edit/{pageId}")
     public ModelAndView edit(@PathVariable Integer pageId) {
-        Doc page = pageService.get(pageId);
-        String ct = contentService.getContentText(page.getLatestContent().getContentId());
-        page.getLatestContent().setContentText(ct);
-        return edit(page);
-    }
-
-    private ModelAndView edit(Doc page) {
-        ModelAndView result = new ModelAndView("/admin/page/edit");
-        result.addObject("page", page);
-        return result;
+        return edit("/admin/page/edit", pageId);
     }
 
     @PostMapping("/admin/page/edit")
     public ModelAndView editPost(HttpServletRequest req) {
-        UserSession userSession = UserSessionUtils.getUserSession(req);
-
-        Integer pageId = Integer.parseInt(req.getParameter("pageId"));
-        String title = req.getParameter("title");
-        String path = req.getParameter("path");
-        String format = req.getParameter("format");
-        String contentText = req.getParameter("contentText");
-        String reasonForEdit = req.getParameter("reasonForEdit");
-        String btnAction = req.getParameter("btnAction");
-
-        Doc page = pageService.get(pageId);
-        page.getLatestContent().setTitle(title);
-        page.getLatestContent().setCreatedUser(userSession.getUser().getUsername());
-        page.getLatestContent().setCreatedDt(LocalDateTime.now());
-        page.getLatestContent().setFormat(Content.Format.valueOf(format));
-        page.getLatestContent().setReasonForEdit(reasonForEdit);
-        page.getLatestContent().setContentText(contentText);
-
-        if (StringUtils.isEmpty(title) ||
-                StringUtils.isEmpty(path) ||
-                StringUtils.isEmpty(contentText)) {
-            req.setAttribute("page", page);
-            req.setAttribute("actionErrorMessage", "Invalid inputs");
-            return edit(page);
-        }
-
-
-        if (StringUtils.isNotEmpty(path)) {
-            page.setPath(path);
-        }
-        pageService.update(page);
-
-        Integer contentId = page.getLatestContent().getContentId();
-
-        String message = "Doc " + pageId + " with contentId " + contentId + " edited successfully.";
-
-        if ("publish".equals(btnAction)) {
-            publishPage(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
-            message += " And the content has published.";
-        }
-
-        req.setAttribute("actionSuccessMessage", message);
-
-        return list();
+        return editPost("/admin/page/list", Doc.Type.PAGE, req);
     }
 
     /*

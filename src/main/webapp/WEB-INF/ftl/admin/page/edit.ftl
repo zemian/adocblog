@@ -19,32 +19,32 @@
         <form class="form-horizontal" action="${app.contextPath}/admin/page/edit" method="post">
             <div class="form-group">
                 <label for="title">Title:</label>
-                <input type="input" class="form-control" id="title" name="title" value="${page.latestContent.title}">
+                <input type="input" class="form-control" id="title" name="title" value="${doc.latestContent.title}">
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
                 <select class="form-control" id="format" name="format">
-                    <option <#if page.latestContent.format == 'FTL'>selected="true"</#if> value="FTL">FTL</option>
-                    <option <#if page.latestContent.format == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
-                    <option <#if page.latestContent.format == 'HTML'>selected="true"</#if> value="HTML">HTML</option>
-                    <option <#if page.latestContent.format == 'TEXT'>selected="true"</#if> value="TEXT">TEXT</option>
-                    <option <#if page.latestContent.format == 'JSON'>selected="true"</#if> value="JSON">JSON</option>
+                    <option <#if doc.latestContent.format == 'FTL'>selected="true"</#if> value="FTL">FTL</option>
+                    <option <#if doc.latestContent.format == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
+                    <option <#if doc.latestContent.format == 'HTML'>selected="true"</#if> value="HTML">HTML</option>
+                    <option <#if doc.latestContent.format == 'TEXT'>selected="true"</#if> value="TEXT">TEXT</option>
+                    <option <#if doc.latestContent.format == 'JSON'>selected="true"</#if> value="JSON">JSON</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="path">Path:</label>
-                <input type="input" class="form-control" id="path" name="path" value="${page.path}">
+                <input type="input" class="form-control" id="path" name="path" value="${doc.path}">
             </div>
             <div class="form-group">
                 <label for="reasonForEdit">Reason For Edit:</label>
                 <input type="input" class="form-control" id="reasonForEdit" name="reasonForEdit">
             </div>
             <div class="form-group">
-                <textarea id="contentText" name="contentText" rows="30" cols="100">${page.latestContent.contentText}</textarea>
+                <textarea id="contentText" name="contentText" rows="30" cols="100">${doc.latestContent.contentText}</textarea>
             </div>
             <button class="btn btn-success" name="btnAction" value="save">Save</button>
             <button class="btn btn-success" name="btnAction" value="publish">Publish</button>
-            <input type="hidden" name="pageId" value="${page.docId}">
+            <input type="hidden" name="pageId" value="${doc.docId}">
         </form>
         <script>
             CodeMirror.fromTextArea(document.getElementById("contentText"), {

@@ -51,7 +51,6 @@ public class UserServiceTest extends SpringTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void createTestUsers() {
         if (!userService.exists("test")) {

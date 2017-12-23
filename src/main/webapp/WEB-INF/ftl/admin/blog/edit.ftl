@@ -19,13 +19,13 @@
         <form class="form-horizontal" action="${app.contextPath}/admin/blog/edit" method="post">
             <div class="form-group">
                 <label for="title">Title:</label>
-                <input type="input" class="form-control" id="title" name="title" value="${blog.latestContent.title}">
+                <input type="input" class="form-control" id="title" name="title" value="${doc.latestContent.title}">
             </div>
             <div class="form-group">
                 <label for="format">Format:</label>
                 <select class="form-control" id="format" name="format">
-                    <option <#if blog.latestContent.format == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
-                    <option <#if blog.latestContent.format == 'HTML'>selected="true"</#if> value="HTML">HTML</option>
+                    <option <#if doc.latestContent.format == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
+                    <option <#if doc.latestContent.format == 'HTML'>selected="true"</#if> value="HTML">HTML</option>
                 </select>
             </div>
             <div class="form-group">
@@ -33,11 +33,11 @@
                 <input type="input" class="form-control" id="reasonForEdit" name="reasonForEdit">
             </div>
             <div class="form-group">
-                <textarea id="contentText" name="contentText" rows="30" cols="100">${blog.latestContent.contentText}</textarea>
+                <textarea id="contentText" name="contentText" rows="30" cols="100">${doc.latestContent.contentText}</textarea>
             </div>
             <button class="btn btn-success" name="btnAction" value="save">Save</button>
             <button class="btn btn-success" name="btnAction" value="publish">Publish</button>
-            <input type="hidden" name="blogId" value="${blog.docId}">
+            <input type="hidden" name="blogId" value="${doc.docId}">
         </form>
         <script>
             CodeMirror.fromTextArea(document.getElementById("contentText"), {

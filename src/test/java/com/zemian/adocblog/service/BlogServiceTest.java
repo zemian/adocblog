@@ -265,6 +265,7 @@ public class BlogServiceTest extends SpringTestBase {
         blogService.create(doc);
 
         doc.setPublishedDt(pubDate);
+        doc.setPublishedUser(username);
         blogService.publish(doc);
 
         return doc;
