@@ -12,12 +12,13 @@
             <p class="alert alert-danger">${errorMessage}</p>
         <#else>
             <h1>${blog.publishedContent.title}</h1>
-            <p>${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by
+            <p class="author">${blog.publishedDt.format(app.config['app.web.blogDateFormat'])} by
                 ${blog.publishedContent.authorFullName}
                 <#if app.config['app.web.disqus.websiteName']?has_content>
                     <script id="dsq-count-scr" src="//${app.config['app.web.disqus.websiteName']}.disqus.com/count.js" async></script>
                     <a href="#disqus_thread">Comment</a>
                 </#if>
+                <#if blog.tags??><p class="tags">Tags: ${blog.tags}</p></#if>
             </p>
             <div class="blog-post">
                 ${blog.publishedContent.contentText}

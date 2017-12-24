@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 /**
  * Base class to support Doc related processing.
@@ -132,6 +133,7 @@ public abstract class AbstractDocController {
         String contentText = req.getParameter("contentText");
         String btnAction = req.getParameter("btnAction");
         String path = req.getParameter("path");
+        String tags = req.getParameter("tags");
 
         if (StringUtils.isEmpty(title) ||
                 StringUtils.isEmpty(contentText) ||
@@ -140,6 +142,7 @@ public abstract class AbstractDocController {
             req.setAttribute("contentText", contentText);
             req.setAttribute("format", format);
             req.setAttribute("path", path);
+            req.setAttribute("tags", tags);
 
             req.setAttribute("actionErrorMessage", "Invalid inputs");
             return view(viewName);
@@ -150,6 +153,10 @@ public abstract class AbstractDocController {
 
         if (type == Doc.Type.PAGE && StringUtils.isNotEmpty(path)) {
             doc.setPath(path);
+        }
+
+        if (StringUtils.isNotEmpty(tags)) {
+            doc.setTags(tags);
         }
 
         docService.create(doc);
@@ -188,6 +195,7 @@ public abstract class AbstractDocController {
         String reasonForEdit = req.getParameter("reasonForEdit");
         String btnAction = req.getParameter("btnAction");
         String path = req.getParameter("path");
+        String tags = req.getParameter("tags");
 
         Doc doc = docService.get(docId);
         doc.getLatestContent().setTitle(title);
@@ -208,6 +216,10 @@ public abstract class AbstractDocController {
 
         if (type == Doc.Type.PAGE && StringUtils.isNotEmpty(path)) {
             doc.setPath(path);
+        }
+
+        if (StringUtils.isNotEmpty(tags)) {
+            doc.setTags(tags);
         }
 
         docService.update(doc);

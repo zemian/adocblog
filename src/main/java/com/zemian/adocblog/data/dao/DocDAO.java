@@ -28,6 +28,7 @@ public class DocDAO extends AbstractDAO {
             "   docs.doc_id," +
             "   docs.path," +
             "   docs.type," +
+            "   docs.tags," +
             "   docs.published_user," +
             "   docs.published_dt," +
             "   latest_contents.content_id latest_content_id," +
@@ -73,6 +74,7 @@ public class DocDAO extends AbstractDAO {
             Doc doc = new Doc();
             doc.setDocId(rs.getInt("doc_id"));
             doc.setPath(rs.getString("path"));
+            doc.setTags(rs.getString("tags"));
             doc.setType(Doc.Type.valueOf(rs.getString("type")));
 
             Content latestContent = contentMetaRowMapper.mapRow(rs, rowNum, "latest_");
@@ -119,10 +121,11 @@ public class DocDAO extends AbstractDAO {
         }
 
         // Insert doc
-        sql = "INSERT INTO docs(doc_id, path, type, latest_content_id) VALUES(?, ?, ?, ?)";
+        sql = "INSERT INTO docs(doc_id, path, tags, type, latest_content_id) VALUES(?, ?, ?, ?, ?)";
         int ret = jdbc.update(sql,
             doc.getDocId(),
             doc.getPath(),
+            doc.getTags(),
             doc.getType().name(),
             doc.getLatestContent().getContentId());
 
@@ -219,11 +222,13 @@ public class DocDAO extends AbstractDAO {
 
         String sql = "UPDATE docs SET" +
                 " path = ?," +
+                " tags = ?," +
                 " type = ?," +
                 " latest_content_id = ?" +
                 " WHERE doc_id = ?";
         int ret = jdbc.update(sql,
                 doc.getPath(),
+                doc.getTags(),
                 doc.getType().name(),
                 doc.getLatestContent().getContentId(),
                 doc.getDocId());

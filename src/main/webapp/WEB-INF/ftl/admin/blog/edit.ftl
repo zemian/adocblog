@@ -29,6 +29,10 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="title">Tags:</label>
+                <input type="input" class="form-control" id="tags" name="tags" value="${doc.tags!''}">
+            </div>
+            <div class="form-group">
                 <label for="reasonForEdit">Reason For Edit:</label>
                 <input type="input" class="form-control" id="reasonForEdit" name="reasonForEdit">
             </div>

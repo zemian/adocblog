@@ -29,6 +29,10 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="title">Tags:</label>
+                <input type="input" class="form-control" id="tags" name="tags" value="${tags!''}">
+            </div>
+            <div class="form-group">
                 <textarea id="contentText" name="contentText" rows="30" cols="100">${contentText!''}</textarea>
             </div>
             <button class="btn btn-success" name="btnAction" value="save">Save</button>
