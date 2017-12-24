@@ -1,9 +1,11 @@
 package com.zemian.adocblog.service;
 
 import com.zemian.adocblog.AppException;
+import com.zemian.adocblog.data.dao.AuditLogDAO;
 import com.zemian.adocblog.data.dao.DocDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
+import com.zemian.adocblog.data.domain.AuditLog;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class DocService {
     @Autowired
     protected DocDAO docDAO;
 
+    @Autowired
+    protected AuditLogDAO auditLogDAO;
+
     public void create(Doc doc) {
         docDAO.create(doc);
     }
@@ -31,6 +36,7 @@ public class DocService {
 
     public void delete(Integer docId) {
         docDAO.delete(docId);
+        auditLogDAO.create("DOC_DELETED", "DocId=" + docId);
     }
 
     // ==
@@ -71,10 +77,15 @@ public class DocService {
             throw new AppException("publishedContent is not set.");
         }
         docDAO.publish(doc);
+        auditLogDAO.create("DOC_PUBLISHED",
+                "DocId=" + doc.getDocId() + ", publishedDt=" + doc.getPublishedDt() +
+                        ", publishedUser" + doc.getPublishedUser() +
+                        ", contentId=" + doc.getPublishedContent().getContentId());
     }
 
     public void unpublish(Integer docId) {
         docDAO.unpublish(docId);
+        auditLogDAO.create("DOC_UNPUBLISHED","DocId=" + docId);
     }
 
     // ==

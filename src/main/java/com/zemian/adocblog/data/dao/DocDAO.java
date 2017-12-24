@@ -240,6 +240,7 @@ public class DocDAO extends AbstractDAO {
                 " published_user = ?," +
                 " published_dt = ? WHERE doc_id = ?";
         int ret = jdbc.update(sql, contentId, username, doc.getPublishedDt(), docId);
+        doc.setPublishedContent(doc.getLatestContent());
         LOG.info("Published {}. ret={}", doc, ret);
     }
 

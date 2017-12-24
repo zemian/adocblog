@@ -1,6 +1,7 @@
 package com.zemian.adocblog.service;
 
 import com.zemian.adocblog.cipher.PasswordHasher;
+import com.zemian.adocblog.data.dao.AuditLogDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.dao.UserDAO;
@@ -22,6 +23,9 @@ public class UserService {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    protected AuditLogDAO auditLogDAO;
+
     public void create(User user) {
         LOG.debug("Hashing password for new user {}", user.getUsername());
         String plainPassword = user.getPassword();
@@ -32,6 +36,7 @@ public class UserService {
 
     public void update(User user) {
         userDAO.update(user);
+        auditLogDAO.create("USER_UPDATED", "" + user);
     }
 
     public void markForDelete(String username) {
@@ -51,7 +56,8 @@ public class UserService {
     }
 
     public void delete(String username) {
-        userDAO.markForDelete(username);
+        userDAO.delete(username);
+        auditLogDAO.create("USER_DELETED", "Username=" + username);
     }
 
     public boolean verifyPassword(String plainPassword, String hashedPassword) {

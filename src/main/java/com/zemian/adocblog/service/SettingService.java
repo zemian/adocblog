@@ -1,5 +1,6 @@
 package com.zemian.adocblog.service;
 
+import com.zemian.adocblog.data.dao.AuditLogDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.dao.SettingDAO;
@@ -19,6 +20,9 @@ public class SettingService {
     @Autowired
     private SettingDAO settingDAO;
 
+    @Autowired
+    protected AuditLogDAO auditLogDAO;
+
     public PagingList<Setting> findAll(Paging paging) {
         return settingDAO.findAll(paging);
     }
@@ -33,10 +37,12 @@ public class SettingService {
 
     public void delete(Integer settingId) {
         settingDAO.delete(settingId);
+        auditLogDAO.create("SETTING_DELETED", "SettingId=" + settingId);
     }
 
     public void update(Setting setting) {
         settingDAO.update(setting);
+        auditLogDAO.create("SETTING_UPDATED", "" + setting);
     }
 
     public List<Setting> findByCategory(String category) {

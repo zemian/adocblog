@@ -57,3 +57,10 @@ CREATE TABLE doc_contents (
   doc_id INT NOT NULL REFERENCES docs(doc_id),
   content_id INT NOT NULL REFERENCES contents(content_id)
 );
+
+CREATE TABLE audit_logs (
+  log_id SERIAL NOT NULL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  value VARCHAR(5000) NOT NULL,
+  created_dt TIMESTAMP NOT NULL DEFAULT NOW()
+);
