@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>Page Versions History: ${docHistory.docId}</h1>
+        <h1>${doc.latestContent.title}</h1>
         <table class="table">
             <tr>
                 <td>Date</td>
@@ -36,7 +36,7 @@
                     <td>${content.format}</td>
                     <td>${(content.contentId == docHistory.publishedContentId!(0))?string('Yes', 'No')}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/page/preview/${page.docId}/${content.contentId}">Preview</a> |
+                        <a href="${app.contextPath}/admin/page/preview/${doc.docId}/${content.contentId}">Preview</a> |
                         <a href="${app.contextPath}/admin/page/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
                 </tr>

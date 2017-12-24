@@ -72,6 +72,6 @@ public class AdminBlogController extends AbstractDocController {
 
     @GetMapping("/admin/blog/preview/{blogId}/{contentId}")
     public ModelAndView preview(@PathVariable Integer blogId, @PathVariable Integer contentId) {
-        return preview("/admin/blog/list", blogId, contentId);
+        return preview("/admin/blog/preview", blogId, contentId);
     }
 }

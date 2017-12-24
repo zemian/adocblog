@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>Blog Versions History: ${docHistory.docId}</h1>
+        <h1>${doc.latestContent.title}</h1>
         <table class="table">
             <tr>
                 <td>Date</td>

@@ -112,7 +112,9 @@ public abstract class AbstractDocController {
 
     protected ModelAndView history(String viewName, Integer docId) {
         DocHistory docHistory = docService.getDocHistory(docId);
+        Doc doc = docService.get(docId);
         ModelAndView result = new ModelAndView(viewName);
+        result.addObject("doc", doc);
         result.addObject("docHistory", docHistory);
         return result;
     }
