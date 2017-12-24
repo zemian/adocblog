@@ -27,6 +27,14 @@ public class BlogService extends DocService {
         return docDAO.findLatest(paging, Doc.Type.BLOG);
     }
 
+    public PagingList<Doc> findPublishedByTags(Paging paging, String tags) {
+        return super.findPublishedByTags(paging, Doc.Type.BLOG, tags);
+    }
+
+    public PagingList<Doc> findPublishedByDate(Paging paging, LocalDateTime from, LocalDateTime to) {
+        return super.findPublishedByDate(paging, Doc.Type.BLOG, from, to);
+    }
+
     public PagingList<Doc> findPublished(Paging paging) {
         return docDAO.findPublished(paging, Doc.Type.BLOG);
     }

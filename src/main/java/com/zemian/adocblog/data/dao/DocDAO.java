@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -268,6 +269,22 @@ public class DocDAO extends AbstractDAO {
         String sql = SELECT_PUBLISHED_DOCS_SQL + " AND docs.type = ? ORDER BY docs.published_dt DESC";
         PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name());
         LOG.debug("Found {} published docs.", ret);
+        return ret;
+    }
+
+    public PagingList<Doc> findPublishedByTags(Paging paging, Doc.Type type, String tags) {
+        String sql = SELECT_PUBLISHED_DOCS_SQL + " AND docs.type = ? AND docs.tags LIKE ? ORDER BY docs.published_dt DESC";
+        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name(), "%" + tags + "%");
+        LOG.debug("Found {} published docs by tag={}.", ret, tags);
+        return ret;
+    }
+
+    public PagingList<Doc> findPublishedByDate(Paging paging, Doc.Type type,
+                                               LocalDateTime from, LocalDateTime to) {
+        String sql = SELECT_PUBLISHED_DOCS_SQL + " AND docs.type = ? AND" +
+                " docs.published_dt BETWEEN ? AND ? ORDER BY docs.published_dt DESC";
+        PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name(), from, to);
+        LOG.debug("Found {} published docs by from={} to={}", ret, from, to);
         return ret;
     }
 

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 /**
  * A Doc that contains one or more Content data.
  */
@@ -95,6 +97,14 @@ public class DocService {
 
     public PagingList<Doc> findPublished(Paging paging, Doc.Type type) {
         return docDAO.findPublished(paging, type);
+    }
+
+    public PagingList<Doc> findPublishedByTags(Paging paging, Doc.Type type, String tags) {
+        return docDAO.findPublishedByTags(paging, type, tags);
+    }
+
+    public PagingList<Doc> findPublishedByDate(Paging paging, Doc.Type type, LocalDateTime from, LocalDateTime to) {
+        return docDAO.findPublishedByDate(paging, type, from, to);
     }
 
     public PagingList<Doc> searchPublished(Paging paging, Doc.Type type, String searchTerms) {

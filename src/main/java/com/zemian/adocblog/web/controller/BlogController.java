@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 /**
  * Public User Viewing of the Blog App. It will return a view based on a themeName.
@@ -44,9 +47,7 @@ public class BlogController {
         return "/themes/" + themeName + name;
     }
 
-    /*
-    Landing home page - preview of recent blogs
-     */
+    /* Landing home page - preview of recent blogs */
     @GetMapping("/index")
     public ModelAndView index() {
         ModelAndView result = new ModelAndView(getThemeViewName("/index"));
@@ -70,20 +71,48 @@ public class BlogController {
         return result;
     }
 
-    /*
-    List of published blogs
-     */
+    /* List of published blogs */
     @GetMapping("/archive")
-    public ModelAndView blogs(Paging paging) {
+    public ModelAndView archive(Paging paging) {
         PagingList<Doc> blogs = blogService.findPublished(paging);
         ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
         result.addObject("blogs", blogs);
         return result;
     }
 
-    /*
-    View single blog content
-     */
+    /* List of published blogs by tags */
+    @GetMapping("/archive/tags/{name}")
+    public ModelAndView archiveByTag(Paging paging, @PathVariable String name) {
+        PagingList<Doc> blogs = blogService.findPublishedByTags(paging, name);
+        ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
+        result.addObject("blogs", blogs);
+        return result;
+    }
+
+    /* List of published blogs by dates (year) */
+    @GetMapping("/archive/{year}")
+    public ModelAndView archiveByYear(Paging paging, @PathVariable String year) {
+        LocalDateTime from = LocalDateTime.parse(year + "-01-01T00:00");
+        PagingList<Doc> blogs = blogService.findPublishedByDate(paging, from, from.plusYears(1L));
+        ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
+        result.addObject("blogs", blogs);
+        return result;
+    }
+
+    /* List of published blogs by dates (year/month) */
+    @GetMapping("/archive/{year}/{month}")
+    public ModelAndView archiveByYearMonth(Paging paging, @PathVariable String year, @PathVariable String month) {
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+        LocalDateTime from = LocalDateTime.parse(year + "-" + month + "-01T00:00");
+        PagingList<Doc> blogs = blogService.findPublishedByDate(paging, from, from.plusMonths(1L));
+        ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
+        result.addObject("blogs", blogs);
+        return result;
+    }
+
+    /* View single blog content */
     @GetMapping("/blog/{blogId}")
     public ModelAndView blog(@PathVariable Integer blogId) {
         ModelAndView result = new ModelAndView(getThemeViewName("/blog"));
@@ -113,9 +142,7 @@ public class BlogController {
         }
     }
 
-    /*
-    Search of published blogs using POSTGRES search ts_query terms
-     */
+    /* Search of published blogs using POSTGRES search ts_query terms */
     @RequestMapping(value = "/search", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView search(Paging paging, HttpServletRequest req) {
         String searchTerms = req.getParameter("searchTerms");
