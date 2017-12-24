@@ -147,6 +147,11 @@ public abstract class AbstractDocController {
 
         Doc doc = DataUtils.createDoc(type, Content.Format.valueOf(format),
                 userSession.getUser().getUsername(), title, contentText);
+
+        if (type == Doc.Type.PAGE && StringUtils.isNotEmpty(path)) {
+            doc.setPath(path);
+        }
+
         docService.create(doc);
         String message = "Doc " + doc.getDocId() + " created successfully.";
 
@@ -199,6 +204,10 @@ public abstract class AbstractDocController {
 
             req.setAttribute("actionErrorMessage", "Invalid inputs");
             return edit(viewName, doc);
+        }
+
+        if (type == Doc.Type.PAGE && StringUtils.isNotEmpty(path)) {
+            doc.setPath(path);
         }
 
         docService.update(doc);

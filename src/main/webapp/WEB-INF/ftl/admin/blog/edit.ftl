@@ -37,7 +37,7 @@
             </div>
             <button class="btn btn-success" name="btnAction" value="save">Save</button>
             <button class="btn btn-success" name="btnAction" value="publish">Publish</button>
-            <input type="hidden" name="blogId" value="${doc.docId}">
+            <input type="hidden" name="docId" value="${doc.docId}">
         </form>
         <script>
             CodeMirror.fromTextArea(document.getElementById("contentText"), {
