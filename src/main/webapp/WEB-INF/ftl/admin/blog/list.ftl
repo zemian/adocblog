@@ -22,8 +22,9 @@
             <tr>
                 <td>ID</td>
                 <td>Title</td>
-                <td>Date</td>
+                <td>Latest Date</td>
                 <td>LatestVer</td>
+                <td>Published Date</td>
                 <td>PublishedVer</td>
                 <td>Actions</td>
             </tr>
@@ -32,9 +33,11 @@
                 <#assign pubActionLabel = 'Publish' >
                 <#assign pubActionPath = 'publish/${doc.docId}/${doc.latestContent.contentId}' >
                 <#assign pubVersion = 'NOT PUBLISHED' >
+                <#assign pubDate = 'NOT PUBLISHED' >
                 <#if doc.publishedContent??>
                     <#assign pubActionLabel = 'Unpublish' >
                     <#assign pubActionPath = 'unpublish/${doc.docId}' >
+                    <#assign pubDate = doc.publishedDt >
                     <#assign pubVersion = doc.publishedContent.version >
                 </#if>
                 <tr>
@@ -42,6 +45,7 @@
                     <td>${doc.latestContent.title}</td>
                     <td>${doc.latestContent.createdDt}</td>
                     <td>${doc.latestContent.version}</td>
+                    <td>${pubDate}</td>
                     <td>${pubVersion}</td>
                     <td>
                         <a href="${app.contextPath}/admin/blog/edit/${doc.docId}">Edit</a> |
