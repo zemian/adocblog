@@ -44,11 +44,6 @@ To create and manage documents, go to the Admin Console here:
   http://localhost:8080/admin
 
 Using the user you created above, you may login to Create, Edit, Publish and manage blog posts. If your
-user is an "admin" user, then you may manage the site's `Page` content as well. For example you
-may customize the "About" page by creating a new `Page` with Path = `themes/default/about.ftl`. You may
-want to copy the content in `WEB-INF/ftl/themes/default/about.ftl` and modify it to your need.
+user is an "admin" user, then you may manage the site's `Page` content as well.
 
-NOTE: The Path of a `Page` is important, and they are being mapped in the application. If you mis-spelled
-it, it will not find your version of the page.
-
-NOTE: You must publish the `Page` before it can be viewed by the application!
+NOTE: You must publish the document before it can be viewed by the application!
