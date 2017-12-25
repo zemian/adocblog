@@ -26,12 +26,12 @@ public class DocTool {
     }
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext spring = new AnnotationConfigApplicationContext(UserTool.Config.class);
+        AnnotationConfigApplicationContext spring = new AnnotationConfigApplicationContext(Config.class);
         DocTool main = spring.getBean(DocTool.class);
         main.run(args);
         spring.close();
     }
-    private static Logger LOG = LoggerFactory.getLogger(UserTool.class);
+    private static Logger LOG = LoggerFactory.getLogger(DocTool.class);
 
     @Autowired
     private DocService docService;
@@ -50,7 +50,10 @@ public class DocTool {
 
         String cmd = opts.getArgOrError(0, "Missing command argument.");
 
-        if ("removeMarkForDelete".equals(cmd)) {
+        if ("help".equals(cmd)) {
+            printHelp();
+            System.exit(1);
+        } else if ("removeMarkForDelete".equals(cmd)) {
             LocalDateTime sinceDt;
             if (opts.hasOpt("sinceMonths")) {
                 sinceDt = LocalDateTime.now().minusMonths(opts.getIntOpt("sinceMonths"));
@@ -59,7 +62,9 @@ public class DocTool {
             }
             docService.removeOldDocs(sinceDt);
         } else {
-            throw new AppException("Invalid command argument: " + cmd);
+            System.out.println("ERROR: invalid arguments");
+            printHelp();
+            System.exit(1);
         }
     }
 }

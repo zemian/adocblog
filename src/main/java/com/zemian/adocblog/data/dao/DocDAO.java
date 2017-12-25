@@ -312,9 +312,14 @@ public class DocDAO extends AbstractDAO {
         return tags;
     }
 
+    /* Remove any marked for delete docs older than a certain date. */
     public int removeOldDocs(LocalDateTime sinceDt) {
-        String sql = "SELECT doc_id FROM docs WHERE created_dt <= ? AND deleted = TRUE";
-        List<Integer> ids = jdbc.queryForList(sql, Integer.class, sinceDt);
+        String sql = "SELECT docs.doc_id FROM docs" +
+                " LEFT JOIN doc_contents ON doc_contents.doc_id = docs.doc_id" +
+                " LEFT JOIN contents ON contents.content_id = doc_contents.content_id" +
+                " WHERE docs.deleted = TRUE" +
+                " AND (contents.created_dt <= ? OR docs.published_dt <= ?)";
+        List<Integer> ids = jdbc.queryForList(sql, Integer.class, sinceDt, sinceDt);
         for (Integer id : ids) {
             delete(id);
         }
