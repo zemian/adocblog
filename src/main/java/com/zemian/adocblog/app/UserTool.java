@@ -47,6 +47,9 @@ public class UserTool {
                 "Usage: (update new user)\n" +
                 "  UserTool --update [--adminUser=true] [--fullName=NAME] <username> <password>\n" +
                 "\n" +
+                "Usage: (delete (mark) user)\n" +
+                "  UserTool --delete <username>\n" +
+                "\n" +
                 "Usage: (print hashed password only)\n" +
                 "  UserTool --hashPassword=PASSWORD\n" +
                 "\n");
@@ -100,6 +103,10 @@ public class UserTool {
 
                 LOG.info("{} (fullName={}) has been created successfully.", user, fullName);
             }
+        } else if (opts.hasOpt("delete")) {
+            String username = opts.getArg(0);
+            userService.markForDelete(username);
+            LOG.info("{} has been marked for delete successfully.", username);
         } else {
             System.out.println("ERROR: Invalid options.");
             printHelp();
