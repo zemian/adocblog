@@ -1,3 +1,4 @@
+/* == adocblog main app theme styles */
 body {
     padding-top: 50px;
 }
@@ -6,4 +7,45 @@ body {
     padding: 40px 15px;
     text-align: left;
     min-height: 400px;
+}
+
+.app-description {
+    font-style: italic;
+}
+
+.app-footer {
+    padding: 2.5rem 0;
+    text-align: center;
+    border-top: .05rem solid #e5e5e5;
+}
+.app-footer p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* == Asciidoctor theme controls */
+.theme-controls {
+    font-size: .8em;
+    position: fixed;
+    z-index: 1001;
+    padding: 5px;
+    background-color: white;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, .35);
+    text-align: right;
+
+    /*top: 3px;*/
+    bottom: 4px;
+    right: 4px;
+}
+
+.theme-controls select {
+    z-index: 1001;
+}
+
+.toc-left .theme-controls {
+    /*right: 5px;*/
+}
+
+.toc-right .theme-controls {
+    /*left: 5px;*/
 }

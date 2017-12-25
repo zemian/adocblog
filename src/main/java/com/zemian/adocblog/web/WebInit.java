@@ -30,8 +30,8 @@ public class WebInit {
         config.put("app.env", env.getProperty("app.env"));
         config.put("app.web.name", env.getProperty("app.web.name"));
         config.put("app.web.themeName", env.getProperty("app.web.themeName"));
-        config.put("app.web.title", env.getProperty("app.web.title"));
-        config.put("app.web.blogTitle", env.getProperty("app.web.blogTitle"));
+        config.put("app.web.htmlTitle", env.getProperty("app.web.htmlTitle"));
+        config.put("app.web.appDescription", env.getProperty("app.web.appDescription"));
         config.put("app.web.blogDateFormat", env.getProperty("app.web.blogDateFormat"));
         config.put("app.web.disqus.websiteName", env.getProperty("app.web.disqus.websiteName"));
         config.put("app.web.googleAnalytic.id", env.getProperty("app.web.googleAnalytic.id"));

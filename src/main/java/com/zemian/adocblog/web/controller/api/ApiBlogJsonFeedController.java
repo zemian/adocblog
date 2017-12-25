@@ -66,8 +66,8 @@ public class ApiBlogJsonFeedController {
         ret.setMore(blogs.isMore());
 
         ret.setVersion("https://jsonfeed.org/version/1");
-        ret.setTitle(env.getProperty("app.web.title"));
-        ret.setDescription(env.getProperty("app.web.blogTitle"));
+        ret.setTitle(env.getProperty("app.web.htmlTitle"));
+        ret.setDescription(env.getProperty("app.web.appDescription"));
         ret.setFeedUrl(feedUrl);
         ret.setHomePageUrl(homeUrl);
         ret.setItems(items);

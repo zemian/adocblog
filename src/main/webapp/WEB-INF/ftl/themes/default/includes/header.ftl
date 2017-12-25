@@ -20,7 +20,7 @@
         </div>
 
         <div id="navbar2" class="collapse navbar-collapse">
-            <p class="text-md-left blogTitle">${app.config['app.web.blogTitle']}</p>
+            <p class="text-md-left app-description">${app.config['app.web.appDescription']}</p>
         </div>
     </div>
 </nav>

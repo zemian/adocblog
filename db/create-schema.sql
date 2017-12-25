@@ -13,8 +13,8 @@ CREATE TABLE settings (
 
 -- Sample of app.properties override
 -- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.name', 'Zemian''s Blog');
--- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.title', 'Zemian''s Blog');
--- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.blogTitle', 'A Programmer''s Journal');
+-- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.htmlTitle', 'Zemian''s Blog');
+-- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.appDescription', 'A Programmer''s Journal');
 -- INSERT INTO settings (category, name, value) VALUES ('APP_WEB_DEV', 'app.web.disqus.websiteName', 'mydisqusUniqueName');
 
 CREATE TABLE users (
