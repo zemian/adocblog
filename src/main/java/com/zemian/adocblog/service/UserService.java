@@ -43,8 +43,8 @@ public class UserService {
         userDAO.markForDelete(username);
     }
 
-    public PagingList<User> findAll(Paging paging) {
-        return userDAO.findAll(paging);
+    public PagingList<User> find(Paging paging) {
+        return userDAO.find(paging);
     }
 
     public boolean exists(String username) {

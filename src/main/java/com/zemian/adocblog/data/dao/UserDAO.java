@@ -63,7 +63,7 @@ public class UserDAO extends AbstractDAO {
         LOG.debug("User username={} deleted result={}", username, ret);
     }
 
-    public PagingList<User> findAll(Paging paging) {
+    public PagingList<User> find(Paging paging) {
         String sql = "SELECT * FROM users ORDER BY username";
         return findByPaging(sql, new UserRowMapper(), paging);
     }

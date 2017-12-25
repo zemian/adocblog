@@ -46,7 +46,7 @@ public class SettingServiceTest extends SpringTestBase {
             assertThat(test2.getName(), is("DataConfigTest"));
             assertThat(test2.getValue(), is("Foo"));
 
-            List<Setting> list = settingService.findAll(new Paging()).getList();
+            List<Setting> list = settingService.find(new Paging()).getList();
             assertThat(list.size(), greaterThanOrEqualTo(1));
         } finally {
             settingService.delete(test.getSettingId());
@@ -122,7 +122,7 @@ public class SettingServiceTest extends SpringTestBase {
 
         try {
             Paging paging = new Paging(0, 25);
-            PagingList<Setting> plist = settingService.findAll(paging);
+            PagingList<Setting> plist = settingService.find(paging);
             assertThat(plist.getList().size(), is(25));
             assertThat(plist.isMore(), is(true));
             assertThat(plist.getPaging().getOffset(), is(paging.getOffset()));
@@ -130,18 +130,18 @@ public class SettingServiceTest extends SpringTestBase {
 
             int totalCount = jdbc.queryForObject("SELECT COUNT(*) FROM settings", Integer.class);
             paging = new Paging(0, totalCount + 1);
-            plist = settingService.findAll(paging);
+            plist = settingService.find(paging);
             assertThat(plist.getList().size(), is(totalCount));
             assertThat(plist.isMore(), is(false));
 
             paging = new Paging(25, 25);
-            PagingList<Setting> plist2 = settingService.findAll(paging);
+            PagingList<Setting> plist2 = settingService.find(paging);
             assertThat(plist2.getList().size(), is(25));
             assertThat(plist2.isMore(), is(true));
             assertThat(plist2.getList().get(0).getSettingId(), not(plist.getList().get(0).getSettingId()));
 
             paging = new Paging(totalCount - 25, 25);
-            plist = settingService.findAll(paging);
+            plist = settingService.find(paging);
             assertThat(plist.getList().size(), is(25));
             assertThat(plist.isMore(), is(false));
 

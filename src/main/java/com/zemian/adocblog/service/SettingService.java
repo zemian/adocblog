@@ -23,8 +23,8 @@ public class SettingService {
     @Autowired
     protected AuditLogDAO auditLogDAO;
 
-    public PagingList<Setting> findAll(Paging paging) {
-        return settingDAO.findAll(paging);
+    public PagingList<Setting> find(Paging paging) {
+        return settingDAO.find(paging);
     }
 
     public void create(Setting setting) {

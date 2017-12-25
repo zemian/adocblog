@@ -86,7 +86,7 @@ public class SettingDAO extends AbstractDAO {
         LOG.debug("Updated setting_id={} result={}", setting.getSettingId(), ret);
     }
 
-    public PagingList<Setting> findAll(Paging paging) {
+    public PagingList<Setting> find(Paging paging) {
         String sql = "SELECT * FROM settings ORDER BY category, name";
         PagingList<Setting> ret = findByPaging(sql, new SettingRowMapper(), paging);
         LOG.debug("Found {} Settings.", ret);

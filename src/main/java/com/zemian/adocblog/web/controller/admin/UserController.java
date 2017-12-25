@@ -16,7 +16,7 @@ public class UserController {
 
     @GetMapping("/admin/users")
     public ModelAndView list(Paging paging) {
-        PagingList<User> users = userService.findAll(paging);
+        PagingList<User> users = userService.find(paging);
         ModelAndView result = new ModelAndView("/admin/users");
         result.addObject("users", users);
         return result;

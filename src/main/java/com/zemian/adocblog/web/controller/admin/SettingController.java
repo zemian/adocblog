@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-
 @Controller
 public class SettingController {
     @Autowired
@@ -18,7 +16,7 @@ public class SettingController {
 
     @GetMapping("/admin/settings")
     public ModelAndView list(Paging paging) {
-        PagingList<Setting> settings = settingService.findAll(paging);
+        PagingList<Setting> settings = settingService.find(paging);
         ModelAndView result = new ModelAndView("/admin/settings");
         result.addObject("settings", settings);
         return result;
