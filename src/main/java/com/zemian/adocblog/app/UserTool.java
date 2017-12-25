@@ -17,21 +17,20 @@ import org.springframework.context.annotation.*;
  * You may use "--adminUser=true" option to create admin users.
  */
 public class UserTool {
+    @Configuration
+    @Import({ServiceConfig.class, CommonConfig.class})
+    public static class Config {
+        @Bean
+        public UserTool userTool() {
+            return new UserTool();
+        }
+    }
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext spring = new AnnotationConfigApplicationContext(Config.class);
         UserTool main = spring.getBean(UserTool.class);
         main.run(args);
         spring.close();
-    }
-
-    @Configuration
-    @Import({ServiceConfig.class, CommonConfig.class})
-    public static class Config {
-        @Bean
-        public UserTool createUser() {
-            return new UserTool();
-        }
     }
 
     private static Logger LOG = LoggerFactory.getLogger(UserTool.class);

@@ -68,8 +68,8 @@ public class DocDAO extends AbstractDAO {
     public static final String SELECT_PUBLISHED_DOCS_SQL =  SELECT_DOCS_SQL +
             " WHERE docs.deleted = FALSE AND docs.latest_content_id IS NOT NULL" +
             "   AND docs.published_content_id IS NOT NULL";
-
     /* A Doc with Content meta data ResultSet mapping. */
+
     public static class DocRowMapper implements RowMapper<Doc> {
         private ContentDAO.ContentMetaRowMapper contentMetaRowMapper = new ContentDAO.ContentMetaRowMapper();
         @Override
@@ -310,5 +310,15 @@ public class DocDAO extends AbstractDAO {
         List<String> tags = jdbc.queryForList(sql, String.class, type.name());
         LOG.debug("Found {} docs.tags", tags.size());
         return tags;
+    }
+
+    public int removeOldDocs(LocalDateTime sinceDt) {
+        String sql = "SELECT doc_id FROM docs WHERE created_dt <= ? AND deleted = TRUE";
+        List<Integer> ids = jdbc.queryForList(sql, Integer.class, sinceDt);
+        for (Integer id : ids) {
+            delete(id);
+        }
+        LOG.debug("Deleted records older than {}, result={}", sinceDt, ids.size());
+        return ids.size();
     }
 }

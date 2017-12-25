@@ -58,11 +58,11 @@ public class AuditLogService {
             return 0;
         }
 
-        LocalDateTime dt = LocalDateTime.now().minusMonths(removeOldLogsPeriodInMonths);
-        int ret = auditLogDAO.removeOldLogs(dt);
+        LocalDateTime sinceDt = LocalDateTime.now().minusMonths(removeOldLogsPeriodInMonths);
+        int ret = auditLogDAO.removeOldLogs(sinceDt);
         if (ret > 0) {
             auditLogDAO.create("LOG_REMOVED",
-                    "Deleted " + ret + " log entries older than " + dt);
+                    "Deleted " + ret + " log entries older than " + sinceDt);
         }
 
         return ret;

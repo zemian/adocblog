@@ -103,10 +103,10 @@ public class AuditLogDAO extends AbstractDAO {
         return findByPaging(sql, new AuditLogRowMapper(), paging);
     }
 
-    public int removeOldLogs(LocalDateTime olderDt) {
+    public int removeOldLogs(LocalDateTime sinceDt) {
         String sql = "DELETE FROM audit_logs WHERE created_dt <= ?";
-        int ret = jdbc.update(sql, olderDt);
-        LOG.debug("Deleted records older than {}, result={}", olderDt, ret);
+        int ret = jdbc.update(sql, sinceDt);
+        LOG.debug("Deleted records older than {}, result={}", sinceDt, ret);
         return ret;
     }
 }

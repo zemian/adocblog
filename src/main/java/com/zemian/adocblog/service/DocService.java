@@ -134,4 +134,8 @@ public class DocService {
         Collections.sort(ret);
         return ret;
     }
+
+    public int removeOldDocs(LocalDateTime sinceDt) {
+        return docDAO.removeOldDocs(sinceDt);
+    }
 }
