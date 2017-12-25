@@ -17,7 +17,7 @@ public class SettingController {
     private SettingService settingService;
 
     @GetMapping("/admin/settings")
-    public ModelAndView getSettings(Paging paging) {
+    public ModelAndView list(Paging paging) {
         PagingList<Setting> settings = settingService.findAll(paging);
         ModelAndView result = new ModelAndView("/admin/settings");
         result.addObject("settings", settings);

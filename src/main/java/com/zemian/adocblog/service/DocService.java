@@ -31,11 +31,18 @@ public class DocService {
 
     public void create(Doc doc) {
         docDAO.create(doc);
+        auditLogDAO.create("DOC_CREATED",
+                "DocId=" + doc.getDocId() +
+                        ", date=" + doc.getLatestContent().getCreatedDt() +
+                        ", user=" + doc.getLatestContent().getCreatedUser());
     }
 
     // ==
     public void markForDelete(Integer docId, String reasonForDelete) {
         docDAO.markForDelete(docId, reasonForDelete);
+        auditLogDAO.create("DOC_MARKED_FOR_DELETE",
+                "DocId=" + docId +
+                        ", reasonForDelete=" + reasonForDelete);
     }
 
     public void delete(Integer docId) {
@@ -68,6 +75,10 @@ public class DocService {
     public void update(Doc doc) {
         doc.getLatestContent().setVersion(doc.getLatestContent().getVersion() + 1);
         docDAO.update(doc);
+        auditLogDAO.create("DOC_UPDATED",
+                "DocId=" + doc.getDocId() + ", date=" + doc.getLatestContent().getCreatedDt() +
+                        ", contentId=" + doc.getLatestContent().getContentId() +
+                        ", version=" + doc.getLatestContent().getVersion());
     }
 
     public void publish(Doc doc) {

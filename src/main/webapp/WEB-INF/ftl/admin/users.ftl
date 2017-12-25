@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>Users Table</h1>
+        <h1>Users</h1>
         <table class="table">
             <tr>
                 <td>Username</td>

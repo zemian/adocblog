@@ -11,6 +11,7 @@
                     <li id="users"><a href="${app.contextPath}/admin/users">Users</a></li>
                     <li id="settings"><a href="${app.contextPath}/admin/settings">Settings</a></li>
                     <li id="system-info"><a href="${app.contextPath}/admin/system-info">SystemInfo</a></li>
+                    <li id="audit-logs"><a href="${app.contextPath}/admin/audit-logs">AuditLogs</a></li>
                 </#if>
             </ul>
             <ul class="nav navbar-nav navbar-right">

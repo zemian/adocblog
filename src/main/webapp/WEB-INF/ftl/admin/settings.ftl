@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>Settings Table</h1>
+        <h1>Settings</h1>
         <table class="table">
             <td>ID</td>
             <td>Category</td>
