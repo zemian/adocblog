@@ -176,6 +176,7 @@ public class DocServiceTest extends SpringTestBase {
         docService.create(doc);
 
         doc.setPublishedDt(pubDate);
+        doc.setPublishedUser(username);
         docService.publish(doc);
 
         return doc;

@@ -13,14 +13,14 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @ContextConfiguration(classes = DataConfig.class)
-public class CreateUserTest extends SpringTestBase {
+public class UserToolTest extends SpringTestBase {
     @Autowired
     private UserDAO userDAO;
 
     @Test
     public void createNormalUser() {
-        String username = "CreateUserTest";
-        UserTool.main(new String[]{username, "test"});
+        String username = "UserToolTest";
+        UserTool.main(new String[]{"--create", username, "test"});
         User user = userDAO.get(username);
         try {
             assertThat(user.getUsername(), is(username));
@@ -34,8 +34,8 @@ public class CreateUserTest extends SpringTestBase {
 
     @Test
     public void createNormalUserWithFullName() {
-        String username = "CreateUserTest";
-        UserTool.main(new String[]{"--fullName=Zemian Deng", username, "test"});
+        String username = "UserToolTest";
+        UserTool.main(new String[]{"--create", "--fullName=Zemian Deng", username, "test"});
         User user = userDAO.get(username);
         try {
             assertThat(user.getUsername(), is(username));
@@ -49,8 +49,8 @@ public class CreateUserTest extends SpringTestBase {
 
     @Test
     public void createAdminUserWithFullName() {
-        String username = "CreateUserTest";
-        UserTool.main(new String[]{"--adminUser=true", "--fullName=Zemian Deng", username, "test"});
+        String username = "UserToolTest";
+        UserTool.main(new String[]{"--create", "--adminUser=true", "--fullName=Zemian Deng", username, "test"});
         User user = userDAO.get(username);
         try {
             assertThat(user.getUsername(), is(username));
