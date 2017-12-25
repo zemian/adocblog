@@ -37,7 +37,7 @@
         </#if>
 
         <#if !(errorMessage??)>
-            <#include "/themes/${app.themeName}/includes/disqus.ftl">
+            <#include "/includes/disqus.ftl">
         </#if>
     </div>
     <#include "/themes/${app.themeName}/includes/footer.ftl">

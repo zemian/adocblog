@@ -34,6 +34,7 @@ public class WebInit {
         config.put("app.web.blogTitle", env.getProperty("app.web.blogTitle"));
         config.put("app.web.blogDateFormat", env.getProperty("app.web.blogDateFormat"));
         config.put("app.web.disqus.websiteName", env.getProperty("app.web.disqus.websiteName"));
+        config.put("app.web.googleAnalytic.id", env.getProperty("app.web.googleAnalytic.id"));
 
         // Setup global context app variables for easy access in view layer.
         Map<String, Object> app = new HashMap<>();

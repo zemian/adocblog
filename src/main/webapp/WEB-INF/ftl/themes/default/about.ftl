@@ -14,7 +14,7 @@
         <p>If you face any issues using this application, please submit a ticket
         <a href="https://github.com/zemian/adocblog/issues">here</a>.</p>
 
-        <#include "/themes/${app.themeName}/includes/disqus.ftl">
+        <#include "/includes/disqus.ftl">
     </div>
 
     <#include "/themes/${app.themeName}/includes/footer.ftl">
