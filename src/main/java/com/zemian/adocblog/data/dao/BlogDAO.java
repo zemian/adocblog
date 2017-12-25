@@ -47,4 +47,13 @@ public class BlogDAO extends DocDAO {
         LOG.debug("Found docId={}", blog.getDocId());
         return blog;
     }
+
+    public List<Integer> findAllYears() {
+        String sql = "SELECT DATE_PART('YEAR', published_dt) FROM docs WHERE" +
+                " published_dt IS NOT NULL AND type = ?" +
+                " GROUP BY DATE_PART('YEAR', published_dt)" +
+                " ORDER BY DATE_PART('YEAR', published_dt) DESC";
+        List<Integer> ret = jdbc.queryForList(sql, Integer.class, Doc.Type.BLOG.name());
+        return ret;
+    }
 }

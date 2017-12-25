@@ -21,8 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.ResolverStyle;
+import java.util.List;
 
 /**
  * Public User Viewing of the Blog App. It will return a view based on a themeName.
@@ -71,22 +70,28 @@ public class BlogController {
         return result;
     }
 
+    private ModelAndView archiveView(PagingList<Doc> blogs) {
+        List<String> tags = blogService.findAllExpandedTags();
+        List<Integer> years = blogService.findAllYears();
+        ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
+        result.addObject("blogs", blogs);
+        result.addObject("tags", tags);
+        result.addObject("years", years);
+        return result;
+    }
+
     /* List of published blogs */
     @GetMapping("/archive")
     public ModelAndView archive(Paging paging) {
         PagingList<Doc> blogs = blogService.findPublished(paging);
-        ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
-        result.addObject("blogs", blogs);
-        return result;
+        return archiveView(blogs);
     }
 
     /* List of published blogs by tags */
     @GetMapping("/archive/tags/{name}")
     public ModelAndView archiveByTag(Paging paging, @PathVariable String name) {
         PagingList<Doc> blogs = blogService.findPublishedByTags(paging, name);
-        ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
-        result.addObject("blogs", blogs);
-        return result;
+        return archiveView(blogs);
     }
 
     /* List of published blogs by dates (year) */
@@ -94,9 +99,7 @@ public class BlogController {
     public ModelAndView archiveByYear(Paging paging, @PathVariable String year) {
         LocalDateTime from = LocalDateTime.parse(year + "-01-01T00:00");
         PagingList<Doc> blogs = blogService.findPublishedByDate(paging, from, from.plusYears(1L));
-        ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
-        result.addObject("blogs", blogs);
-        return result;
+        return archiveView(blogs);
     }
 
     /* List of published blogs by dates (year/month) */

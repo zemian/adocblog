@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A Doc contains one or more Content data.
@@ -297,5 +299,13 @@ public class DocDAO extends AbstractDAO {
         PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name(), fullTextQuery);
         LOG.debug("Found {} published docs with full text search.", ret);
         return ret;
+    }
+
+    public List<String> findAllTags(Doc.Type type) {
+        String sql = "SELECT tags FROM docs WHERE deleted = FALSE AND published_dt IS NOT NULL AND docs.type = ?" +
+                " ORDER BY tags";
+        List<String> tags = jdbc.queryForList(sql, String.class, type.name());
+        LOG.debug("Found {} docs.tags", tags.size());
+        return tags;
     }
 }

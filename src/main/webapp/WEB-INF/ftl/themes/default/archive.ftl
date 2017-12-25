@@ -9,6 +9,12 @@
 <div class="container">
     <div class="app-content">
         <h1>Blog Archives</h1>
+        <#if tags?size gt 0><p>Search by tags:
+            <#list tags as tag><a href="${app.contextPath}/archive/tags/${tag}">${tag}</a> </#list>
+        </p></#if>
+        <#if tags?size gt 0><p>Search by years:
+            <#list years as year><a href="${app.contextPath}/archive/${year}">${year}</a> </#list>
+        </p></#if>
         <table class="table">
             <tr>
                 <td>Title</td>

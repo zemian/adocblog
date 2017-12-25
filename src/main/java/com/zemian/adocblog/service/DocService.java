@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A Doc that contains one or more Content data.
@@ -109,5 +111,16 @@ public class DocService {
 
     public PagingList<Doc> searchPublished(Paging paging, Doc.Type type, String searchTerms) {
         return docDAO.searchPublished(paging, type, searchTerms);
+    }
+
+    public List<String> findAllExpandedTags() {
+        List<String> tags = docDAO.findAllTags(Doc.Type.BLOG);
+        Set<String> expandedTags = tags.stream().
+                flatMap(e -> Arrays.stream(e.split("\\s+"))).
+                collect(Collectors.toSet());
+        List<String> ret = new ArrayList<>();
+        ret.addAll(expandedTags);
+        Collections.sort(ret);
+        return ret;
     }
 }
