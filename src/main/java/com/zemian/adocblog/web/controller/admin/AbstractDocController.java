@@ -220,6 +220,8 @@ public abstract class AbstractDocController {
 
         if (StringUtils.isNotEmpty(tags)) {
             doc.setTags(tags);
+        } else {
+            doc.setTags(null);
         }
 
         docService.update(doc);

@@ -304,7 +304,8 @@ public class DocDAO extends AbstractDAO {
     }
 
     public List<String> findAllTags(Doc.Type type) {
-        String sql = "SELECT tags FROM docs WHERE deleted = FALSE AND published_dt IS NOT NULL AND docs.type = ?" +
+        String sql = "SELECT tags FROM docs" +
+                " WHERE deleted = FALSE AND published_dt IS NOT NULL AND docs.type = ? AND tags IS NOT NULL" +
                 " ORDER BY tags";
         List<String> tags = jdbc.queryForList(sql, String.class, type.name());
         LOG.debug("Found {} docs.tags", tags.size());
