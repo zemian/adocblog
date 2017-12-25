@@ -25,15 +25,6 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.5.3</version>
 			</plugin>
-
-			<!-- We want our classes to be package as jar inside WEB-INF/lib -->
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.0</version>
-				<configuration>
-					<archiveClasses>true</archiveClasses>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -192,6 +183,15 @@
 				</resources> -->
 
 				<plugins>
+					<!-- We want our classes to be package as jar inside WEB-INF/lib -->
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>3.2.0</version>
+						<configuration>
+							<archiveClasses>true</archiveClasses>
+						</configuration>
+					</plugin>
+
 					<!-- Create a skinny war, exclude all jars except our own app code
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
