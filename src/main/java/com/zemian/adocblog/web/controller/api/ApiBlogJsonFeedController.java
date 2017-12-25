@@ -7,6 +7,7 @@ import com.zemian.adocblog.service.BlogService;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.web.controller.api.payload.JsonFeed;
 import com.zemian.adocblog.web.controller.api.payload.JsonFeedItem;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -45,13 +47,16 @@ public class ApiBlogJsonFeedController {
 
             JsonFeedItem item = new JsonFeedItem();
             item.setContentText(ct);
-            //item.setAuthor(blog.getAuthor);
+            item.setAuthor(blog.getPublishedContent().getAuthorFullName());
             item.setDatePublished(blog.getPublishedDt().atZone(ZoneId.systemDefault()).format(fmt));
             item.setId("" + blog.getDocId());
             item.setTitle(blog.getPublishedContent().getTitle());
             item.setUrl(homeUrl + "/blog/" + blog.getDocId());
-
             item.setVersion(blog.getPublishedContent().getVersion());
+
+            if (StringUtils.isNotEmpty(blog.getTags())) {
+                item.setTags(Arrays.asList(blog.getTags().split("\\s+")));
+            }
 
             items.add(item);
         }
