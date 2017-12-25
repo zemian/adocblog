@@ -7,14 +7,13 @@ import com.zemian.adocblog.support.AppUtils;
 import org.apache.tomcat.jdbc.pool.DataSourceFactory;
 import org.apache.tomcat.jdbc.pool.PoolConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -30,6 +29,9 @@ public class DataConfig {
     @Autowired
     private Crypto crypto;
 
+    @Value("${app.ds.disablePasswordDecryption}")
+    private boolean disablePasswordDecryption;
+
     @Bean
     public DataSource dataSource() throws Exception {
         // Setup poolProps
@@ -37,8 +39,10 @@ public class DataConfig {
 
         // Override few main props of driver, url, username and password values from
         // the app.properties directly into the poolProps
-
-        String password = crypto.decrypt(env.getProperty("app.ds.password"));
+        String password = env.getProperty("app.ds.password");
+        if (!disablePasswordDecryption) {
+            password = crypto.decrypt(password);
+        }
 
         poolProps.put("driverClassName", env.getProperty("app.ds.driverClassName"));
         poolProps.put("url", env.getProperty("app.ds.url"));

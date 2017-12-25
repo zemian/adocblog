@@ -1,6 +1,8 @@
 package com.zemian.adocblog.support;
 
 import com.zemian.adocblog.AppException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -11,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 public class AppUtils {
+    private static Logger LOG = LoggerFactory.getLogger(AppUtils.class);
+
     public static final String APP_NAME = "adocblog";
     public static final String APP_ENV_KEY = APP_NAME + ".env";
 
@@ -42,6 +46,7 @@ public class AppUtils {
             envResource = null; // reset back to null if not exists
         }
 
+        LOG.debug("Found env resourceName={} with result={}", resourceName, envResource);
         return envResource;
     }
 
