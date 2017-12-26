@@ -25,6 +25,29 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.5.3</version>
 			</plugin>
+
+			<!-- Include webapp-runner during packaging -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals><goal>copy</goal></goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.github.jsimone</groupId>
+									<artifactId>webapp-runner</artifactId>
+									<version>8.5.23.0</version>
+									<destFileName>webapp-runner.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -172,60 +195,7 @@
 		<profile>
 			<id>package-zip</id>
 			<build>
-				<!-- Move apps.properties files into a config directory
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<excludes>
-							<exclude>adocblog/app*.properties</exclude>
-						</excludes>
-					</resource>
-				</resources> -->
-
 				<plugins>
-					<!-- We want our classes to be package as jar inside WEB-INF/lib
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>3.2.0</version>
-						<configuration>
-							<archiveClasses>true</archiveClasses>
-						</configuration>
-					</plugin> -->
-
-					<!-- Create a skinny war, exclude all jars except our own app code
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>3.2.0</version>
-						<configuration>
-							<packagingExcludes>
-								%regex[WEB-INF/lib/(?!adocblog).*.jar]
-							</packagingExcludes>
-						</configuration>
-					</plugin>
-					-->
-
-					<!-- Include webapp-runner during packaging -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>2.3</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals><goal>copy</goal></goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>com.github.jsimone</groupId>
-											<artifactId>webapp-runner</artifactId>
-											<version>8.5.23.0</version>
-											<destFileName>webapp-runner.jar</destFileName>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>

@@ -10,7 +10,8 @@
 #     GIT_TAG_NAME - an optional argument to specify Git tag name. Default to current branch 'HEAD'.
 #
 # Env variable options:
-#   VERSION Define explicit package version label. Default to first 7 chars of sha1 id of git commit.
+#   VERSION      Define explicit package version label. Default to first 7 chars of sha1 id of git commit.
+#   MVN_PROFILE  Override maven commands. Default to package-dist.
 #
 
 SCRIPT_DIR=$(cd `dirname $0` && pwd)
@@ -38,7 +39,8 @@ echo "Release file created: $RELEASE_FILE"
 cat $RELEASE_FILE
 
 # Maven artifact package
-mvn clean package -DskipTests -Ppackage-zip || exit 1
+MVN_PROFILE=${MVN_PROFILE:=package-zip}
+mvn clean package -DskipTests -P $MVN_PROFILE || exit 1
 
 # Clean up
 rm -vf $RELEASE_FILE
@@ -68,15 +70,23 @@ cp -vf $PROJ_HOME/bin/server.sh $PACKAGE_DIR/bin
 cp -vf $PROJ_HOME/bin/init-db.sh $PACKAGE_DIR/bin
 
 # Copy config files
-mkdir -p $PACKAGE_DIR/config/adocblog
+#mkdir -p $PACKAGE_DIR/config/adocblog
 #cp -rvf $PROJ_HOME/src/main/resources/adocblog/app*.properties $PACKAGE_DIR/config/adocblog
 
 # Copy war
-cp -vf $PROJ_HOME/target/adocblog.war $PACKAGE_DIR/adocblog.war
+#cp -vf $PROJ_HOME/target/adocblog.war $PACKAGE_DIR/adocblog.war
+
+# Copy unpack war
+cp -rf $PROJ_HOME/target/adocblog $PACKAGE_DIR/adocblog
+
+
+mkdir -p $PACKAGE_DIR/lib
 
 # Copy extra dependency
-mkdir -p $PACKAGE_DIR/lib
-cp -vf $PROJ_HOME/target/dependency/* $PACKAGE_DIR/lib
+#cp -vf $PROJ_HOME/target/dependency/* $PACKAGE_DIR/lib
+
+# Copy webapp-runner
+cp -vf $PROJ_HOME/target/dependency/webapp-runner*.jar $PACKAGE_DIR/lib
 
 # This is only needed to support skinny-war packaging
 #cp -vf $PROJ_HOME/target/adocblog/WEB-INF/lib/* $PACKAGE_DIR/lib

@@ -9,4 +9,4 @@
 
 SCRIPT_DIR=$(cd `dirname $0` && pwd)
 source $SCRIPT_DIR/setenv.sh
-java $JAVA_OPTS -cp $JAVA_CP -jar $PROJ_HOME/lib/webapp-runner.jar $PROJ_HOME/adocblog.war
+java $JAVA_OPTS -cp $JAVA_CP -jar $PROJ_HOME/lib/webapp-runner.jar $PROJ_HOME/adocblog

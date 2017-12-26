@@ -25,14 +25,7 @@ if [[ -d $PROJ_HOME/target/classes ]]; then
     JAVA_CP="$PROJ_HOME/target/classes${CP_SEP}$PROJ_HOME/target/dependency/*"
 else
     # Ensure we unpack the war for jar dependencies before running utility
-    WAR_DIR=$PROJ_HOME/target/tomcat.8080/webapps/expanded
-    LIB_DIR=$WAR_DIR/WEB-INF/lib
-    if [[ ! -d $WAR_DIR ]]; then
-        mkdir -p $WAR_DIR
-        pushd $WAR_DIR
-        jar xvf $PROJ_HOME/adocblog.war
-        popd
-    fi
+    LIB_DIR=$PROJ_HOME/adocblog/WEB-INF/lib
     JAVA_CP="$PROJ_HOME/config${CP_SEP}$LIB_DIR/*"
 fi
 
