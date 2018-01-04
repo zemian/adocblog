@@ -7,27 +7,23 @@ import com.zemian.adocblog.service.AuditLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
-public class AuditLogController {
+public class AuditLogController extends AbstractController {
     @Autowired
     private AuditLogService auditLogService;
 
-    @GetMapping("/admin/audit-logs")
+    @GetMapping({"/admin/audit-log/list", "/admin/audit-log"})
     public ModelAndView list(Paging paging) {
         PagingList<AuditLog> plist = auditLogService.find(paging);
-        ModelAndView result = new ModelAndView("/admin/audit-logs");
-        result.addObject("auditLogs", plist);
-        return result;
+        return getView("/admin/audit-log/list", "plist", plist);
     }
 
-    @GetMapping("/admin/audit-logs/remove-old-logs")
-    public ModelAndView removeOldLogs(HttpServletRequest req) {
-        int removedCount = auditLogService.removeOldLogs();
-        req.setAttribute("actionSuccessMessage", removedCount + " logs has been removed.");
-        return list(new Paging());
+    @GetMapping("/admin/audit-log/detail/{logId}")
+    public ModelAndView detail(@PathVariable Integer logId) {
+        AuditLog auditLog = auditLogService.get(logId);
+        return getView("/admin/audit-log/detail", "auditLog", auditLog);
     }
 }

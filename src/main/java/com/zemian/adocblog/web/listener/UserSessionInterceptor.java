@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UserSessionInterceptor extends HandlerInterceptorAdapter {
-    private boolean checkIsUserAdmin;
     private String loginUrl;
+    private boolean checkIsUserAdmin;
     private String adminRestrictedUrl;
 
     public void setLoginUrl(String loginUrl) {
@@ -38,7 +38,6 @@ public class UserSessionInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
         }
-
         return true;
     }
 }

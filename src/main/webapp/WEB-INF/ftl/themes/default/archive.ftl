@@ -31,10 +31,10 @@
         </table>
 
         <!-- Pagination -->
-        <p>
-        <#if blogs.paging.offset gt 0 && blogs.prevPageOffset gte 0><a href="?offset=${blogs.prevPageOffset}">Previous Page</a> <#if blogs.more>|</#if></#if>
-        <#if blogs.more><a href="?offset=${blogs.nextPageOffset}">Next Page</a></#if>
-        </p>
+        <ul class="pager">
+            <#if blogs.paging.offset gt 0 && blogs.prevPageOffset gte 0><li><a href="?offset=${blogs.prevPageOffset}">Previous Page</a></li></#if>
+            <#if blogs.more><li><a href="?offset=${blogs.nextPageOffset}">Next Page</a></li></#if>
+        </ul>
     </div>
 <#include "/themes/${app.themeName}/includes/footer.ftl">
 </div>

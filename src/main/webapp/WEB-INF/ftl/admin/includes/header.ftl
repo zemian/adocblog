@@ -5,13 +5,13 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li id="list"><a href="${app.contextPath}/admin/blog/list">Blogs</a></li>
+                <li id="blog"><a href="${app.contextPath}/admin/blog/list">Blogs</a></li>
                 <#if userSession.user.admin>
-                    <li id="list"><a href="${app.contextPath}/admin/page/list">Pages</a></li>
-                    <li id="users"><a href="${app.contextPath}/admin/users">Users</a></li>
-                    <li id="settings"><a href="${app.contextPath}/admin/settings">Settings</a></li>
+                    <li id="page"><a href="${app.contextPath}/admin/page/list">Pages</a></li>
+                    <li id="user"><a href="${app.contextPath}/admin/user/list">Users</a></li>
+                    <li id="setting"><a href="${app.contextPath}/admin/setting/list">Settings</a></li>
+                    <li id="audit-log"><a href="${app.contextPath}/admin/audit-log/list">AuditLogs</a></li>
                     <li id="system-info"><a href="${app.contextPath}/admin/system-info">SystemInfo</a></li>
-                    <li id="audit-logs"><a href="${app.contextPath}/admin/audit-logs">AuditLogs</a></li>
                 </#if>
             </ul>
             <ul class="nav navbar-nav navbar-right">

@@ -25,15 +25,14 @@
             </div>
 
             <!-- Next/Previous Post -->
-            <p>
+            <ul class="pager">
             <#if prevBlog??>
-                <a href="${app.contextPath}/blog/${prevBlog.docId}">Previous Blog</a>
-                <#if nextBlog??>|</#if>
+                <li><a href="${app.contextPath}/blog/${prevBlog.docId}">Previous Blog</a></li>
             </#if>
             <#if nextBlog??>
-                <a href="${app.contextPath}/blog/${nextBlog.docId}">Next Blog</a>
+                <li><a href="${app.contextPath}/blog/${nextBlog.docId}">Next Blog</a></li>
             </#if>
-            </p>
+            </ul>
         </#if>
 
         <#if !(errorMessage??)>

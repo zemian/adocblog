@@ -21,8 +21,9 @@ CREATE TABLE users (
   username VARCHAR(50) NOT NULL PRIMARY KEY,
   password VARCHAR(500) NOT NULL,
   full_name VARCHAR(500) NOT NULL,
-  is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-  deleted BOOLEAN NOT NULL DEFAULT FALSE
+  admin BOOLEAN NOT NULL DEFAULT FALSE,
+  deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  created_dt TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- A dummy user used to record anonymous user activity (eg: comment posting)

@@ -61,10 +61,10 @@
         </table>
 
         <!-- Pagination -->
-        <p>
-        <#if docs.paging.offset gt 0 && docs.prevPageOffset gte 0><a href="?offset=${docs.prevPageOffset}">Previous Page</a> <#if docs.more>|</#if></#if>
-        <#if docs.more><a href="?offset=${docs.nextPageOffset}">Next Page</a></#if>
-        </p>
+        <ul class="pager">
+            <#if docs.paging.offset gt 0 && docs.prevPageOffset gte 0><li><a href="?offset=${docs.prevPageOffset}">Previous Page</a></li></#if>
+            <#if docs.more><li><a href="?offset=${docs.nextPageOffset}">Next Page</a></li></#if>
+        </ul>
     </div>
     <#include "/admin/includes/footer.ftl">
 </div>

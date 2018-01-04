@@ -36,10 +36,15 @@ public class UserSessionController {
 
         ModelAndView result = new ModelAndView("redirect:/index");
         boolean loginFailed = true;
+        String failedReason = null;
         try {
             User user = userService.get(username);
             if (userService.verifyPassword(password, user.getPassword())) {
                 UserSession userSesssion = UserSessionUtils.getUserSession(req);
+
+                // Remove sensitive password
+                user.setPassword(null);
+
                 userSesssion.setUser(user);
                 loginFailed = false;
                 LOG.info("User {} logged in", username);
@@ -48,15 +53,19 @@ public class UserSessionController {
                     result.setViewName("redirect:" + userSesssion.getLoginSuccessUrl());
                 }
             } else {
-                LOG.trace("User {} login failed. Incorrect password.", username);
+                LOG.debug("User {} login failed. Incorrect password.", username);
+                failedReason = "User password not matched.";
             }
         } catch (EmptyResultDataAccessException e) {
-            LOG.trace("User {} login failed. User not found.", username);
+            LOG.debug("User {} login failed. User not found.", username);
+            failedReason = "User not found.";
         } catch (RuntimeException e) {
-            LOG.trace("User {} login failed.", username, e);
+            LOG.debug("User {} login failed.", username, e);
+            failedReason = "Error: " + e.getMessage();
         }
 
         if (loginFailed){
+            LOG.info("Login failed: {}", failedReason);
             result.setViewName("/login");
             result.addObject("loginError", "Invalid login!");
             result.addObject("username", username);
