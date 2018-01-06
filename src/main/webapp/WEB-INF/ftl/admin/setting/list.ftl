@@ -14,7 +14,9 @@
         </#if>
 
         <p>
-            <a href="${app.contextPath}/admin/setting/create"><span title="Create" class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            <a href="${app.contextPath}/admin/setting/create">
+                <span title="Create" class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create
+            </a>
         </p>
 
         <table class="table">

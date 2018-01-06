@@ -8,9 +8,13 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>Blogs Management</h1>
+        <h1>Blog List View</h1>
 
-        <p><a href="${app.contextPath}/admin/blog/create">Create New Post</a></p>
+        <p>
+            <a href="${app.contextPath}/admin/blog/create">
+                <span title="Create" class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create
+            </a>
+        </p>
 
         <#if actionSuccessMessage??>
             <p class="alert alert-success">${actionSuccessMessage}</p>
@@ -48,10 +52,10 @@
                     <td>${pubDate}</td>
                     <td>${pubVersion}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/blog/edit/${doc.docId}">Edit</a> |
-                        <a href="${app.contextPath}/admin/blog/preview/${doc.docId}/${doc.latestContent.contentId}" target="_blank">Preview</a> |
-                        <a href="${app.contextPath}/admin/blog/history/${doc.docId}">History</a> |
-                        <a href="${app.contextPath}/admin/blog/delete/${doc.docId}" data-toggle="confirmation" data-title="Are you sure?">Delete</a> |
+                        <a href="${app.contextPath}/admin/blog/preview/${doc.docId}/${doc.latestContent.contentId}" target="_blank"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> Preview</a>
+                        <a href="${app.contextPath}/admin/blog/edit/${doc.docId}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</a>
+                        <a href="${app.contextPath}/admin/blog/delete/${doc.docId}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>
+                        <a href="${app.contextPath}/admin/blog/history/${doc.docId}">History</a>
                         <a href="${app.contextPath}/admin/blog/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
                 </tr>
