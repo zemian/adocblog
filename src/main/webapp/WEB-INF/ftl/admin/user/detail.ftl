@@ -10,9 +10,9 @@
         <h1>User Detail</h1>
 
         <p>
-            <a href="${app.contextPath}/admin/user/list"><span title="List" class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
-            <a href="${app.contextPath}/admin/user/edit/${user.username}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-            <a href="${app.contextPath}/admin/user/delete/${user.username}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+            <a href="${app.contextPath}/admin/user/list"><span title="List" class="glyphicon glyphicon-list" aria-hidden="true"></span> List</a>
+            <a href="${app.contextPath}/admin/user/edit/${user.username}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</a>
+            <a href="${app.contextPath}/admin/user/delete/${user.username}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>
         </p>
 
         <table class="table">

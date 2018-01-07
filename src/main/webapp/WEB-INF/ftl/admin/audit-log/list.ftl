@@ -28,7 +28,7 @@
                     <td>${auditLog.value!''[0..30]}</td>
                     <td>${auditLog.createdDt!''}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/audit-log/detail/${auditLog.logId}"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span></a>
+                        <a href="${app.contextPath}/admin/audit-log/detail/${auditLog.logId}"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> View</a>
                     </td>
                 </tr>
             </#list>

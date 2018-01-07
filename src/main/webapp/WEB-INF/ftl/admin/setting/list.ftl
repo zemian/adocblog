@@ -36,9 +36,9 @@
                     <td>${setting.value!''}</td>
                     <td>${setting.type!''}</td>
                     <td>
-                        <a href="${app.contextPath}/admin/setting/detail/${setting.settingId}"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span></a>
-                        <a href="${app.contextPath}/admin/setting/edit/${setting.settingId}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-                        <a href="${app.contextPath}/admin/setting/delete/${setting.settingId}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                        <a href="${app.contextPath}/admin/setting/detail/${setting.settingId}"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> View</a>
+                        <a href="${app.contextPath}/admin/setting/edit/${setting.settingId}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</a>
+                        <a href="${app.contextPath}/admin/setting/delete/${setting.settingId}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>
                     </td>
                 </tr>
             </#list>

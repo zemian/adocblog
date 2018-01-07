@@ -10,7 +10,7 @@
         <h1>AuditLog Detail</h1>
 
         <p>
-            <a href="${app.contextPath}/admin/audit-log/list"><span title="List" class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
+            <a href="${app.contextPath}/admin/audit-log/list"><span title="List" class="glyphicon glyphicon-list" aria-hidden="true"></span> List</a>
         </p>
 
         <table class="table">
