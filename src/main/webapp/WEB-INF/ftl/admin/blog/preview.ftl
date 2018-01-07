@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<#include "/admin/includes/asciidoctor-head.ftl">
+<#include "/includes/asciidoctor-head.ftl">
 <#include "/admin/includes/html-head.ftl">
 <link rel="stylesheet" href="${app.contextPath}/resources/css/admin-preview.css" />
 </head>
