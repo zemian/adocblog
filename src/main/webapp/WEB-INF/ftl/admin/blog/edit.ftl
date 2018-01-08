@@ -10,45 +10,20 @@
 
 <div class="container">
     <div class="app-content">
-        <h1>Edit Blog Post</h1>
+        <h1>Edit Blog Content</h1>
 
-        <#if actionErrorMessage??>
-            <p class="alert alert-danger">${actionErrorMessage}</p>
-        </#if>
+        <#include "/admin/includes/form-errors.ftl">
 
         <form class="form-horizontal" action="${app.contextPath}/admin/blog/edit" method="post">
+            <input type="hidden" id="docId" name="docId" value="${doc.docId}">
             <div class="form-group">
-                <label for="title">Title:</label>
-                <input type="input" class="form-control" id="title" name="title" value="${doc.latestContent.title}">
+                <label for="id" class="col-sm-2 control-label">ID</label>
+                <div id="id" class="col-sm-10">
+                    <p class="form-control-static">${doc.docId}</p>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="format">Format:</label>
-                <select class="form-control" id="format" name="format">
-                    <option <#if doc.latestContent.format == 'ADOC'>selected="true"</#if> value="ADOC">ADOC</option>
-                    <option <#if doc.latestContent.format == 'HTML'>selected="true"</#if> value="HTML">HTML</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="title">Tags:</label>
-                <input type="input" class="form-control" id="tags" name="tags" value="${doc.tags!''}">
-            </div>
-            <div class="form-group">
-                <label for="reasonForEdit">Reason For Edit:</label>
-                <input type="input" class="form-control" id="reasonForEdit" name="reasonForEdit">
-            </div>
-            <div class="form-group">
-                <textarea id="contentText" name="contentText" rows="30" cols="100">${doc.latestContent.contentText}</textarea>
-            </div>
-            <button class="btn btn-success" name="btnAction" value="save">Save</button>
-            <button class="btn btn-success" name="btnAction" value="publish">Publish</button>
-            <input type="hidden" name="docId" value="${doc.docId}">
+            <#include "/admin/page/form-body.ftl">
         </form>
-        <script>
-            CodeMirror.fromTextArea(document.getElementById("contentText"), {
-                lineNumbers: true,
-                lineWrapping: true
-            });
-        </script>
     </div>
     <#include "/admin/includes/footer.ftl">
 </div>

@@ -6,6 +6,14 @@ import com.zemian.adocblog.data.domain.Doc;
 import java.time.LocalDateTime;
 
 public class DataUtils {
+
+    public static Doc createEmptyDoc(Doc.Type type) {
+        Doc doc = new Doc();
+        doc.setType(type);
+        doc.setLatestContent(new Content());
+        return doc;
+    }
+
     public static Doc createDoc(Doc.Type type, Content.Format format, String username, String title, String contentText) {
         Content content = createContent(format, username, title, contentText);
         Doc doc = new Doc();

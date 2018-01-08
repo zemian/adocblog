@@ -2,11 +2,15 @@ package com.zemian.adocblog.web.controller.admin;
 
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.domain.Doc;
+import com.zemian.adocblog.data.support.DataUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,25 +53,44 @@ public class AdminBlogController extends AbstractDocController {
         return history("/admin/blog/history", blogId);
     }
 
-    @GetMapping("/admin/blog/create")
-    public ModelAndView create() {
-        ModelAndView result = new ModelAndView("/admin/blog/create");
-        return result;
+    @Controller
+    public class CreateForm {
+        @GetMapping("/admin/blog/create")
+        public ModelAndView create() {
+            return getView("/admin/blog/create", "doc", DataUtils.createEmptyDoc(Doc.Type.BLOG));
+        }
+
+        @PostMapping("/admin/blog/create")
+        public ModelAndView createSubmit(
+                HttpServletRequest req,
+                @ModelAttribute Doc doc,
+                BindingResult bindingResult,
+                RedirectAttributes redirectAttrs) {
+            if (!valid(doc, bindingResult)) {
+                return getErrorView("/admin/blog/create", bindingResult, "doc", doc);
+            }
+            return createPost("/admin/blog/list", req, doc, bindingResult, redirectAttrs);
+        }
     }
 
-    @PostMapping("/admin/blog/create")
-    public ModelAndView createPost(HttpServletRequest req) {
-        return createPost("/admin/blog/list", Doc.Type.BLOG, req);
-    }
+    @Controller
+    public class EditForm {
+        @GetMapping("/admin/blog/edit/{blogId}")
+        public ModelAndView edit(@PathVariable Integer blogId) {
+            return editView("/admin/blog/edit", blogId);
+        }
 
-    @GetMapping("/admin/blog/edit/{blogId}")
-    public ModelAndView edit(@PathVariable Integer blogId) {
-        return edit("/admin/blog/edit", blogId);
-    }
-
-    @PostMapping("/admin/blog/edit")
-    public ModelAndView editPost(HttpServletRequest req) {
-        return editPost("/admin/blog/list", Doc.Type.BLOG, req);
+        @PostMapping("/admin/blog/edit")
+        public ModelAndView editSubmit(
+                HttpServletRequest req,
+                @ModelAttribute Doc doc,
+                BindingResult bindingResult,
+                RedirectAttributes redirectAttrs) {
+            if (!valid(doc, bindingResult)) {
+                return getErrorView("/admin/blog/edit", bindingResult, "doc", doc);
+            }
+            return editPost("/admin/blog/list", req, doc, bindingResult, redirectAttrs);
+        }
     }
 
     @GetMapping("/admin/blog/preview/{blogId}/{contentId}")

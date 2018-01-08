@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
+import com.zemian.adocblog.data.support.DataUtils;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.service.PageService;
 import freemarker.template.Configuration;
@@ -11,11 +12,10 @@ import freemarker.template.Template;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -80,24 +80,44 @@ public class AdminPageController extends AbstractDocController {
         return history("/admin/page/history", pageId);
     }
 
-    @GetMapping("/admin/page/create")
-    public ModelAndView create() {
-        return view("/admin/page/create");
+    @Controller
+    public class CreateForm {
+        @GetMapping("/admin/page/create")
+        public ModelAndView create() {
+            return getView("/admin/page/create", "doc", DataUtils.createEmptyDoc(Doc.Type.PAGE));
+        }
+
+        @PostMapping("/admin/page/create")
+        public ModelAndView createSubmit(
+                HttpServletRequest req,
+                @ModelAttribute Doc doc,
+                BindingResult bindingResult,
+                RedirectAttributes redirectAttrs) {
+            if (!valid(doc, bindingResult)) {
+                return getErrorView("/admin/page/create", bindingResult, "doc", doc);
+            }
+            return createPost("/admin/page/list", req, doc, bindingResult, redirectAttrs);
+        }
     }
 
-    @PostMapping("/admin/page/create")
-    public ModelAndView createPost(HttpServletRequest req) {
-        return createPost("/admin/page/list", Doc.Type.PAGE, req);
-    }
+    @Controller
+    public class EditForm {
+        @GetMapping("/admin/page/edit/{blogId}")
+        public ModelAndView edit(@PathVariable Integer blogId) {
+            return editView("/admin/page/edit", blogId);
+        }
 
-    @GetMapping("/admin/page/edit/{pageId}")
-    public ModelAndView edit(@PathVariable Integer pageId) {
-        return edit("/admin/page/edit", pageId);
-    }
-
-    @PostMapping("/admin/page/edit")
-    public ModelAndView editPost(HttpServletRequest req) {
-        return editPost("/admin/page/list", Doc.Type.PAGE, req);
+        @PostMapping("/admin/page/edit")
+        public ModelAndView editSubmit(
+                HttpServletRequest req,
+                @ModelAttribute Doc doc,
+                BindingResult bindingResult,
+                RedirectAttributes redirectAttrs) {
+            if (!valid(doc, bindingResult)) {
+                return getErrorView("/admin/page/create", bindingResult, "doc", doc);
+            }
+            return editPost("/admin/page/list", req, doc, bindingResult, redirectAttrs);
+        }
     }
 
     /*

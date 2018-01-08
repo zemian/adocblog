@@ -6,9 +6,9 @@ import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
-import com.zemian.adocblog.data.support.DataUtils;
 import com.zemian.adocblog.service.ContentService;
 import com.zemian.adocblog.service.DocService;
+import com.zemian.adocblog.web.controller.AbstractController;
 import com.zemian.adocblog.web.listener.UserSession;
 import com.zemian.adocblog.web.listener.UserSessionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,17 +16,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 /**
  * Base class to support Doc related processing.
  */
-public abstract class AbstractDocController {
+public abstract class AbstractDocController extends AbstractController {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDocController.class);
     public static final DateTimeFormatter YYYY_MM_DD_HH_MM = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
@@ -41,9 +43,7 @@ public abstract class AbstractDocController {
 
     protected ModelAndView list(String viewName, Doc.Type type, Paging paging) {
         PagingList<Doc> docs = docService.findLatest(paging, type);
-        ModelAndView result = new ModelAndView(viewName);
-        result.addObject("docs", docs);
-        return result;
+        return getView(viewName, "docs", docs);
     }
 
     private ModelAndView list(String viewName, Doc.Type type)  {
@@ -51,7 +51,8 @@ public abstract class AbstractDocController {
     }
 
     protected ModelAndView publish(String viewName, Doc.Type type,
-                                   Integer docId, Integer contentId, HttpServletRequest req) {
+                                   Integer docId, Integer contentId,
+                                   HttpServletRequest req) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         Doc page = docService.get(docId);
         publishDoc(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
@@ -120,123 +121,86 @@ public abstract class AbstractDocController {
         return result;
     }
 
-    protected ModelAndView view(String viewName) {
-        ModelAndView result = new ModelAndView(viewName);
-        return result;
+    protected boolean valid(Doc doc, BindingResult bindingResult) {
+        ValidationUtils.rejectIfEmpty(bindingResult, "latestContent.title", "doc.latestContent.title", "Title cannot be empty");
+        ValidationUtils.rejectIfEmpty(bindingResult, "latestContent.contentText", "doc.latestContent.contentText", "Content cannot be empty");
+        if (doc.getType() == Doc.Type.PAGE) {
+            ValidationUtils.rejectIfEmpty(bindingResult, "path", "doc.path", "Path cannot be empty");
+        }
+        return !bindingResult.hasErrors();
     }
 
-    protected ModelAndView createPost(String viewName, Doc.Type type, HttpServletRequest req) {
+    protected ModelAndView createPost(String viewName,
+                                      HttpServletRequest req,
+                                      Doc doc,
+                                      BindingResult bindingResult,
+                                      RedirectAttributes redirectAttrs) {
+        if (StringUtils.isEmpty(doc.getPath())) {
+            doc.setPath(null);
+        }
         UserSession userSession = UserSessionUtils.getUserSession(req);
-
-        String title = req.getParameter("title");
-        String format = req.getParameter("format");
-        String contentText = req.getParameter("contentText");
-        String btnAction = req.getParameter("btnAction");
-        String path = req.getParameter("path");
-        String tags = req.getParameter("tags");
-
-        if (StringUtils.isEmpty(title) ||
-                StringUtils.isEmpty(contentText) ||
-                (type == Doc.Type.PAGE && StringUtils.isEmpty(path))) {
-            req.setAttribute("title", title);
-            req.setAttribute("contentText", contentText);
-            req.setAttribute("format", format);
-            req.setAttribute("path", path);
-            req.setAttribute("tags", tags);
-
-            req.setAttribute("actionErrorMessage", "Invalid inputs");
-            return view(viewName);
-        }
-
-        Doc doc = DataUtils.createDoc(type, Content.Format.valueOf(format),
-                userSession.getUser().getUsername(), title, contentText);
-
-        if (type == Doc.Type.PAGE && StringUtils.isNotEmpty(path)) {
-            doc.setPath(path);
-        }
-
-        if (StringUtils.isNotEmpty(tags)) {
-            doc.setTags(tags);
-        }
+        doc.getLatestContent().setCreatedUser(userSession.getUser().getUsername());
+        doc.getLatestContent().setCreatedDt(LocalDateTime.now());
+        doc.getLatestContent().setVersion(1);
 
         docService.create(doc);
         String message = "Doc " + doc.getDocId() + " created successfully.";
 
+        String btnAction = req.getParameter("btnAction");
         if ("publish".equals(btnAction)) {
             publishDoc(doc, doc.getLatestContent().getContentId(),
                     userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
 
-        req.setAttribute("actionSuccessMessage", message);
-        return list(viewName, type);
+        redirectAttrs.addFlashAttribute("actionSuccessMessage", message);
+        return getView("redirect:" + viewName);
     }
 
-    protected ModelAndView edit(String viewName, Integer docId) {
+    protected ModelAndView editView(String viewName, Integer docId) {
         Doc doc = docService.get(docId);
         String ct = contentService.getContentText(doc.getLatestContent().getContentId());
         doc.getLatestContent().setContentText(ct);
-        return edit(viewName, doc);
+        return editView(viewName, doc);
     }
 
-    private ModelAndView edit(String viewName, Doc doc) {
+    private ModelAndView editView(String viewName, Doc doc) {
         ModelAndView result = new ModelAndView(viewName);
         result.addObject("doc", doc);
         return result;
     }
 
-    protected ModelAndView editPost(String viewName, Doc.Type type, HttpServletRequest req) {
+    protected ModelAndView editPost(String viewName,
+                                    HttpServletRequest req,
+                                    Doc doc,
+                                    BindingResult bindingResult,
+                                    RedirectAttributes redirectAttrs) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
+        Doc existingDoc = docService.get(doc.getDocId());
+        existingDoc.setTags(doc.getTags());
 
-        Integer docId = Integer.parseInt(req.getParameter("docId"));
-        String title = req.getParameter("title");
-        String format = req.getParameter("format");
-        String contentText = req.getParameter("contentText");
-        String reasonForEdit = req.getParameter("reasonForEdit");
+        if (existingDoc.getType() == Doc.Type.PAGE) {
+            existingDoc.setPath(doc.getPath());
+        }
+
+        doc.getLatestContent().setVersion(existingDoc.getLatestContent().getVersion() + 1);
+        existingDoc.setLatestContent(doc.getLatestContent());
+
+        existingDoc.getLatestContent().setCreatedDt(LocalDateTime.now());
+        existingDoc.getLatestContent().setCreatedUser(userSession.getUser().getUsername());
+
+        docService.update(existingDoc);
+        Integer contentId = existingDoc.getLatestContent().getContentId();
+        String message = "Doc " + existingDoc.getDocId() + " with contentId " + contentId + " edited successfully.";
+
         String btnAction = req.getParameter("btnAction");
-        String path = req.getParameter("path");
-        String tags = req.getParameter("tags");
-
-        Doc doc = docService.get(docId);
-        doc.getLatestContent().setTitle(title);
-        doc.getLatestContent().setCreatedUser(userSession.getUser().getUsername());
-        doc.getLatestContent().setCreatedDt(LocalDateTime.now());
-        doc.getLatestContent().setFormat(Content.Format.valueOf(format));
-        doc.getLatestContent().setReasonForEdit(reasonForEdit);
-        doc.getLatestContent().setContentText(contentText);
-
-        if (StringUtils.isEmpty(title) ||
-                StringUtils.isEmpty(contentText) ||
-                (type == Doc.Type.PAGE && StringUtils.isEmpty(path))) {
-            req.setAttribute("doc", doc);
-
-            req.setAttribute("actionErrorMessage", "Invalid inputs");
-            return edit(viewName, doc);
-        }
-
-        if (type == Doc.Type.PAGE && StringUtils.isNotEmpty(path)) {
-            doc.setPath(path);
-        }
-
-        if (StringUtils.isNotEmpty(tags)) {
-            doc.setTags(tags);
-        } else {
-            doc.setTags(null);
-        }
-
-        docService.update(doc);
-
-        Integer contentId = doc.getLatestContent().getContentId();
-        String message = "Doc " + docId + " with contentId " + contentId + " edited successfully.";
-
         if ("publish".equals(btnAction)) {
-            publishDoc(doc, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
+            publishDoc(existingDoc, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
 
-        req.setAttribute("actionSuccessMessage", message);
-
-        return list(viewName, type);
+        redirectAttrs.addFlashAttribute("actionSuccessMessage", message);
+        return getView("redirect:" + viewName);
     }
 
     protected ModelAndView preview(String viewName, Integer docId, Integer contentId) {
