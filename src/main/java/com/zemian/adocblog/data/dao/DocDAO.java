@@ -294,9 +294,9 @@ public class DocDAO extends AbstractDAO {
         LOG.debug("Searching with fullTextQuery={}", fullTextQuery);
         String sql = SELECT_PUBLISHED_DOCS_SQL +
                 " AND docs.type = ? AND" +
-                " to_tsvector(published_contents.title || " +
-                "   ' ' || published_contents.content_text ||" +
-                "   ' ' || docs.tags) @@ to_tsquery(?)" +
+                " to_tsvector(" +
+                "   concat_ws(' ', published_contents.title, docs.tags, published_contents.content_text)" +
+                " ) @@ to_tsquery(?)" +
                 " ORDER BY docs.published_dt DESC";
         PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name(), fullTextQuery);
         LOG.debug("Found {} published docs with full text search.", ret);
