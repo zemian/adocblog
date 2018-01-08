@@ -3,6 +3,7 @@ package com.zemian.adocblog.web.controller.admin;
 import com.zemian.adocblog.data.dao.*;
 import com.zemian.adocblog.data.domain.User;
 import com.zemian.adocblog.service.*;
+import com.zemian.adocblog.web.controller.AbstractController;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

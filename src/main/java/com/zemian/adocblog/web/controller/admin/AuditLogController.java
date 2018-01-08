@@ -4,6 +4,7 @@ import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.domain.AuditLog;
 import com.zemian.adocblog.service.AuditLogService;
+import com.zemian.adocblog.web.controller.AbstractController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
