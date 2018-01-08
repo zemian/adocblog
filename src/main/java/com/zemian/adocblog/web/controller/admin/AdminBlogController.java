@@ -27,7 +27,7 @@ public class AdminBlogController extends AbstractDocController {
     @GetMapping("/admin/blog/publish/{blogId}/{contentId}")
     public ModelAndView publish(@PathVariable Integer blogId, @PathVariable Integer contentId, HttpServletRequest req) {
 
-        return publish("/admin/blog/list", Doc.Type.BLOG, blogId, contentId, req);
+        return handlePublish("/admin/blog/list", Doc.Type.BLOG, blogId, contentId, req);
     }
 
     @GetMapping("/admin/blog/publish/{blogId}/{contentId}/{publishDate}")
@@ -35,22 +35,22 @@ public class AdminBlogController extends AbstractDocController {
                                       @PathVariable Integer contentId,
                                       @PathVariable String publishDate,
                                 HttpServletRequest req) {
-        return publishByDate("/admin/blog/list", Doc.Type.BLOG, blogId, contentId, publishDate, req);
+        return handlePublishByDate("/admin/blog/list", Doc.Type.BLOG, blogId, contentId, publishDate, req);
     }
 
     @GetMapping("/admin/blog/unpublish/{blogId}")
     public ModelAndView unpublish(@PathVariable Integer blogId, HttpServletRequest req) {
-        return unpublish("/admin/blog/list", Doc.Type.BLOG, blogId, req);
+        return handleUnpublish("/admin/blog/list", Doc.Type.BLOG, blogId, req);
     }
 
     @GetMapping("/admin/blog/delete/{blogId}")
     public ModelAndView delete(@PathVariable Integer blogId, HttpServletRequest req) {
-        return delete("/admin/blog/list", Doc.Type.BLOG, blogId, req);
+        return handleDelete("/admin/blog/list", Doc.Type.BLOG, blogId, req);
     }
 
     @GetMapping("/admin/blog/history/{blogId}")
     public ModelAndView history(@PathVariable Integer blogId) {
-        return history("/admin/blog/history", blogId);
+        return handleHistory("/admin/blog/history", blogId);
     }
 
     @Controller
@@ -66,10 +66,10 @@ public class AdminBlogController extends AbstractDocController {
                 @ModelAttribute Doc doc,
                 BindingResult bindingResult,
                 RedirectAttributes redirectAttrs) {
-            if (!valid(doc, bindingResult)) {
+            if (!validDoc(doc, bindingResult)) {
                 return getErrorView("/admin/blog/create", bindingResult, "doc", doc);
             }
-            return createPost("/admin/blog/list", req, doc, bindingResult, redirectAttrs);
+            return handleCreateSubmit("/admin/blog/list", req, doc, redirectAttrs);
         }
     }
 
@@ -77,7 +77,7 @@ public class AdminBlogController extends AbstractDocController {
     public class EditForm {
         @GetMapping("/admin/blog/edit/{blogId}")
         public ModelAndView edit(@PathVariable Integer blogId) {
-            return editView("/admin/blog/edit", blogId);
+            return handleEditView("/admin/blog/edit", blogId);
         }
 
         @PostMapping("/admin/blog/edit")
@@ -86,15 +86,15 @@ public class AdminBlogController extends AbstractDocController {
                 @ModelAttribute Doc doc,
                 BindingResult bindingResult,
                 RedirectAttributes redirectAttrs) {
-            if (!valid(doc, bindingResult)) {
+            if (!validDoc(doc, bindingResult)) {
                 return getErrorView("/admin/blog/edit", bindingResult, "doc", doc);
             }
-            return editPost("/admin/blog/list", req, doc, bindingResult, redirectAttrs);
+            return handlEditSubmit("/admin/blog/list", req, doc, redirectAttrs);
         }
     }
 
     @GetMapping("/admin/blog/preview/{blogId}/{contentId}")
     public ModelAndView preview(@PathVariable Integer blogId, @PathVariable Integer contentId) {
-        return preview("/admin/blog/preview", blogId, contentId);
+        return handlePreview("/admin/blog/preview", blogId, contentId);
     }
 }

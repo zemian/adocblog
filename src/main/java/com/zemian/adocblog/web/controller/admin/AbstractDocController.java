@@ -50,19 +50,19 @@ public abstract class AbstractDocController extends AbstractController {
         return list(viewName, type, new Paging(0, defaultPagingSize));
     }
 
-    protected ModelAndView publish(String viewName, Doc.Type type,
-                                   Integer docId, Integer contentId,
-                                   HttpServletRequest req) {
+    protected ModelAndView handlePublish(String viewName, Doc.Type type,
+                                         Integer docId, Integer contentId,
+                                         HttpServletRequest req) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         Doc page = docService.get(docId);
-        publishDoc(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
+        handlePublishDoc(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
 
         req.setAttribute("actionSuccessMessage",
                 "Doc " + docId + " with contentId " + contentId + " has published successfully.");
         return list(viewName, type);
     }
 
-    private void publishDoc(Doc doc, Integer contentId, String username, LocalDateTime publishedDt) {
+    private void handlePublishDoc(Doc doc, Integer contentId, String username, LocalDateTime publishedDt) {
         Content content = new Content();
         content.setContentId(contentId);
         doc.setLatestContent(content);
@@ -73,13 +73,13 @@ public abstract class AbstractDocController extends AbstractController {
         LOG.info("Doc {} with contentId {} is published by {}", doc.getDocId(), contentId, username);
     }
 
-    protected ModelAndView publishByDate(String viewName, Doc.Type type,
-                                         Integer docId, Integer contentId, String publishDate, HttpServletRequest req) {
+    protected ModelAndView handlePublishByDate(String viewName, Doc.Type type,
+                                               Integer docId, Integer contentId, String publishDate, HttpServletRequest req) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         LocalDateTime publishedDt = LocalDateTime.parse(publishDate, YYYY_MM_DD_HH_MM);
 
         Doc doc = docService.get(docId);
-        publishDoc(doc, contentId, userSession.getUser().getUsername(), publishedDt);
+        handlePublishDoc(doc, contentId, userSession.getUser().getUsername(), publishedDt);
 
         req.setAttribute("actionSuccessMessage",
                 "Doc " + docId + " with contentId " + contentId +
@@ -87,8 +87,8 @@ public abstract class AbstractDocController extends AbstractController {
         return list(viewName, type);
     }
 
-    protected ModelAndView unpublish(String viewName, Doc.Type type,
-                                     Integer docId, HttpServletRequest req) {
+    protected ModelAndView handleUnpublish(String viewName, Doc.Type type,
+                                           Integer docId, HttpServletRequest req) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         Doc doc = docService.get(docId);
         if (doc.getPublishedContent() == null) {
@@ -104,7 +104,7 @@ public abstract class AbstractDocController extends AbstractController {
         return list(viewName, type);
     }
 
-    protected ModelAndView delete(String viewName, Doc.Type type, Integer docId, HttpServletRequest req) {
+    protected ModelAndView handleDelete(String viewName, Doc.Type type, Integer docId, HttpServletRequest req) {
         String reasonForDelete = null;
         docService.markForDelete(docId, reasonForDelete);
 
@@ -112,16 +112,13 @@ public abstract class AbstractDocController extends AbstractController {
         return list(viewName, type);
     }
 
-    protected ModelAndView history(String viewName, Integer docId) {
+    protected ModelAndView handleHistory(String viewName, Integer docId) {
         DocHistory docHistory = docService.getDocHistory(docId);
         Doc doc = docService.get(docId);
-        ModelAndView result = new ModelAndView(viewName);
-        result.addObject("doc", doc);
-        result.addObject("docHistory", docHistory);
-        return result;
+        return getView(viewName, "doc", doc, "docHistory", docHistory);
     }
 
-    protected boolean valid(Doc doc, BindingResult bindingResult) {
+    protected boolean validDoc(Doc doc, BindingResult bindingResult) {
         ValidationUtils.rejectIfEmpty(bindingResult, "latestContent.title", "doc.latestContent.title", "Title cannot be empty");
         ValidationUtils.rejectIfEmpty(bindingResult, "latestContent.contentText", "doc.latestContent.contentText", "Content cannot be empty");
         if (doc.getType() == Doc.Type.PAGE) {
@@ -130,11 +127,10 @@ public abstract class AbstractDocController extends AbstractController {
         return !bindingResult.hasErrors();
     }
 
-    protected ModelAndView createPost(String viewName,
-                                      HttpServletRequest req,
-                                      Doc doc,
-                                      BindingResult bindingResult,
-                                      RedirectAttributes redirectAttrs) {
+    protected ModelAndView handleCreateSubmit(String viewName,
+                                              HttpServletRequest req,
+                                              Doc doc,
+                                              RedirectAttributes redirectAttrs) {
         if (StringUtils.isEmpty(doc.getPath())) {
             doc.setPath(null);
         }
@@ -148,7 +144,7 @@ public abstract class AbstractDocController extends AbstractController {
 
         String btnAction = req.getParameter("btnAction");
         if ("publish".equals(btnAction)) {
-            publishDoc(doc, doc.getLatestContent().getContentId(),
+            handlePublishDoc(doc, doc.getLatestContent().getContentId(),
                     userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
@@ -157,24 +153,17 @@ public abstract class AbstractDocController extends AbstractController {
         return getView("redirect:" + viewName);
     }
 
-    protected ModelAndView editView(String viewName, Integer docId) {
+    protected ModelAndView handleEditView(String viewName, Integer docId) {
         Doc doc = docService.get(docId);
         String ct = contentService.getContentText(doc.getLatestContent().getContentId());
         doc.getLatestContent().setContentText(ct);
-        return editView(viewName, doc);
+        return getView(viewName, "doc", doc);
     }
 
-    private ModelAndView editView(String viewName, Doc doc) {
-        ModelAndView result = new ModelAndView(viewName);
-        result.addObject("doc", doc);
-        return result;
-    }
-
-    protected ModelAndView editPost(String viewName,
-                                    HttpServletRequest req,
-                                    Doc doc,
-                                    BindingResult bindingResult,
-                                    RedirectAttributes redirectAttrs) {
+    protected ModelAndView handlEditSubmit(String viewName,
+                                           HttpServletRequest req,
+                                           Doc doc,
+                                           RedirectAttributes redirectAttrs) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         Doc existingDoc = docService.get(doc.getDocId());
         existingDoc.setTags(doc.getTags());
@@ -195,7 +184,7 @@ public abstract class AbstractDocController extends AbstractController {
 
         String btnAction = req.getParameter("btnAction");
         if ("publish".equals(btnAction)) {
-            publishDoc(existingDoc, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
+            handlePublishDoc(existingDoc, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
             message += " And the content has published.";
         }
 
@@ -203,16 +192,13 @@ public abstract class AbstractDocController extends AbstractController {
         return getView("redirect:" + viewName);
     }
 
-    protected ModelAndView preview(String viewName, Integer docId, Integer contentId) {
+    protected ModelAndView handlePreview(String viewName, Integer docId, Integer contentId) {
         // This get will serve as validation.
         Doc doc = docService.get(docId);
 
         Content content = contentService.get(contentId);
         String contentText = contentService.getContentHtml(content);
 
-        ModelAndView result = new ModelAndView(viewName);
-        result.addObject("doc", doc);
-        result.addObject("contentText", contentText);
-        return result;
+        return getView(viewName, "doc", doc, "contentText", contentText);
     }
 }

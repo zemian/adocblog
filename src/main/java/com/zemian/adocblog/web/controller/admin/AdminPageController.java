@@ -54,7 +54,7 @@ public class AdminPageController extends AbstractDocController {
     public ModelAndView publish(@PathVariable Integer pageId,
                                 @PathVariable Integer contentId,
                                 HttpServletRequest req) {
-        return publish("/admin/page/list", Doc.Type.PAGE, pageId, contentId, req);
+        return handlePublish("/admin/page/list", Doc.Type.PAGE, pageId, contentId, req);
     }
 
     @GetMapping("/admin/page/publish/{pageId}/{contentId}/{publishDate}")
@@ -62,22 +62,22 @@ public class AdminPageController extends AbstractDocController {
                                       @PathVariable Integer contentId,
                                       @PathVariable String publishDate,
                                 HttpServletRequest req) {
-        return publishByDate("/admin/page/list", Doc.Type.PAGE, pageId, contentId, publishDate, req);
+        return handlePublishByDate("/admin/page/list", Doc.Type.PAGE, pageId, contentId, publishDate, req);
     }
 
     @GetMapping("/admin/page/unpublish/{pageId}")
     public ModelAndView unpublish(@PathVariable Integer pageId, HttpServletRequest req) {
-        return unpublish("/admin/page/list", Doc.Type.PAGE, pageId, req);
+        return handleUnpublish("/admin/page/list", Doc.Type.PAGE, pageId, req);
     }
 
     @GetMapping("/admin/page/delete/{pageId}")
     public ModelAndView delete(@PathVariable Integer pageId, HttpServletRequest req) {
-        return delete("/admin/page/list", Doc.Type.PAGE, pageId, req);
+        return handleDelete("/admin/page/list", Doc.Type.PAGE, pageId, req);
     }
 
     @GetMapping("/admin/page/history/{pageId}")
     public ModelAndView history(@PathVariable Integer pageId) {
-        return history("/admin/page/history", pageId);
+        return handleHistory("/admin/page/history", pageId);
     }
 
     @Controller
@@ -93,10 +93,10 @@ public class AdminPageController extends AbstractDocController {
                 @ModelAttribute Doc doc,
                 BindingResult bindingResult,
                 RedirectAttributes redirectAttrs) {
-            if (!valid(doc, bindingResult)) {
+            if (!validDoc(doc, bindingResult)) {
                 return getErrorView("/admin/page/create", bindingResult, "doc", doc);
             }
-            return createPost("/admin/page/list", req, doc, bindingResult, redirectAttrs);
+            return handleCreateSubmit("/admin/page/list", req, doc, redirectAttrs);
         }
     }
 
@@ -104,7 +104,7 @@ public class AdminPageController extends AbstractDocController {
     public class EditForm {
         @GetMapping("/admin/page/edit/{blogId}")
         public ModelAndView edit(@PathVariable Integer blogId) {
-            return editView("/admin/page/edit", blogId);
+            return handleEditView("/admin/page/edit", blogId);
         }
 
         @PostMapping("/admin/page/edit")
@@ -113,10 +113,10 @@ public class AdminPageController extends AbstractDocController {
                 @ModelAttribute Doc doc,
                 BindingResult bindingResult,
                 RedirectAttributes redirectAttrs) {
-            if (!valid(doc, bindingResult)) {
+            if (!validDoc(doc, bindingResult)) {
                 return getErrorView("/admin/page/create", bindingResult, "doc", doc);
             }
-            return editPost("/admin/page/list", req, doc, bindingResult, redirectAttrs);
+            return handlEditSubmit("/admin/page/list", req, doc, redirectAttrs);
         }
     }
 
