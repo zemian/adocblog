@@ -53,26 +53,26 @@ public class AdminPageController extends AbstractDocController {
     @GetMapping("/admin/page/publish/{pageId}/{contentId}")
     public ModelAndView publish(@PathVariable Integer pageId,
                                 @PathVariable Integer contentId,
-                                HttpServletRequest req) {
-        return handlePublish("/admin/page/list", Doc.Type.PAGE, pageId, contentId, req);
+                                HttpServletRequest req, RedirectAttributes redirectAttrs) {
+        return handlePublish("/admin/page/list", pageId, contentId, req, redirectAttrs);
     }
 
     @GetMapping("/admin/page/publish/{pageId}/{contentId}/{publishDate}")
     public ModelAndView publishByDate(@PathVariable Integer pageId,
                                       @PathVariable Integer contentId,
                                       @PathVariable String publishDate,
-                                HttpServletRequest req) {
-        return handlePublishByDate("/admin/page/list", Doc.Type.PAGE, pageId, contentId, publishDate, req);
+                                HttpServletRequest req, RedirectAttributes redirectAttrs) {
+        return handlePublishByDate("/admin/page/list", pageId, contentId, publishDate, req, redirectAttrs);
     }
 
     @GetMapping("/admin/page/unpublish/{pageId}")
-    public ModelAndView unpublish(@PathVariable Integer pageId, HttpServletRequest req) {
-        return handleUnpublish("/admin/page/list", Doc.Type.PAGE, pageId, req);
+    public ModelAndView unpublish(@PathVariable Integer pageId, HttpServletRequest req, RedirectAttributes redirectAttrs) {
+        return handleUnpublish("/admin/page/list", pageId, req, redirectAttrs);
     }
 
     @GetMapping("/admin/page/delete/{pageId}")
-    public ModelAndView delete(@PathVariable Integer pageId, HttpServletRequest req) {
-        return handleDelete("/admin/page/list", Doc.Type.PAGE, pageId, req);
+    public ModelAndView delete(@PathVariable Integer pageId, HttpServletRequest req, RedirectAttributes redirectAttrs) {
+        return handleDelete("/admin/page/list", pageId, req, redirectAttrs);
     }
 
     @GetMapping("/admin/page/history/{pageId}")
@@ -90,13 +90,13 @@ public class AdminPageController extends AbstractDocController {
         @PostMapping("/admin/page/create")
         public ModelAndView createSubmit(
                 HttpServletRequest req,
+                RedirectAttributes redirectAttrs,
                 @ModelAttribute Doc doc,
-                BindingResult bindingResult,
-                RedirectAttributes redirectAttrs) {
+                BindingResult bindingResult) {
             if (!validDoc(doc, bindingResult)) {
                 return getErrorView("/admin/page/create", bindingResult, "doc", doc);
             }
-            return handleCreateSubmit("/admin/page/list", req, doc, redirectAttrs);
+            return handleCreateSubmit("/admin/page/list", doc, req, redirectAttrs);
         }
     }
 
@@ -110,13 +110,13 @@ public class AdminPageController extends AbstractDocController {
         @PostMapping("/admin/page/edit")
         public ModelAndView editSubmit(
                 HttpServletRequest req,
+                RedirectAttributes redirectAttrs,
                 @ModelAttribute Doc doc,
-                BindingResult bindingResult,
-                RedirectAttributes redirectAttrs) {
+                BindingResult bindingResult) {
             if (!validDoc(doc, bindingResult)) {
                 return getErrorView("/admin/page/create", bindingResult, "doc", doc);
             }
-            return handlEditSubmit("/admin/page/list", req, doc, redirectAttrs);
+            return handlEditSubmit("/admin/page/list", doc, req, redirectAttrs);
         }
     }
 

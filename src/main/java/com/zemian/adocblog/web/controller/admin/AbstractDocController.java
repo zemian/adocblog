@@ -46,20 +46,17 @@ public abstract class AbstractDocController extends AbstractController {
         return getView(viewName, "docs", docs);
     }
 
-    private ModelAndView list(String viewName, Doc.Type type)  {
-        return list(viewName, type, new Paging(0, defaultPagingSize));
-    }
-
-    protected ModelAndView handlePublish(String viewName, Doc.Type type,
+    protected ModelAndView handlePublish(String viewName,
                                          Integer docId, Integer contentId,
-                                         HttpServletRequest req) {
+                                         HttpServletRequest req,
+                                         RedirectAttributes redirectAttributes) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         Doc page = docService.get(docId);
         handlePublishDoc(page, contentId, userSession.getUser().getUsername(), LocalDateTime.now());
 
-        req.setAttribute("actionSuccessMessage",
+        redirectAttributes.addFlashAttribute("actionSuccessMessage",
                 "Doc " + docId + " with contentId " + contentId + " has published successfully.");
-        return list(viewName, type);
+        return getView("redirect:" + viewName);
     }
 
     private void handlePublishDoc(Doc doc, Integer contentId, String username, LocalDateTime publishedDt) {
@@ -73,22 +70,26 @@ public abstract class AbstractDocController extends AbstractController {
         LOG.info("Doc {} with contentId {} is published by {}", doc.getDocId(), contentId, username);
     }
 
-    protected ModelAndView handlePublishByDate(String viewName, Doc.Type type,
-                                               Integer docId, Integer contentId, String publishDate, HttpServletRequest req) {
+    protected ModelAndView handlePublishByDate(String viewName,
+                                               Integer docId, Integer contentId, String publishDate,
+                                               HttpServletRequest req,
+                                               RedirectAttributes redirectAttributes) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         LocalDateTime publishedDt = LocalDateTime.parse(publishDate, YYYY_MM_DD_HH_MM);
 
         Doc doc = docService.get(docId);
         handlePublishDoc(doc, contentId, userSession.getUser().getUsername(), publishedDt);
 
-        req.setAttribute("actionSuccessMessage",
+        redirectAttributes.addFlashAttribute("actionSuccessMessage",
                 "Doc " + docId + " with contentId " + contentId +
                         " has published successfully and publishedDate " + publishDate + ".");
-        return list(viewName, type);
+        return getView("redirect:" + viewName);
     }
 
-    protected ModelAndView handleUnpublish(String viewName, Doc.Type type,
-                                           Integer docId, HttpServletRequest req) {
+    protected ModelAndView handleUnpublish(String viewName,
+                                           Integer docId,
+                                           HttpServletRequest req,
+                                           RedirectAttributes redirectAttributes) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         Doc doc = docService.get(docId);
         if (doc.getPublishedContent() == null) {
@@ -99,17 +100,19 @@ public abstract class AbstractDocController extends AbstractController {
         LOG.info("Doc {} with contentId {} unpublished by {}",
                 docId, contentId, userSession.getUser().getUsername());
 
-        req.setAttribute("actionSuccessMessage",
+        redirectAttributes.addFlashAttribute("actionSuccessMessage",
                 "Doc " + docId + " with contentId " + contentId + " has unpublished successfully.");
-        return list(viewName, type);
+        return getView("redirect:" + viewName);
     }
 
-    protected ModelAndView handleDelete(String viewName, Doc.Type type, Integer docId, HttpServletRequest req) {
+    protected ModelAndView handleDelete(String viewName, Integer docId,
+                                        HttpServletRequest req,
+                                        RedirectAttributes redirectAttributes) {
         String reasonForDelete = null;
         docService.markForDelete(docId, reasonForDelete);
 
-        req.setAttribute("actionSuccessMessage", "Doc " + docId + " has deleted successfully.");
-        return list(viewName, type);
+        redirectAttributes.addFlashAttribute("actionSuccessMessage", "Doc " + docId + " has deleted successfully.");
+        return getView("redirect:" + viewName);
     }
 
     protected ModelAndView handleHistory(String viewName, Integer docId) {
@@ -128,8 +131,8 @@ public abstract class AbstractDocController extends AbstractController {
     }
 
     protected ModelAndView handleCreateSubmit(String viewName,
-                                              HttpServletRequest req,
                                               Doc doc,
+                                              HttpServletRequest req,
                                               RedirectAttributes redirectAttrs) {
         if (StringUtils.isEmpty(doc.getPath())) {
             doc.setPath(null);
@@ -161,8 +164,8 @@ public abstract class AbstractDocController extends AbstractController {
     }
 
     protected ModelAndView handlEditSubmit(String viewName,
-                                           HttpServletRequest req,
                                            Doc doc,
+                                           HttpServletRequest req,
                                            RedirectAttributes redirectAttrs) {
         UserSession userSession = UserSessionUtils.getUserSession(req);
         Doc existingDoc = docService.get(doc.getDocId());
