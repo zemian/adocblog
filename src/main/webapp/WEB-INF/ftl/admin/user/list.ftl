@@ -21,13 +21,13 @@
         </p>
 
         <table class="bordered-table">
-            <tr>
+            <thead>
                 <th>Username</th>
                 <th>Full Name</th>
                 <th>Admin</th>
                 <th>CreatedDt</th>
                 <th>Actions</th>
-            </tr>
+            </thead>
             <#list plist.list as user>
                 <tr>
                     <td>${user.username!''}</td>

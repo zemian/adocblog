@@ -14,11 +14,11 @@ For archive and search, we do not want those style.
     <div class="app-content">
         <h1>Search Result</h1>
         <table class="table">
-            <tr>
+            <thead>
                 <th>Title</th>
                 <th>Date</th>
                 <th>Author</th>
-            </tr>
+            </thead>
             <#list blogs.list as blog>
                 <tr>
                     <td><a href="${app.contextPath}/blog/${blog.docId}">${blog.latestContent.title}</a></td>

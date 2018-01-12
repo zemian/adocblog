@@ -14,13 +14,13 @@
         </#if>
 
         <table class="bordered-table">
-            <tr>
+            <thead>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Value</th>
                 <th>Created Dt</th>
                 <th>Actions</th>
-            </tr>
+            </thead>
             <#list plist.list as auditLog>
                 <tr>
                     <td>${auditLog.logId!''}</td>

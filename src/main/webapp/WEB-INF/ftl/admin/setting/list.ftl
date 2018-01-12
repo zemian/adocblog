@@ -20,14 +20,14 @@
         </p>
 
         <table class="bordered-table">
-            <tr>
+            <thead>
                 <th>ID</th>
                 <th>Category</th>
                 <th>Name</th>
                 <th>Value</th>
                 <th>Type</th>
                 <th>Actions</th>
-            </tr>
+            </thead>
             <#list plist.list as setting>
                 <tr>
                     <td>${setting.settingId!''}</td>

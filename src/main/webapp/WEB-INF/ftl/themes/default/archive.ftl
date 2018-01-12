@@ -20,11 +20,11 @@ For archive and search, we do not want those style.
             <#list years as year><a href="${app.contextPath}/archive/${year}">${year}</a> </#list>
         </p></#if>
         <table class="table">
-            <tr>
+            <thead>
                 <th>Title</th>
                 <th>Date</th>
                 <th>Author</th>
-            </tr>
+            </thead>
             <#list blogs.list as blog>
                 <tr>
                     <td><a href="${app.contextPath}/blog/${blog.docId}">${blog.latestContent.title}</a></td>
