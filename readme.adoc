@@ -2,7 +2,10 @@
 
 A blog application that supports asciidoc format.
 
-https://github.com/zemian/adocblog
+Project Home: https://github.com/zemian/adocblog
+
+Developer Blog: https://zemianblog.herokuapp.com
+
 
 == User Guide
 
