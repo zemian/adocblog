@@ -8,6 +8,7 @@
 
 <div class="container">
     <div class="app-content">
+        <h1 class="text-center">Admin Login</h1>
         <div class="row">
             <div class="col-xs-4"></div>
             <div class="col-xs-4">
