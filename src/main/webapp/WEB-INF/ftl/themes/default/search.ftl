@@ -15,9 +15,9 @@ For archive and search, we do not want those style.
         <h1>Search Result</h1>
         <table class="table">
             <tr>
-                <td>Title</td>
-                <td>Date</td>
-                <td>Author</td>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Author</th>
             </tr>
             <#list blogs.list as blog>
                 <tr>

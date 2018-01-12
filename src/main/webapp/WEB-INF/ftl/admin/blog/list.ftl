@@ -24,13 +24,13 @@
 
         <table class="table">
             <tr>
-                <td>ID</td>
-                <td>Title</td>
-                <td>Latest Date</td>
-                <td>LatestVer</td>
-                <td>Published Date</td>
-                <td>PublishedVer</td>
-                <td>Actions</td>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Latest Date</th>
+                <th>LatestVer</th>
+                <th>Published Date</th>
+                <th>PublishedVer</th>
+                <th>Actions</th>
             </tr>
             <#list docs.list as doc>
 

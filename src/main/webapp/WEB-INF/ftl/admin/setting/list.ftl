@@ -21,12 +21,12 @@
 
         <table class="table">
             <tr>
-                <td>ID</td>
-                <td>Category</td>
-                <td>Name</td>
-                <td>Value</td>
-                <td>Type</td>
-                <td>Actions</td>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Type</th>
+                <th>Actions</th>
             </tr>
             <#list plist.list as setting>
                 <tr>

@@ -22,11 +22,11 @@
 
         <table class="table">
             <tr>
-                <td>Username</td>
-                <td>Full Name</td>
-                <td>Admin</td>
-                <td>CreatedDt</td>
-                <td>Actions</td>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Admin</th>
+                <th>CreatedDt</th>
+                <th>Actions</th>
             </tr>
             <#list plist.list as user>
                 <tr>

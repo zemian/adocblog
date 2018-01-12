@@ -11,13 +11,13 @@
         <h1>${doc.latestContent.title}</h1>
         <table class="table">
             <tr>
-                <td>Date</td>
-                <td>Version</td>
-                <td>Reason</td>
-                <td>Author</td>
-                <td>Format</td>
-                <td>Published</td>
-                <td>Actions</td>
+                <th>Date</th>
+                <th>Version</th>
+                <th>Reason</th>
+                <th>Author</th>
+                <th>Format</th>
+                <th>Published</th>
+                <th>Actions</th>
             </tr>
             <#list docHistory.contentVers as content>
 
