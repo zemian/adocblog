@@ -13,13 +13,13 @@
             <p class="alert alert-success">${message}</p>
         </#if>
 
-        <table class="table">
+        <table class="bordered-table">
             <tr>
-                <td>ID</td>
-                <td>Name</td>
-                <td>Value</td>
-                <td>Created Dt</td>
-                <td>Actions</td>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Created Dt</th>
+                <th>Actions</th>
             </tr>
             <#list plist.list as auditLog>
                 <tr>

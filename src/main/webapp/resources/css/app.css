@@ -49,3 +49,17 @@ body {
 .toc-right .theme-controls {
     /*left: 5px;*/
 }
+
+.bordered-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bordered-table th {
+    background-color: lightgray;
+}
+
+.bordered-table td, .bordered-table th {
+    border: 1px solid Black;
+    padding: 5px 15px;
+}

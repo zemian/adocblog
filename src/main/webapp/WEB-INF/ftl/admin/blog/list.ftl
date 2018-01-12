@@ -22,15 +22,17 @@
             <p class="alert alert-danger">${actionErrorMessage}</p>
         </#if>
 
-        <table class="table">
+        <table class="bordered-table">
             <tr>
-                <th>ID</th>
-                <th>Title</th>
+                <th rowspan="2">ID</th>
+                <th colspan="4">Title</th>
+                <th rowspan="2">Actions</th>
+            </tr>
+            <tr>
                 <th>Latest Date</th>
-                <th>LatestVer</th>
+                <th>Latest Ver</th>
                 <th>Published Date</th>
-                <th>PublishedVer</th>
-                <th>Actions</th>
+                <th>Published Ver</th>
             </tr>
             <#list docs.list as doc>
 
@@ -45,19 +47,21 @@
                     <#assign pubVersion = doc.publishedContent.version >
                 </#if>
                 <tr>
-                    <td>${doc.docId}</td>
-                    <td>${doc.latestContent.title}</td>
-                    <td>${doc.latestContent.createdDt}</td>
-                    <td>${doc.latestContent.version}</td>
-                    <td>${pubDate}</td>
-                    <td>${pubVersion}</td>
-                    <td>
+                    <td rowspan="2">${doc.docId}</td>
+                    <td colspan="4">${doc.latestContent.title}</td>
+                    <td rowspan="2">
                         <a href="${app.contextPath}/admin/blog/preview/${doc.docId}/${doc.latestContent.contentId}" target="_blank"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> Preview</a>
                         <a href="${app.contextPath}/admin/blog/edit/${doc.docId}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</a>
                         <a href="${app.contextPath}/admin/blog/delete/${doc.docId}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>
                         <a href="${app.contextPath}/admin/blog/history/${doc.docId}">History</a>
                         <a href="${app.contextPath}/admin/blog/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
                     </td>
+                </tr>
+                <tr>
+                    <td>${doc.latestContent.createdDt}</td>
+                    <td>${doc.latestContent.version}</td>
+                    <td>${pubDate}</td>
+                    <td>${pubVersion}</td>
                 </tr>
             </#list>
         </table>
