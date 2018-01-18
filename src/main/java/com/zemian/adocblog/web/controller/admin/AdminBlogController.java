@@ -44,10 +44,16 @@ public class AdminBlogController extends AbstractDocController {
         return handleUnpublish("/admin/blog/list", blogId, req, redirectAttrs);
     }
 
+    @GetMapping("/admin/blog/detail/{blogId}")
+    public ModelAndView detail(@PathVariable Integer blogId) {
+        Doc doc = docService.get(blogId);
+        return getView("/admin/blog/detail", "doc", doc);
+    }
+
     @GetMapping("/admin/blog/delete/{blogId}")
     public ModelAndView delete(@PathVariable Integer blogId) {
         Doc doc = docService.get(blogId);
-        return getView("/admin/blog/delete", "blog", doc);
+        return getView("/admin/blog/delete", "doc", doc);
     }
 
     @PostMapping("/admin/blog/delete")

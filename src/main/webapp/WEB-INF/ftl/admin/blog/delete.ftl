@@ -10,10 +10,10 @@
     <div class="app-content">
         <h1>Delete Blog</h1>
 
-        <p>Are you sure you want to delete Blog with ID ${blog.docId}: ${blog.latestContent.title}?</p>
+        <p>Are you sure you want to delete Blog with ID ${doc.docId}: ${doc.latestContent.title}?</p>
 
         <form id="blog" class="form-horizontal" method="post" action="${app.contextPath}/admin/blog/delete">
-            <input type="hidden" id="docId" name="docId" value="${blog.docId}">
+            <input type="hidden" id="docId" name="docId" value="${doc.docId}">
             <div class="form-group">
                 <div class="col-sm-12">
                     <button type="submit" class="btn btn-default">Submit</button>

@@ -70,10 +70,16 @@ public class AdminPageController extends AbstractDocController {
         return handleUnpublish("/admin/page/list", pageId, req, redirectAttrs);
     }
 
+    @GetMapping("/admin/page/detail/{pageId}")
+    public ModelAndView detail(@PathVariable Integer pageId) {
+        Doc doc = docService.get(pageId);
+        return getView("/admin/page/detail", "doc", doc);
+    }
+
     @GetMapping("/admin/page/delete/{pageId}")
     public ModelAndView delete(@PathVariable Integer pageId) {
         Doc doc = docService.get(pageId);
-        return getView("/admin/page/delete", "page", doc);
+        return getView("/admin/page/delete", "doc", doc);
     }
 
     @PostMapping("/admin/page/delete")
