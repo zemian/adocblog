@@ -71,8 +71,15 @@ public class AdminPageController extends AbstractDocController {
     }
 
     @GetMapping("/admin/page/delete/{pageId}")
-    public ModelAndView delete(@PathVariable Integer pageId, HttpServletRequest req, RedirectAttributes redirectAttrs) {
-        return handleDelete("/admin/page/list", pageId, req, redirectAttrs);
+    public ModelAndView delete(@PathVariable Integer pageId) {
+        Doc doc = docService.get(pageId);
+        return getView("/admin/page/delete", "page", doc);
+    }
+
+    @PostMapping("/admin/page/delete")
+    public ModelAndView deletePost(HttpServletRequest req, RedirectAttributes redirectAttrs) {
+        Integer docId = Integer.parseInt(req.getParameter("docId"));
+        return handleDelete("/admin/page/list", docId, req, redirectAttrs);
     }
 
     @GetMapping("/admin/page/history/{pageId}")
