@@ -50,8 +50,8 @@
                         <a href="${app.contextPath}/admin/page/detail/${doc.docId}"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> View</a>
                         <a href="${app.contextPath}/admin/page/edit/${doc.docId}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</a>
                         <a href="${app.contextPath}/admin/page/delete/${doc.docId}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>
-                        <a href="${app.contextPath}/admin/page/${pubActionPath}" data-toggle="confirmation" data-title="Are you sure?">${pubActionLabel}</a>
-                        <a href="${app.contextPath}/admin/page/history/${doc.docId}">History</a>
+                        <a href="${app.contextPath}/admin/page/${pubActionPath}" <#if pubActionLabel = 'Unpublish'>data-toggle="confirmation"</#if> data-title="Are you sure?">${pubActionLabel}</a>
+                        <a href="${app.contextPath}/admin/page/history/${doc.docId}"> History</a>
                         <a href="${app.contextPath}/admin/page/preview/${doc.docId}/${doc.latestContent.contentId}" target="_blank"><span title="Preview"></span> Preview</a>
                     </td>
                 </tr>

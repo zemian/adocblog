@@ -30,7 +30,7 @@ import java.time.format.DateTimeFormatter;
  */
 public abstract class AbstractDocController extends AbstractController {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDocController.class);
-    public static final DateTimeFormatter YYYY_MM_DD_HH_MM = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+    public static final DateTimeFormatter YYYY_MM_DD_HH_MM = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Value("${app.web.defaultPagingSize}")
     protected int defaultPagingSize;

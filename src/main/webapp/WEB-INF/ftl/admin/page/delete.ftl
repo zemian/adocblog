@@ -10,7 +10,7 @@
     <div class="app-content">
         <h1>Delete Page</h1>
 
-        <p>Are you sure you want to delete Page with ID ${doc.docId}: ${doc.latestContent.title}?</p>
+        <p>Are you sure you want to delete Page ID ${doc.docId}: ${doc.latestContent.title}?</p>
 
         <form id="page" class="form-horizontal" method="post" action="${app.contextPath}/admin/page/delete">
             <input type="hidden" id="docId" name="docId" value="${doc.docId}">

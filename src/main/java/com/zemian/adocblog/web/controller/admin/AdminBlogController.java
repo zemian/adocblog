@@ -25,18 +25,22 @@ public class AdminBlogController extends AbstractDocController {
     }
 
     @GetMapping("/admin/blog/publish/{blogId}/{contentId}")
-    public ModelAndView publish(@PathVariable Integer blogId, @PathVariable Integer contentId,
-                                HttpServletRequest req, RedirectAttributes redirectAttrs) {
-
-        return handlePublish("/admin/blog/list", blogId, contentId, req, redirectAttrs);
+    public ModelAndView publish(@PathVariable Integer blogId, @PathVariable Integer contentId) {
+        Doc doc = docService.get(blogId);
+        return getView("/admin/blog/publish", "doc", doc, "contentId", contentId);
     }
 
-    @GetMapping("/admin/blog/publish/{blogId}/{contentId}/{publishDate}")
-    public ModelAndView publishByDate(@PathVariable Integer blogId,
-                                      @PathVariable Integer contentId,
-                                      @PathVariable String publishDate,
-                                HttpServletRequest req, RedirectAttributes redirectAttrs) {
-        return handlePublishByDate("/admin/blog/list", blogId, contentId, publishDate, req, redirectAttrs);
+    @PostMapping("/admin/blog/publish")
+    public ModelAndView publishPost(HttpServletRequest req, RedirectAttributes redirectAttrs) {
+        Integer docId = Integer.parseInt(req.getParameter("docId"));
+        Integer contentId = Integer.parseInt(req.getParameter("contentId"));
+        String publishWithDate = req.getParameter("publishWithDate");
+        if (publishWithDate != null) {
+            String publishDate = req.getParameter("publishDate");
+            return handlePublishByDate("/admin/blog/list", docId, contentId, publishDate, req, redirectAttrs);
+        }
+
+        return handlePublish("/admin/blog/list", docId, contentId, req, redirectAttrs);
     }
 
     @GetMapping("/admin/blog/unpublish/{blogId}")
