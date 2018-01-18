@@ -21,6 +21,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,20 +54,17 @@ public class AdminPageController extends AbstractDocController {
     @GetMapping("/admin/page/publish/{pageId}/{contentId}")
     public ModelAndView publish(@PathVariable Integer pageId, @PathVariable Integer contentId) {
         Doc doc = docService.get(pageId);
-        return getView("/admin/page/publish", "doc", doc, "contentId", contentId);
+        LocalDateTime publishDate = LocalDateTime.now();
+        return getView("/admin/page/publish",
+                "doc", doc, "contentId", contentId, "publishDate", publishDate);
     }
 
     @PostMapping("/admin/page/publish")
     public ModelAndView publishPost(HttpServletRequest req, RedirectAttributes redirectAttrs) {
         Integer docId = Integer.parseInt(req.getParameter("docId"));
         Integer contentId = Integer.parseInt(req.getParameter("contentId"));
-        String publishWithDate = req.getParameter("publishWithDate");
-        if (publishWithDate != null) {
-            String publishDate = req.getParameter("publishDate");
-            return handlePublishByDate("/admin/page/list", docId, contentId, publishDate, req, redirectAttrs);
-        }
-
-        return handlePublish("/admin/page/list", docId, contentId, req, redirectAttrs);
+        String publishDate = req.getParameter("publishDate");
+        return handlePublishByDate("/admin/page/list", docId, contentId, publishDate, req, redirectAttrs);
     }
 
     @GetMapping("/admin/page/unpublish/{pageId}")

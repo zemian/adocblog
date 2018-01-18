@@ -67,7 +67,7 @@ public class DocDAO extends AbstractDAO {
      */
     public static final String SELECT_PUBLISHED_DOCS_SQL =  SELECT_DOCS_SQL +
             " WHERE docs.deleted = FALSE AND docs.latest_content_id IS NOT NULL" +
-            "   AND docs.published_content_id IS NOT NULL";
+            "   AND docs.published_content_id IS NOT NULL AND docs.published_dt <= NOW()";
     /* A Doc with Content meta data ResultSet mapping. */
 
     public static class DocRowMapper implements RowMapper<Doc> {

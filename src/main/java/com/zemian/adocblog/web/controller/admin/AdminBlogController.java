@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 /**
  * Admin - Blog Management UI
@@ -27,20 +28,17 @@ public class AdminBlogController extends AbstractDocController {
     @GetMapping("/admin/blog/publish/{blogId}/{contentId}")
     public ModelAndView publish(@PathVariable Integer blogId, @PathVariable Integer contentId) {
         Doc doc = docService.get(blogId);
-        return getView("/admin/blog/publish", "doc", doc, "contentId", contentId);
+        LocalDateTime publishDate = LocalDateTime.now();
+        return getView("/admin/blog/publish",
+                "doc", doc, "contentId", contentId, "publishDate", publishDate);
     }
 
     @PostMapping("/admin/blog/publish")
     public ModelAndView publishPost(HttpServletRequest req, RedirectAttributes redirectAttrs) {
         Integer docId = Integer.parseInt(req.getParameter("docId"));
         Integer contentId = Integer.parseInt(req.getParameter("contentId"));
-        String publishWithDate = req.getParameter("publishWithDate");
-        if (publishWithDate != null) {
-            String publishDate = req.getParameter("publishDate");
-            return handlePublishByDate("/admin/blog/list", docId, contentId, publishDate, req, redirectAttrs);
-        }
-
-        return handlePublish("/admin/blog/list", docId, contentId, req, redirectAttrs);
+        String publishDate = req.getParameter("publishDate");
+        return handlePublishByDate("/admin/blog/list", docId, contentId, publishDate, req, redirectAttrs);
     }
 
     @GetMapping("/admin/blog/unpublish/{blogId}")

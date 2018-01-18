@@ -74,6 +74,11 @@ public abstract class AbstractDocController extends AbstractController {
                                                Integer docId, Integer contentId, String publishDate,
                                                HttpServletRequest req,
                                                RedirectAttributes redirectAttributes) {
+        if (publishDate.indexOf(":") < 0) {
+            // Auto append time if it's missing
+            publishDate += " 00:00";
+        }
+
         UserSession userSession = UserSessionUtils.getUserSession(req);
         LocalDateTime publishedDt = LocalDateTime.parse(publishDate, YYYY_MM_DD_HH_MM);
 
