@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<#include "/admin/includes/html-head.ftl">
 </head>
 <body>
 <#include "/admin/includes/header.ftl">
