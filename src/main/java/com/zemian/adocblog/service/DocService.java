@@ -93,7 +93,7 @@ public class DocService {
         docDAO.publish(doc);
         auditLogDAO.create("DOC_PUBLISHED",
                 "DocId=" + doc.getDocId() + ", publishedDt=" + doc.getPublishedDt() +
-                        ", publishedUser" + doc.getPublishedUser() +
+                        ", publishedUser=" + doc.getPublishedUser() +
                         ", contentId=" + doc.getPublishedContent().getContentId());
     }
 
