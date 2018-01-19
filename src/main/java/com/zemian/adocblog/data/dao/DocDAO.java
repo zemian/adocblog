@@ -49,7 +49,10 @@ public class DocDAO extends AbstractDAO {
             "   published_contents.created_user published_created_user," +
             "   published_contents.created_dt published_created_dt," +
             "   published_contents.format published_format," +
-            "   published_users.full_name published_full_name" +
+            "   published_users.full_name published_full_name," +
+            "   CASE WHEN published_contents.created_dt ISNULL THEN latest_contents.created_dt" +
+            "   ELSE docs.published_dt" +
+            "   END displayDt" +
             " FROM docs" +
             "   LEFT JOIN contents latest_contents ON latest_contents.content_id = docs.latest_content_id" +
             "   LEFT JOIN users latest_users ON latest_users.username = latest_contents.created_user" +
@@ -262,7 +265,7 @@ public class DocDAO extends AbstractDAO {
     // == DAO Find List and Searches
     public PagingList<Doc> findLatest(Paging paging, Doc.Type type) {
         String sql = SELECT_LATEST_DOCS_SQL + " AND docs.type = ?" +
-                " ORDER BY published_contents.created_dt DESC, latest_contents.created_dt DESC";
+                " ORDER BY displayDt DESC";
         PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name());
         LOG.debug("Found {} docs.", ret);
         return ret;
