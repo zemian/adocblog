@@ -261,7 +261,8 @@ public class DocDAO extends AbstractDAO {
 
     // == DAO Find List and Searches
     public PagingList<Doc> findLatest(Paging paging, Doc.Type type) {
-        String sql = SELECT_LATEST_DOCS_SQL + " AND docs.type = ? ORDER BY latest_contents.created_dt DESC";
+        String sql = SELECT_LATEST_DOCS_SQL + " AND docs.type = ?" +
+                " ORDER BY published_contents.created_dt DESC, latest_contents.created_dt DESC";
         PagingList<Doc> ret = findByPaging(sql, new DocRowMapper(), paging, type.name());
         LOG.debug("Found {} docs.", ret);
         return ret;
