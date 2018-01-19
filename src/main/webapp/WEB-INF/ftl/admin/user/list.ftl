@@ -38,7 +38,9 @@
                         <a href="${app.contextPath}/admin/user/detail/${user.username}"><span title="Detail" class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> View</a>
                         <a href="${app.contextPath}/admin/user/edit/${user.username}"><span title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</a>
                         <a href="${app.contextPath}/admin/user/delete/${user.username}"><span title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>
+                        <#--
                         <a href="${app.contextPath}/admin/user/password/${user.username}"><span title="Update Password" aria-hidden="true"></span> Update Password</a>
+                        -->
                     </td>
                 </tr>
             </#list>
