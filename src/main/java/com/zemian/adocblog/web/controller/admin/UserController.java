@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class UserController extends AbstractController {
     @Autowired
@@ -106,5 +108,26 @@ public class UserController extends AbstractController {
                     "Item ID=" + username + " deleted successfully");
             return getView("redirect:/admin/user/list");
         }
+    }
+
+
+    @GetMapping("/admin/user/password/{username}")
+    public ModelAndView updatePassword(@PathVariable String username) {
+        User user = userService.get(username);
+        return getView("/admin/user/password", "user", user);
+    }
+
+    @PostMapping("/admin/user/password")
+    public ModelAndView updatePasswordSubmit(HttpServletRequest req, RedirectAttributes redirectAttrs) {
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+
+        // Simple get will ensure the ID param is valid
+        userService.get(username);
+
+        userService.changePassword(username, password);
+        redirectAttrs.addFlashAttribute("message",
+                "Item ID=" + username + " password updated successfully");
+        return getView("redirect:/admin/user/list");
     }
 }
