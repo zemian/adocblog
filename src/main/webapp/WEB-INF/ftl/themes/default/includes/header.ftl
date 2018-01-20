@@ -7,8 +7,8 @@
             <ul class="nav navbar-nav">
                 <li id="index"><a href="${app.contextPath}/index">Home</a></li>
                 <li id="archive"><a href="${app.contextPath}/archive">Archive</a></li>
-                <li id="archive"><a href="${app.contextPath}/api/blog/feed.json">JsonFeed</a></li>
                 <li id="about"><a href="${app.contextPath}/about">About</a></li>
+                <li id="about"><a href="${app.contextPath}/api/blog/feed.json"><span title="JSON Feed" class="fa fa-rss" aria-hidden="true"></span></a></li>
             </ul>
 
             <form class="nav navbar-form navbar-right" method="post" action="${app.contextPath}/search">

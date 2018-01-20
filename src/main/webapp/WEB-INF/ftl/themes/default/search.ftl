@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!--
-We do not include user theme html-head here because that will bring asciidoc styling, which for blog display only.
-For archive and search, we do not want those style.
--->
-<#include "/includes/html-head.ftl">
+<#include "/themes/${app.themeName}/includes/html-head-noasciidoc.ftl">
 </head>
 <body>
 <#include "/themes/${app.themeName}/includes/header.ftl">
