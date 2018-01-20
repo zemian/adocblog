@@ -76,7 +76,7 @@ public class SystemInfoExtraController {
 
         // Get env vars
         for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-            result.put("xtra2.env" + entry.getKey(), entry.getValue());
+            result.put("xtra2.env." + entry.getKey(), entry.getValue());
         }
         return result;
     }
