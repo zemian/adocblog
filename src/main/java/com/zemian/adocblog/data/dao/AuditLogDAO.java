@@ -82,12 +82,12 @@ public class AuditLogDAO extends AbstractDAO {
     }
 
     public List<AuditLog> findAll() {
-        String sql = "SELECT * FROM audit_logs ORDER BY log_id";
+        String sql = "SELECT * FROM audit_logs ORDER BY created_dt DESC";
         return jdbc.query(sql, new AuditLogRowMapper());
     }
 
     public PagingList<AuditLog> find(Paging paging) {
-        String sql = "SELECT * FROM audit_logs ORDER BY log_id";
+        String sql = "SELECT * FROM audit_logs ORDER BY created_dt DESC";
         return findByPaging(sql, new AuditLogRowMapper(), paging);
     }
 
