@@ -13,7 +13,7 @@
             <p class="alert alert-success">${message}</p>
         </#if>
 
-        <table class="bordered-table">
+        <table class="table">
             <thead>
                 <th>ID</th>
                 <th>Name</th>

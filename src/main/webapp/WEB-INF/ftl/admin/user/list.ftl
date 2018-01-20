@@ -20,7 +20,7 @@
             </a>
         </p>
 
-        <table class="bordered-table">
+        <table class="table">
             <thead>
                 <th>Username</th>
                 <th>Full Name</th>

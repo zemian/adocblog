@@ -19,7 +19,7 @@
             </a>
         </p>
 
-        <table class="bordered-table">
+        <table class="table">
             <thead>
                 <th>ID</th>
                 <th>Category</th>

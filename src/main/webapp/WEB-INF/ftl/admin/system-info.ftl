@@ -9,7 +9,7 @@
 <div class="container">
     <div class="app-content">
         <h1>System Information</h1>
-        <table class="bordered-table">
+        <table class="table">
             <thead>
                 <th>Name</th>
                 <th>Value</th>
