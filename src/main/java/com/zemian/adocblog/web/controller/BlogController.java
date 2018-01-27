@@ -98,7 +98,8 @@ public class BlogController {
     @GetMapping("/archive/{year}")
     public ModelAndView archiveByYear(Paging paging, @PathVariable String year) {
         LocalDateTime from = LocalDateTime.parse(year + "-01-01T00:00");
-        PagingList<Doc> blogs = blogService.findPublishedByDate(paging, from, from.plusYears(1L));
+        LocalDateTime to = from.plusYears(1L).minusSeconds(1); // Use -1 sec to ensure not to include next year.
+        PagingList<Doc> blogs = blogService.findPublishedByDate(paging, from, to);
         return archiveView(blogs);
     }
 
@@ -109,7 +110,8 @@ public class BlogController {
             month = "0" + month;
         }
         LocalDateTime from = LocalDateTime.parse(year + "-" + month + "-01T00:00");
-        PagingList<Doc> blogs = blogService.findPublishedByDate(paging, from, from.plusMonths(1L));
+        LocalDateTime to = from.plusYears(1L).minusSeconds(1); // Use -1 sec to ensure not to include next year.
+        PagingList<Doc> blogs = blogService.findPublishedByDate(paging, from, to);
         ModelAndView result = new ModelAndView(getThemeViewName("/archive"));
         result.addObject("blogs", blogs);
         return result;
