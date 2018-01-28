@@ -4,8 +4,7 @@ A blog application that supports asciidoc format.
 
 Project Home: https://github.com/zemian/adocblog
 
-Developer Blog: http://zemiandeng.com
-
+Developer Blog: http://www.zemiandeng.com
 
 == User Guide
 
