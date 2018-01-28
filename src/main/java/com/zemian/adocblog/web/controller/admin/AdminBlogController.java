@@ -3,6 +3,7 @@ package com.zemian.adocblog.web.controller.admin;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.support.DataUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,10 @@ import java.time.LocalDateTime;
 @Controller
 public class AdminBlogController extends AbstractDocController {
     @GetMapping("/admin/blog/list")
-    public ModelAndView list(Paging paging) {
+    public ModelAndView list(Paging paging, HttpServletRequest req) {
+        if (StringUtils.isEmpty(req.getParameter("size"))) {
+            paging = new Paging(0, defaultPagingSize);
+        }
         return list("/admin/blog/list", Doc.Type.BLOG, paging);
     }
 

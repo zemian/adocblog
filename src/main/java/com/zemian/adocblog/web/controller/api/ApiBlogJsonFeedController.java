@@ -9,6 +9,7 @@ import com.zemian.adocblog.web.controller.api.payload.JsonFeed;
 import com.zemian.adocblog.web.controller.api.payload.JsonFeedItem;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,10 @@ import java.util.List;
 
 @Controller
 public class ApiBlogJsonFeedController {
+
+    @Value("${app.web.numOfRecentPosts}")
+    private int numOfRecentPosts = 5;
+
     @Autowired
     private ContentService contentService;
 
@@ -35,6 +40,10 @@ public class ApiBlogJsonFeedController {
     @GetMapping(value = "/api/blog/feed.json")
     public @ResponseBody
     JsonFeed latestBlog(Paging paging, HttpServletRequest req) {
+        if (StringUtils.isEmpty(req.getParameter("size"))) {
+            paging = new Paging(0, numOfRecentPosts);
+        }
+
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
         String uri = req.getRequestURI();
         String feedUrl = req.getRequestURL().toString();
