@@ -18,7 +18,12 @@
                     <script id="dsq-count-scr" src="//${app.config['app.web.disqus.websiteName']}.disqus.com/count.js" async></script>
                     <a href="#disqus_thread">Comment</a>
                 </#if>
-                <#if blog.tags??><p class="tags">Tags: ${blog.tags}</p></#if>
+                <#if blog.tags??>
+                    <p class="tags">
+                    Tags:
+                    <#list blog.tags?split(" ") as tag><a href="${app.contextPath}/archive/tags/${tag}">${tag}</a> </#list>
+                    </p>
+                </#if>
             </p>
             <div class="blog-post">
                 ${blog.publishedContent.contentText}
