@@ -8,7 +8,7 @@ Developer Blog: https://zemianblog.herokuapp.com
 
 == User Guide
 
-Get a release distribution package and unzip it:
+Get a release distribution package and unzip it (or you can build it from source using `bin/build-dist.sh`):
 
   cd $HOME/apps
   unzip adocblog-<version>.zip
