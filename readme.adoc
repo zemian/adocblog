@@ -27,7 +27,7 @@ Initialize a new PostgreSQL database.
   bin/user-tool.sh --create --adminUser=true --fullName="Mr. Admin" admin admin123
 
 
-=== Setup the bundled server
+=== Run the bundled web server
 
   bin/server.sh --port 8080
 
