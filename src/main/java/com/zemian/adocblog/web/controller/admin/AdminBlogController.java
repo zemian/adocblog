@@ -24,7 +24,7 @@ public class AdminBlogController extends AbstractDocController {
     @GetMapping("/admin/blog/list")
     public ModelAndView list(Paging paging, HttpServletRequest req) {
         if (StringUtils.isEmpty(req.getParameter("size"))) {
-            paging = new Paging(0, defaultPagingSize);
+            paging.setSize(defaultPagingSize);
         }
         return list("/admin/blog/list", Doc.Type.BLOG, paging);
     }

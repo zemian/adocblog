@@ -49,7 +49,7 @@ public class AdminPageController extends AbstractDocController {
     @GetMapping("/admin/page/list")
     public ModelAndView list(Paging paging, HttpServletRequest req) {
         if (StringUtils.isEmpty(req.getParameter("size"))) {
-            paging = new Paging(0, defaultPagingSize);
+            paging.setSize(defaultPagingSize);
         }
         return list("/admin/page/list", Doc.Type.PAGE, paging);
     }
