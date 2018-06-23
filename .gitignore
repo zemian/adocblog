@@ -3,5 +3,3 @@ target/
 *.iml
 tmp/
 
-# Ignore hosting config
-src/main/resources/adocblog/webfaction/
