@@ -73,6 +73,8 @@ public class DocService {
 
     // ==
     public void update(Doc doc) {
+        // Auto update version before update doc
+        doc.getLatestContent().setVersion(doc.getLatestContent().getVersion() + 1);
         docDAO.update(doc);
         auditLogDAO.create("DOC_UPDATED",
                 "DocId=" + doc.getDocId() + ", date=" + doc.getLatestContent().getCreatedDt() +

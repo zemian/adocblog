@@ -180,13 +180,17 @@ public abstract class AbstractDocController extends AbstractController {
             existingDoc.setPath(doc.getPath());
         }
 
-        doc.getLatestContent().setVersion(existingDoc.getLatestContent().getVersion() + 1);
+        // Input doc does not have version value! we need to populate from existing doc
+        // Note that when calling docService.update() later, we will update the value.
+        doc.getLatestContent().setVersion(existingDoc.getLatestContent().getVersion());
+
+        // Replace existing doc with input latest content object.
         existingDoc.setLatestContent(doc.getLatestContent());
 
         existingDoc.getLatestContent().setCreatedDt(LocalDateTime.now());
         existingDoc.getLatestContent().setCreatedUser(userSession.getUser().getUsername());
-
         docService.update(existingDoc);
+
         Integer contentId = existingDoc.getLatestContent().getContentId();
         String message = "Doc " + existingDoc.getDocId() + " with contentId " + contentId + " edited successfully.";
 
