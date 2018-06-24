@@ -36,8 +36,11 @@ psql -U adocblog adocblog_dev < db/create-schema.sql
 After you setup a new DB, you need at least one application user for the
 ADocBlog. You can create an `admin` user using our tool script.
 
-  bin/user-tool.sh --create --adminUser=true --fullName="ADocBlog Admin" admin mySecretPassword
+  java -cp "config:target/adocblog/WEB-INF/lib/*" \
+  --create --adminUser=true --fullName="ADocBlog Admin" \
+  admin mySecretPassword
 
+If you're on Windows, replace `:` with `;` as path separator.
 
 == How to Run/Deploy ADocBlog
 
@@ -74,22 +77,36 @@ touch config/adocblog/myenv/app.properties
 app.env = myenv
 app.ds.url = jdbc:postgresql://localhost:5432/adocblog_myenv
 app.ds.username = adocblog
-app.ds.password =
+app.ds.password = mySecretPassword
 ----
 
 Now you need to startup ADocBlog with this `config` folder added in classpath:
 
-  java -Dadocblog.env=myenv \
-  -cp "config:target/dependency/webapp-runner.jar" \
+  java -cp "config:target/adocblog/WEB-INF/lib/*:target/dependency/webapp-runner.jar" \
+  -Dadocblog.env=myenv \
   webapp.runner.launch.Main target/adocblog.war \
   --port 8080
 
 Note that we can't no longer use the `-jar` Java option as before, but to use
-full classpath and explicit Java main class to load the war file. Also note
-that Java `-cp` option contains path separator that's OS specific. If you
-are on Windows, you would need to use `;` instead.
+full classpath and explicit Java main class to load the war file.
+
+To see what config value you can override, see the existing default
+link:src/main/resources/adocblog/app.properties[app.properties] file.
 
 You may also override any config files besides `app.properties` file. For
 example you may override `logback.xml` or `freemarker.properties` settings
 to suite your need in your environment. Consult the developer guide to see
 all possible files you may use.
+
+== Enable DB Password Encryption
+
+The default config `app.properties` takes plain DB password text as input. You may turn
+on encryption with ADocBlog by using this config:
+
+	app.ds.usePasswordEncryption = true
+
+With this enabled, you must encrypt your password with our tool:
+
+  java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
+  -Dadocblog.env=myenv \
+  com.zemian.adocblog.app.CryptoTool mySecretPassword

@@ -4,50 +4,66 @@ ADocBlog - A simple content management system.
 
 The AdocBlog is a Java based web application that provides
 CMS features. You may use it to write and manage blog and
-site content in HTML or Asciidoc format. 
+site content in HTML or Asciidoc format.
+
+== Please read UserGuide first
+
+You should see the link:../readme.adoc[Project Readme] and link:userguide.adoc[User Guide]
+before this development guide. Those docs explain how to setup and run ADocBlog as user
+before you need to modify any code.
 
 == Build From Source
 
-----
-git clone https://github.com/zemian/adocblog
-cd adocblog
-mvn package
-----
+=== Required Software
 
-== Setup Database
+* Java 8+
+* Apache Maven 3.5+
+* PostgreSQL 9.4+
+* Git 1.7.10 +
 
-Our default `app.properties` config file points to a PosgreSQL DB named `adocblog_dev`
-with a DB user named `adocblog`. Here are instructions how to create this:
+=== Quick Build
 
-----
-createuser adocblog
-createdb --owner=adocblog adocblog_dev
-psql -U adocblog adocblog_dev < db/create-schema.sql
-----
+	git clone https://github.com/zemian/adocblog
+	cd adocblog
+	mvn package
 
-If you want to use different DB names, just change the config accordingly.
+If you want to skip tests, run `mvn package -DskipTests`
 
-== Add application users
+If you want to build from a release tag, you would want to package with a release file:
 
-You can use our script to create an application user with full admin access:
+  mvn package -P with-release-file
 
-  bin/user-tool.sh --create --adminUser=true --fullName="Mr. Admin" admin admin123
+This would include the Git version and commit hash id into the war that you can inspect at
+runtime under SystemInfo.
 
-This will create the user `admin` with password `admin123`.
+== How to Change Crypto Service Encryption Key
 
-== Run the bundled web server
+If you were to make a new environment config set (See link:userguide.adoc[User Guide]), then
+it's recommend that you also generate a new set of encryption key and salt iv with random string
+to be more secured. We provide tool to help you generate random strings:
 
-  java -jar target/dependency/webapp-runner.jar target/adocblog.war --port 8080
+	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" com.zemian.adocblog.app.RandomTool 16
 
-Once running, for example on a localhost, you may open browser to
+Above tool will generate 5 random strings that you may choose to use in `app.properties`. You need
+to update these two lines:
 
-  http://localhost:8080/
+	app.crypto.key = myNewRandomeString
+	app.crypto.ivParam = myNewRandomeString
+	app.crypto.algorithm = AES/CBC/PKCS5Padding
 
-The default home page should list your recent articles from your blog. To create
-new Article, go to the Admin Console here:
+You may continue to use `AES/CBC/PKCS5Padding` because it's considered fairly secured for data
+encryption.
 
-  http://localhost:8080/admin
+Once you setup the new config set (eg: `myenv`) then you may use our Crypto tool to re-encrypt
+the DB password like this:
 
-Using the user you created above, you may login to Create, Edit, Publish and
-manage blog posts. If your user is an "admin" user, then you may manage the
-site's `Page` content as well.
+	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
+	-Dadocblog.env=myenv \
+	com.zemian.adocblog.app.CryptoTool mySecretPassword
+
+== Print Released Version Props
+
+If you build package with `-P with-version-file`, then this tool shoudl print these info:
+
+	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
+	com.zemian.adocblog.app.PrintVersionProps

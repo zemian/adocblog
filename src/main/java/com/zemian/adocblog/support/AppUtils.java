@@ -13,8 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 public class AppUtils {
-    private static Logger LOG = LoggerFactory.getLogger(AppUtils.class);
-
     public static final String APP_NAME = "adocblog";
     public static final String APP_ENV_KEY = APP_NAME + ".env";
 
@@ -46,6 +44,7 @@ public class AppUtils {
             envResource = null; // reset back to null if not exists
         }
 
+        Logger LOG = LoggerFactory.getLogger(AppUtils.class);
         LOG.debug("Found env resourceName={} with result={}", resourceName, envResource);
         return envResource;
     }
