@@ -16,7 +16,7 @@ setup, then it should be as simple as following:
 
 You probably want to checkout the released tag instead of latest master
 branch for stable build. If you're interested in more on how to be a developer, 
-see the link:developer.adoc file.
+see the link:developer.adoc[Developer Guide].
 
 After the build, you should get the binary package as `target/adocblog.war` file.
 

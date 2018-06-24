@@ -29,8 +29,8 @@ public class DataConfig {
     @Autowired
     private Crypto crypto;
 
-    @Value("${app.ds.disablePasswordDecryption}")
-    private boolean disablePasswordDecryption;
+    @Value("${app.ds.usePasswordEncryption}")
+    private boolean usePasswordEncryption;
 
     @Bean
     public DataSource dataSource() throws Exception {
@@ -40,7 +40,7 @@ public class DataConfig {
         // Override few main props of driver, url, username and password values from
         // the app.properties directly into the poolProps
         String password = env.getProperty("app.ds.password");
-        if (!disablePasswordDecryption) {
+        if (usePasswordEncryption) {
             password = crypto.decrypt(password);
         }
 
