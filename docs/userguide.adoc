@@ -91,7 +91,7 @@ Note that we can no longer use the `-jar` Java option as before, but to use
 full classpath and explicit Java main class to load the war file.
 
 To see what config value you can override, see the existing default
-link:src/main/resources/adocblog/app.properties[app.properties] file.
+link:../src/main/resources/adocblog/app.properties[app.properties] file.
 
 You may also override any config files besides `app.properties` file. For
 example you may override `logback.xml` or `freemarker.properties` settings
