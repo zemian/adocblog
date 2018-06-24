@@ -1,51 +1,55 @@
 = ADocBlog
 
-A blog application that supports asciidoc format.
+A Java based CMS that supports Blog in `asciidoc` format.
 
 Project Home: https://github.com/zemian/adocblog
 
 Developer Blog: http://zemiandeng.com
 
-== User Guide
+== Build From Source
 
-Get a release distribution package and unzip it (or you can build it from source using `bin/build-dist.sh`):
+Get a release distribution package and unzip it (or you can build it from 
+source using `bin/build-dist.sh`):
 
   cd $HOME/apps
   unzip adocblog-<version>.zip
   cd adocblog-<version>
 
 
-=== Setup Database
+== Setup Database
 
-Initialize a new PostgreSQL database.
+Our default `app.properties` config file points to a PosgreSQL DB named `adocblog_dev`
+with a DB user named `adocblog`. Here are instructions how to create this:
 
-  bin/init-db.sh
+----
+createuser adocblog
+createdb --owner=adocblog adocblog_dev
+psql -U adocblog adocblog_dev < db/create-schema.sql
+----
 
+If you want to use different DB names, just change the config accordingly.
 
-=== Add application users
+== Add application users
+
+You can use our script to create an application user with full admin access:
 
   bin/user-tool.sh --create --adminUser=true --fullName="Mr. Admin" admin admin123
 
+This will create the user `admin` with password `admin123`.
 
-=== Run the bundled web server
+== Run the bundled web server
 
   bin/server.sh --port 8080
 
-
-Once deployed, for example on a localhost, you may open browser to
+Once running, for example on a localhost, you may open browser to
 
   http://localhost:8080/
 
-The application is very easy to use with self-guided navigation. When you run it on a Servlet server,
-your home page is the Public Users Viewing of blogger home. It should show latest posts with navigation
-menu to older posts. User should able to search all posts for specific interests. You would need to
-publish the blog before it will shows up on the front page of the application.
-
-To create and manage documents, go to the Admin Console here:
+The default home page should list your recent articles from your blog. To create
+new Article, go to the Admin Console here:
 
   http://localhost:8080/admin
 
-Using the user you created above, you may login to Create, Edit, Publish and manage blog posts. If your
-user is an "admin" user, then you may manage the site's `Page` content as well.
-
-NOTE: You must publish the document before it can be viewed by the application!
+Using the user you created above, you may login to Create, Edit, Publish and 
+manage blog posts. If your user is an "admin" user, then you may manage the 
+site's `Page` content as well.
