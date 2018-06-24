@@ -33,8 +33,8 @@ java -jar target/dependency/webapp-runner.jar target/adocblog.war --port 8080
 == Documentation
 
 * link:docs/userguide.adoc[User Guide]
-* link:developer.adoc
-* link:release.adoc
+* link:docs/developer.adoc[Developer Guide]
+* link:docs/release.adoc[Release Notes]
 
 == License
 
@@ -52,4 +52,4 @@ java -jar target/dependency/webapp-runner.jar target/adocblog.war --port 8080
    See the License for the specific language governing permissions and
    limitations under the License.
 
-See link:LICENSE
+See more on link:LICENSE[LICENSE]
