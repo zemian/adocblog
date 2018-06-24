@@ -32,7 +32,7 @@ java -jar target/dependency/webapp-runner.jar target/adocblog.war --port 8080
 
 == Documentation
 
-* link:userguide.adoc
+* link:userguide.adoc[User Guide]
 * link:developer.adoc
 * link:release.adoc
 
