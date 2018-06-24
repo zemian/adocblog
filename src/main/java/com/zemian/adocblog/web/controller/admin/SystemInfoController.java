@@ -34,7 +34,7 @@ public class SystemInfoController {
         }
 
         // Add release info
-        Properties relProps = AppUtils.getReleaseProps();
+        Properties relProps = AppUtils.getVersionProps();
         for (String name : relProps.stringPropertyNames()) {
             sysInfo.put("adocblog." + name, relProps.getProperty(name));
         }

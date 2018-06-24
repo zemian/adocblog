@@ -50,16 +50,18 @@ public class AppUtils {
         return envResource;
     }
 
-    public static Properties getReleaseProps() {
-        Properties relProps;
-        Resource relResource = getEnvResource("release.properties");
+    public static Properties getVersionProps() {
+        Properties relProps = new Properties();
+        Resource relResource = getEnvResource("version.properties");
         if (relResource == null) {
-            relProps = new Properties();
             relProps.setProperty("version", "SNAPSHOT");
             relProps.setProperty("commit-id", "HEAD");
             relProps.setProperty("build-date", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         } else {
-            relProps = getResourceProperties(relResource);
+            Properties verProps = getResourceProperties(relResource);
+            relProps.setProperty("version", verProps.getProperty("git.build.version"));
+            relProps.setProperty("commit-id", verProps.getProperty("git.commit.id"));
+            relProps.setProperty("build-date", verProps.getProperty("git.build.time"));
         }
         return relProps;
     }

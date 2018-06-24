@@ -1,0 +1,95 @@
+= User Guide
+
+ADocBlog - A simple content management system.
+
+The AdocBlog is a Java based web application that provides
+CMS features. You may use it to write and manage blog and
+site content in HTML or Asciidoc format. 
+
+== Getting the Binary Package
+
+We currently do not provide binary package for download. You would have to get
+the source code and build it yourself. If you have typical Java tools already
+setup, then it should be as simple as following:
+
+  mvn package -P with-version-file
+
+You probably want to checkout the released tag instead of latest master
+branch for stable build. If you're interested in more on how to be a developer, 
+see the link:developer.adoc file.
+
+After the build, you should get the binary package as `target/adocblog.war` file.
+
+== Setting up DB
+
+The ADocBlog requires a DB storage. The default configuration is setup to use
+PostgreSQL 9 or higher. Assume you have the DB server installed in your
+machine and their tools available in your terminal, then you can setup a new 
+DB like this:
+
+----
+createuser adocblog
+createdb --owner=adocblog adocblog_dev
+psql -U adocblog adocblog_dev < db/create-schema.sql
+----
+
+After you setup a new DB, you need at least one application user for the
+ADocBlog. You can create an `admin` user using our tool script.
+
+  bin/user-tool.sh --create --adminUser=true --fullName="ADocBlog Admin" admin mySecretPassword
+
+
+== How to Run/Deploy ADocBlog
+
+The `adocblog.war` is self-contained and it can be deployed into any Java based 
+Servlet container server, and it should run without problems. You need to
+find instructions on how to deploy `war` application in your server env.
+
+Here we will show you how to run Tomcat server with a special and easy
+command line tool called `webapp-runner`.
+
+=== Using `webapp-runner` Tomcat Server
+
+If you have build ADocBlog binrary package with above instruction, then you 
+already have `webapp-runner` tool. Try running:
+
+  java -jar target/dependency/webapp-runner.jar target/adocblog.war --port 8080
+
+Now you can open `http://localhost:8080/admin` to start publishing content!
+
+
+== Setup New ADocBlog Config
+
+The ADocBlog is designed to be able to load different configurable environment.
+The configuration files set can be stored in a directory under the Java classpath
+under `adocblog`. Without explicit set an env, it default to `dev` settings.
+
+To create a new set of configration files, create a directory like this:
+
+----
+mkdir -p config/adocblog/myenv
+touch config/adocblog/myenv/app.properties
+
+# Edit app.properties with the following:
+app.env = myenv
+app.ds.url = jdbc:postgresql://localhost:5432/adocblog_myenv
+app.ds.username = adocblog
+app.ds.password =
+----
+
+Now you need to startup ADocBlog with this `config` folder added in classpath:
+
+  java -Dadocblog.env=myenv \
+  -cp "config:target/dependency/webapp-runner.jar" \
+  webapp.runner.launch.Main target/adocblog.war \
+  --port 8080
+
+Note that we can't no longer use the `-jar` Java option as before, but to use
+full classpath and explicit Java main class to load the war file. Also note
+that Java `-cp` option contains path separator that's OS specific. If you
+are on Windows, you would need to use `;` instead.
+
+You may also override any config files besides `app.properties` file. For
+example you may override `logback.xml` or `freemarker.properties` settings
+to suite your need in your environment. Consult the developer guide to see
+all possible files you may use.

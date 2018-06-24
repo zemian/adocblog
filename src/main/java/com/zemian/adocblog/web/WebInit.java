@@ -45,7 +45,7 @@ public class WebInit {
         app.put("themeName", env.getProperty("app.web.themeName"));
 
         // Add release info
-        app.put("release", AppUtils.getReleaseProps());
+        app.put("release", AppUtils.getVersionProps());
 
         ctx.setAttribute("app", app);
     }

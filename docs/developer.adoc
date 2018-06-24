@@ -1,0 +1,53 @@
+= Developer Guide
+
+ADocBlog - A simple content management system.
+
+The AdocBlog is a Java based web application that provides
+CMS features. You may use it to write and manage blog and
+site content in HTML or Asciidoc format. 
+
+== Build From Source
+
+----
+git clone https://github.com/zemian/adocblog
+cd adocblog
+mvn package
+----
+
+== Setup Database
+
+Our default `app.properties` config file points to a PosgreSQL DB named `adocblog_dev`
+with a DB user named `adocblog`. Here are instructions how to create this:
+
+----
+createuser adocblog
+createdb --owner=adocblog adocblog_dev
+psql -U adocblog adocblog_dev < db/create-schema.sql
+----
+
+If you want to use different DB names, just change the config accordingly.
+
+== Add application users
+
+You can use our script to create an application user with full admin access:
+
+  bin/user-tool.sh --create --adminUser=true --fullName="Mr. Admin" admin admin123
+
+This will create the user `admin` with password `admin123`.
+
+== Run the bundled web server
+
+  java -jar target/dependency/webapp-runner.jar target/adocblog.war --port 8080
+
+Once running, for example on a localhost, you may open browser to
+
+  http://localhost:8080/
+
+The default home page should list your recent articles from your blog. To create
+new Article, go to the Admin Console here:
+
+  http://localhost:8080/admin
+
+Using the user you created above, you may login to Create, Edit, Publish and
+manage blog posts. If your user is an "admin" user, then you may manage the
+site's `Page` content as well.

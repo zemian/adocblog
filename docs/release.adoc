@@ -1,0 +1,33 @@
+= Release Document
+
+== adocblog-1.0 (2018-04-04)
+
+* Use Java, Servlet and Spring MVC stack
+* Use Maven build structure
+* Use Spring JDBC (No ORM layer) and TX management only
+* Use FreeMarker templates instead of JSP for view layer
+* Use PostgreSQL DB storage as default
+* Add Doc/Page management
+* Add Blog management
+* Add Content versioning management
+* Add Html format support for document type
+* Add Asciidoc format support for document type
+* Add Ftl format support for document type
+* Add Searchable content
+* Add Document pagination
+* Add Document tags/category support
+* Add Multi users/auther supports
+* Add Admin console management
+* Add Public user theme and viewing blog content by dates
+* Add DB Configuration setting options
+* Add DB Audit logging for web acitivities
+* Add JSON RESTful RSS feed
+* Add Tomcat webapp-runner for commandline web server
+* Add User feedback using Disqus integration
+* Add Google Analytic tracking integration
+
+== adocblog-1.1 (Coming Soon)
+
+* Cleanup tests
+* Cleanup version props file
+* Improve documentations

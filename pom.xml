@@ -198,9 +198,31 @@
 
 	<profiles>
 		<profile>
-			<id>package-zip</id>
+			<id>with-version-file</id>
 			<build>
 				<plugins>
+					<!-- Generate version.properties file during package phase
+          NOTE: This would requires GIT in your path.
+          -->
+					<plugin>
+						<groupId>pl.project13.maven</groupId>
+						<artifactId>git-commit-id-plugin</artifactId>
+						<version>2.2.3</version>
+						<executions>
+							<execution>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>revision</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<verbose>true</verbose>
+							<dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+							<generateGitPropertiesFile>true</generateGitPropertiesFile>
+							<generateGitPropertiesFilename>${project.build.outputDirectory}/adocblog/version.properties</generateGitPropertiesFilename>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
