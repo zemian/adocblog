@@ -220,13 +220,13 @@ public class BlogServiceTest extends SpringTestBase {
             // Get Latest List
             List<Doc> list = blogService.findLatest(new Paging()).getList();
             list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
-            assertThat(list.size(), greaterThanOrEqualTo(10));
+            assertThat(list.size(), is(10));
             list.forEach(doc -> assertThat(doc.getType(), is(Doc.Type.BLOG)));
 
             // Get Published List
             list = blogService.findPublished(new Paging()).getList();
             list = list.stream().filter(b -> b.getLatestContent().getTitle().equals("findList test")).collect(Collectors.toList());
-            assertThat(list.size(), greaterThanOrEqualTo(5));
+            assertThat(list.size(), is(5));
             list.forEach(doc -> assertThat(doc.getType(), is(Doc.Type.BLOG)));
 
             // Find Next - next older blog
