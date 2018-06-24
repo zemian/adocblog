@@ -110,3 +110,5 @@ With this enabled, you must encrypt your password with our tool:
   java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
   -Dadocblog.env=myenv \
   com.zemian.adocblog.app.CryptoTool mySecretPassword
+
+Next, replace the output of the encrypted password with your plain password in config file.

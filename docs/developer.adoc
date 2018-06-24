@@ -60,6 +60,8 @@ the DB password like this:
 	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
 	-Dadocblog.env=myenv \
 	com.zemian.adocblog.app.CryptoTool mySecretPassword
+	
+Next, replace the output of the encrypted password with your plain password in config file.
 
 == Print Released Version Props
 
