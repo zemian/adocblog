@@ -87,7 +87,7 @@ Now you need to startup ADocBlog with this `config` folder added in classpath:
   webapp.runner.launch.Main target/adocblog.war \
   --port 8080
 
-Note that we can't no longer use the `-jar` Java option as before, but to use
+Note that we can no longer use the `-jar` Java option as before, but to use
 full classpath and explicit Java main class to load the war file.
 
 To see what config value you can override, see the existing default
