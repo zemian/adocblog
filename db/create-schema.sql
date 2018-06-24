@@ -1,3 +1,6 @@
+-- We should execute this script with 'adocblog' user
+-- This script create the adocblog app schema
+
 -- == App configuration settings table
 
 -- type: STRING, INTEGER, DOUBLE, LIST
