@@ -12,7 +12,7 @@ We currently do not provide binary package for download. You would have to get
 the source code and build it yourself. If you have typical Java tools already
 setup, then it should be as simple as following:
 
-  mvn package -P with-version-file
+  mvn package -P with-version-file -DskipTests
 
 You probably want to checkout the released tag instead of latest master
 branch for stable build. If you're interested in more on how to be a developer, 

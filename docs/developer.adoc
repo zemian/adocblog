@@ -27,7 +27,8 @@ before you need to modify any code.
 	cd adocblog
 	mvn package
 
-If you want to skip tests, run `mvn package -DskipTests`
+If you want to skip tests, run `mvn package -DskipTests`. To successfully run the unit tests,
+it requires you to setup a local PostgreSQL DB named 'adocblog_dev', and its schema.
 
 If you want to build from a release tag, you would want to package with a release file:
 
@@ -60,12 +61,12 @@ the DB password like this:
 	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
 	-Dadocblog.env=myenv \
 	com.zemian.adocblog.app.CryptoTool mySecretPassword
-	
+
 Next, replace the output of the encrypted password with your plain password in config file.
 
 == Print Released Version Props
 
-If you build package with `-P with-version-file`, then this tool shoudl print these info:
+If you build package with `-P with-version-file`, then this tool should print these info:
 
 	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
 	com.zemian.adocblog.app.PrintVersionProps
