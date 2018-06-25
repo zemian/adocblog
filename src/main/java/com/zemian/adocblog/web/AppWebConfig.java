@@ -82,6 +82,8 @@ public class AppWebConfig implements WebMvcConfigurer {
 
         String themePath = "/themes/" + themeName;
         registry.addResourceHandler(themePath + "/**").addResourceLocations(themePath + "/");
+
+        registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico");
     }
 
     @Override
