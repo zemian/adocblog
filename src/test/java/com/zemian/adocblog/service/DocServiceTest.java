@@ -5,6 +5,7 @@ import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.support.DataUtils;
+import java.time.temporal.ChronoUnit;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -139,7 +140,7 @@ public class DocServiceTest extends SpringTestBase {
 
             if (i % 2 == 0) {
                 doc.setPublishedUser("test");
-                doc.setPublishedDt(LocalDateTime.now().plusMinutes(i)); // Set published with gap on purpose for testing.
+                doc.setPublishedDt(LocalDateTime.now().plus(1, ChronoUnit.MILLIS)); // Set published with gap on purpose for testing.
                 docService.publish(doc);
             }
 
