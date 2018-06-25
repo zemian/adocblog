@@ -32,3 +32,4 @@
 * Cleanup version props file
 * Improve documentations
 * Improve footer revision label
+* Improve nav next article label

@@ -32,10 +32,10 @@
             <!-- Next/Previous Post -->
             <ul class="pager">
             <#if prevBlog??>
-                <li><a href="${app.contextPath}/blog/${prevBlog.docId}">Previous Blog</a></li>
+                <li><a href="${app.contextPath}/blog/${prevBlog.docId}">Previous Article</a></li>
             </#if>
             <#if nextBlog??>
-                <li><a href="${app.contextPath}/blog/${nextBlog.docId}">Next Blog</a></li>
+                <li><a href="${app.contextPath}/blog/${nextBlog.docId}">Next Article</a></li>
             </#if>
             </ul>
         </#if>
