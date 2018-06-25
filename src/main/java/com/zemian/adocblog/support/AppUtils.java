@@ -50,19 +50,26 @@ public class AppUtils {
     }
 
     public static Properties getVersionProps() {
-        Properties relProps = new Properties();
-        Resource relResource = getEnvResource("version.properties");
-        if (relResource == null) {
-            relProps.setProperty("version", "SNAPSHOT");
-            relProps.setProperty("commit-id", "HEAD");
-            relProps.setProperty("build-date", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        Properties props = new Properties();
+        Resource verResource = getEnvResource("version.properties");
+        if (verResource == null) {
+            // If we don't have the version file, just display static values
+            props.setProperty("version", "SNAPSHOT");
+            props.setProperty("commit-id", "HEAD");
+            props.setProperty("build-date", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         } else {
-            Properties verProps = getResourceProperties(relResource);
-            relProps.setProperty("version", verProps.getProperty("git.build.version"));
-            relProps.setProperty("commit-id", verProps.getProperty("git.commit.id"));
-            relProps.setProperty("build-date", verProps.getProperty("git.build.time"));
+            Properties verProps = getResourceProperties(verResource);
+            props.setProperty("version", verProps.getProperty("git.build.version"));
+            props.setProperty("commit-id", verProps.getProperty("git.commit.id"));
+            props.setProperty("build-date", verProps.getProperty("git.build.time"));
+
+            // If it's SNAPSHOT version, shows the short commit id instead.
+            if (props.getProperty("version").indexOf("SNAPSHOT") > 0) {
+                String shortCommitId = props.getProperty("commit-id").substring(0, 7);
+                props.setProperty("version", shortCommitId);
+            }
         }
-        return relProps;
+        return props;
     }
 
     public static Properties getResourceProperties(String propsResourceName) {

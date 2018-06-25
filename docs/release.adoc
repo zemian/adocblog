@@ -31,3 +31,4 @@
 * Cleanup tests
 * Cleanup version props file
 * Improve documentations
+* Improve footer revision label
