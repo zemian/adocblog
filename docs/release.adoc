@@ -34,4 +34,5 @@
 * Improve footer revision label
 * Improve nav next article label
 * Fix favicon.ico missing warn msg
+* Fix top nav bar to be display on mobile
 * Add optional app.web.static loading outside of war package
