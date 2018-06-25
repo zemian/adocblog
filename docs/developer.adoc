@@ -43,7 +43,7 @@ If you were to make a new environment config set (See link:userguide.adoc[User G
 it's recommend that you also generate a new set of encryption key and salt iv with random string
 to be more secured. We provide tool to help you generate random strings:
 
-	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" com.zemian.adocblog.app.RandomTool 16
+	java -cp "config:target/adocblog/WEB-INF/lib/*" com.zemian.adocblog.app.RandomTool 16
 
 Above tool will generate 5 random strings that you may choose to use in `app.properties`. You need
 to update these two lines:
@@ -58,7 +58,7 @@ encryption.
 Once you setup the new config set (eg: `myenv`) then you may use our Crypto tool to re-encrypt
 the DB password like this:
 
-	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
+	java -cp "config:target/adocblog/WEB-INF/lib/*" \
 	-Dadocblog.env=myenv \
 	com.zemian.adocblog.app.CryptoTool mySecretPassword
 
@@ -68,5 +68,5 @@ Next, replace the output of the encrypted password with your plain password in c
 
 If you build package with `-P with-version-file`, then this tool should print these info:
 
-	java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
+	java -cp "config:target/adocblog/WEB-INF/lib/*" \
 	com.zemian.adocblog.app.PrintVersionProps

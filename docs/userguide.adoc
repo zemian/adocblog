@@ -107,7 +107,7 @@ on encryption with ADocBlog by using this config:
 
 With this enabled, you must encrypt your password with our tool:
 
-  java -cp "config:target/classes:target/adocblog/WEB-INF/lib/*" \
+  java -cp "config:target/adocblog/WEB-INF/lib/*" \
   -Dadocblog.env=myenv \
   com.zemian.adocblog.app.CryptoTool mySecretPassword
 
