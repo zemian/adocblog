@@ -4,6 +4,7 @@
 
 * Cleanup tests
 * Cleanup version props file
+* Remove and simplify bin scripts
 * Improve documentations
 * Improve footer revision label
 * Improve nav next article label
