@@ -5,10 +5,12 @@ import com.zemian.adocblog.service.DbPropsEnvironment;
 import com.zemian.adocblog.web.listener.UserSessionInterceptor;
 import com.zemian.adocblog.web.view.freemarker.PageTemplateLoader;
 import com.zemian.adocblog.web.view.freemarker.PageTemplateMethodModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
@@ -28,6 +30,9 @@ public class AppWebConfig implements WebMvcConfigurer {
 
     @Value("${app.web.themeName}")
     private String themeName;
+
+    @Autowired
+    private Environment env;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -84,6 +89,14 @@ public class AppWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler(themePath + "/**").addResourceLocations(themePath + "/");
 
         registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico");
+
+        // Setup optional extra web static content that might be from outside of this war structure
+        String staticDir = env.getProperty("app.web.static.directory", (String) null);
+        String staticPath = env.getProperty("app.web.static.path", (String) null);
+        if (staticDir != null && staticPath != null) {
+            registry.addResourceHandler(staticPath + "/**")
+                    .addResourceLocations("file:" + staticDir + "/");
+        }
     }
 
     @Override
