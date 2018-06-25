@@ -1,6 +1,6 @@
 = Release Document
 
-== adocblog-1.1 (Coming Soon)
+== adocblog-1.1 (2018-06-25)
 
 * Cleanup tests
 * Cleanup version props file

@@ -70,3 +70,13 @@ If you build package with `-P with-version-file`, then this tool should print th
 
 	java -cp "config:target/adocblog/WEB-INF/lib/*" \
 	com.zemian.adocblog.app.PrintVersionProps
+
+== How To Perform Release
+
+A release will update the pom from SNAPSHOT to final release label, then increment to next
+snapshot. And then also perform git tag.
+
+    PROJ_HOME=`pwd`
+    mvn release:prepare -DpushChanges=false -Darguments="-DskipTests"
+    mvn release:perform -Dgoals=install -Darguments="-DskipTests" -DconnectionUrl=scm:git:file://$PROJ_HOME
+    push --tags
