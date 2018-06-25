@@ -4,3 +4,4 @@ target/
 tmp/
 
 db/test.sql
+.DS_Store
