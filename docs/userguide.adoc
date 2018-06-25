@@ -112,3 +112,17 @@ With this enabled, you must encrypt your password with our tool:
   com.zemian.adocblog.app.CryptoTool mySecretPassword
 
 Next, replace the output of the encrypted password with your plain password in config file.
+
+== Add extra static web content
+
+You may add and may a directory of static web content outside of the war package application.
+This allow you to easily add images and other static files without have to modify the source
+or recompile the war package. This feature is optional, and you can add it with these config:
+
+    app.web.static.directory = /path/to/static/content
+    app.web.static.path = /mystatic
+
+You need to restart the web server, and you should able to view these with this example
+URL:
+
+    http://localhost:8080/mystatic/mypicture.jpg
