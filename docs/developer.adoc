@@ -78,5 +78,9 @@ snapshot. And then also perform git tag.
 
     PROJ_HOME=`pwd`
     mvn release:prepare -DpushChanges=false -Darguments="-DskipTests"
-    mvn release:perform -Dgoals=install -Darguments="-DskipTests" -DconnectionUrl=scm:git:file://$PROJ_HOME
-    push --tags
+    mvn release:perform -Dgoals=install \
+      -Darguments="-Dmaven.javadoc.skip=true -Darguments=-DskipTests" \
+      -DconnectionUrl=scm:git:file://$PROJ_HOME \
+      -DskipTests \
+      -P with-version-file
+    git push && git push --tags
