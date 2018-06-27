@@ -5,6 +5,8 @@
 - Make app more CMS friendly
 - Customizable and overriable site content
 - More streamline Editor for blog/html/json/ftl
+- Provide binary zip package for download
+
 
 == adocblog-1.2 (Current Master Branch)
 
