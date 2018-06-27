@@ -5,17 +5,13 @@ import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.support.DataUtils;
-import java.time.temporal.ChronoUnit;
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +28,7 @@ public class DocServiceTest extends SpringTestBase {
     public void crud() {
         // Create
         Doc doc = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
-                "test", "test doc", "DocServiceTest *test*");
+                "admin", "test doc", "DocServiceTest *test*");
         docService.create(doc);
 
         try {
@@ -44,7 +40,7 @@ public class DocServiceTest extends SpringTestBase {
             assertThat(doc2.getLatestContent().getVersion(), is(1));
             assertThat(doc2.getLatestContent().getReasonForEdit(), nullValue());
             assertThat(doc2.getLatestContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(doc2.getLatestContent().getCreatedUser(), is("test"));
+            assertThat(doc2.getLatestContent().getCreatedUser(), is("admin"));
             assertThat(doc2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
             assertThat(doc2.getPublishedContent(), nullValue());
             assertThat(doc2.getPublishedUser(), nullValue());
@@ -67,7 +63,7 @@ public class DocServiceTest extends SpringTestBase {
             assertThat(doc2.getLatestContent().getVersion(), is(2));
             assertThat(doc2.getLatestContent().getReasonForEdit(), is("test edit"));
             assertThat(doc2.getLatestContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(doc2.getLatestContent().getCreatedUser(), is("test"));
+            assertThat(doc2.getLatestContent().getCreatedUser(), is("admin"));
             assertThat(doc2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
             assertThat(doc2.getPublishedContent(), nullValue());
             assertThat(doc2.getPublishedUser(), nullValue());
@@ -92,7 +88,7 @@ public class DocServiceTest extends SpringTestBase {
     public void docPath() {
         // Create
         Doc doc = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
-                "test", "test doc", "DocServiceTest *test*");
+                "admin", "test doc", "DocServiceTest *test*");
         doc.setPath("/junit/test/test-doc");
         docService.create(doc);
 
@@ -106,7 +102,7 @@ public class DocServiceTest extends SpringTestBase {
             // Path should be unique
             try {
                 Doc doc3 = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
-                        "test", "test doc2", "#2 DocServiceTest *test*");
+                        "admin", "test doc2", "#2 DocServiceTest *test*");
                 doc3.setPath("/junit/test/test-doc");
                 docService.create(doc3);
                 Assert.fail("Create doc should fail when path is duplicated.");
@@ -134,12 +130,12 @@ public class DocServiceTest extends SpringTestBase {
         List<Doc> docs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Doc doc = DataUtils.createDoc(Doc.Type.PAGE, Content.Format.ADOC,
-                    "test", "findList test", "DocServiceTest *test*");
+                    "admin", "findList test", "DocServiceTest *test*");
             docService.create(doc);
             docs.add(doc);
 
             if (i % 2 == 0) {
-                doc.setPublishedUser("test");
+                doc.setPublishedUser("admin");
                 doc.setPublishedDt(LocalDateTime.now().plus(1, ChronoUnit.MILLIS)); // Set published with gap on purpose for testing.
                 docService.publish(doc);
             }
@@ -166,48 +162,4 @@ public class DocServiceTest extends SpringTestBase {
             }
         }
     }
-
-    private Doc createAndPublish(Content.Format format, String username, String title, String content) {
-        return createAndPublish(format, username, title, content, LocalDateTime.now());
-    }
-
-    private Doc createAndPublish(Content.Format format, String username, String title, String content, LocalDateTime pubDate) {
-        Doc doc = DataUtils.createDoc(Doc.Type.PAGE, format,
-                username, title, content);
-        docService.create(doc);
-
-        doc.setPublishedDt(pubDate);
-        doc.setPublishedUser(username);
-        docService.publish(doc);
-
-        return doc;
-    }
-
-    @Test
-    public void createSamples() throws Exception {
-        int sampleSize = 30;
-        List<Doc> docs = docService.findLatest(new Paging(0, sampleSize), Doc.Type.PAGE).getList();
-        boolean sampleExists = docs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc page sample"));
-        if (!sampleExists) {
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc page sample", "== Test me\n\nHello World!\n\n* one\n* two\n");
-            createAndPublish(Content.Format.HTML, "test", "A html page sample", "<ul><li>one</li><li>two</li><li>three</li></ul>");
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc page sample2", "`print('Python is cool')`");
-
-            Doc doc = createAndPublish(Content.Format.ADOC, "test", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
-            docService.unpublish(doc.getDocId());
-
-            File file = new File("readme.adoc");
-            String readmeADoc = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-
-            for (int i = 0; i < sampleSize; i++) {
-                String title = "ADocDoc readme page sample";
-                if (i > 0) {
-                    title += " - copy#" + i;
-                }
-                LocalDateTime dt = LocalDateTime.now().minusDays(i);
-                createAndPublish(Content.Format.ADOC, "test", title, readmeADoc, dt);
-            }
-        }
-    }
-
 }

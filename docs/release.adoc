@@ -11,7 +11,7 @@
 == adocblog-1.2 (Current Master Branch)
 
 * Add default admin user with password for easy setup
-- Rework unit tests (remove data after each tests)
+* Separate sample data generation from tests
 - Add path to Blog doc
 - Add diff storage for doc version history
 - Support multiple static path/directory mapping

@@ -3,7 +3,6 @@ package com.zemian.adocblog.service;
 import com.zemian.adocblog.SpringTestBase;
 import com.zemian.adocblog.data.dao.UserDAO;
 import com.zemian.adocblog.data.domain.User;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -50,21 +49,4 @@ public class UserServiceTest extends SpringTestBase {
             userDAO.delete(username);
         }
     }
-
-    @Test
-    public void createTestUsers() {
-        if (!userService.exists("test")) {
-            User user = createUser("test", "test", "Dev Tester");
-            user.setAdmin(true);
-            userService.create(user);
-
-            user = createUser("test2", "test", "Dev2 Tester");
-            userService.create(user);
-            user = createUser("test3", "test", "Dev3 Tester");
-            userService.create(user);
-            user = createUser("test4", "test", "Dev4 Tester");
-            userService.create(user);
-        }
-    }
-
 }

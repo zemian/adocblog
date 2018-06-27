@@ -6,15 +6,11 @@ import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
 import com.zemian.adocblog.data.support.DataUtils;
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -23,13 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 @ContextConfiguration(classes = ServiceConfig.class)
 public class BlogServiceTest extends SpringTestBase {
@@ -255,49 +245,4 @@ public class BlogServiceTest extends SpringTestBase {
             }
         }
     }
-
-    private Doc createAndPublish(Content.Format format, String username, String title, String content) {
-        return createAndPublish(format, username, title, content, LocalDateTime.now());
-    }
-
-    private Doc createAndPublish(Content.Format format, String username, String title, String content, LocalDateTime pubDate) {
-        Doc doc = DataUtils.createDoc(Doc.Type.BLOG, format,
-                username, title, content);
-        blogService.create(doc);
-
-        doc.setPublishedDt(pubDate);
-        doc.setPublishedUser(username);
-        blogService.publish(doc);
-
-        return doc;
-    }
-
-    @Test
-    public void createSamples() throws Exception {
-        int sampleSize = 30;
-        List<Doc> blogs = blogService.findLatest(new Paging(0, sampleSize)).getList();
-        boolean sampleExists = blogs.stream().anyMatch(b -> b.getLatestContent().getTitle().equals("A asciidoc blog sample"));
-        if (!sampleExists) {
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc blog sample", "== Test me\n\nHello World!\n\n* one\n* two\n");
-            createAndPublish(Content.Format.HTML, "test", "A html blog sample", "<ul><li>one</li><li>two</li><li>three</li></ul>");
-            createAndPublish(Content.Format.ADOC, "test", "A asciidoc blog sample#2", "`print('Python is cool')`");
-
-            Doc blog = createAndPublish(Content.Format.ADOC, "test", "A asciidoc test with unpublish", "Writing AsciiDoc is _easy_!");
-
-            blogService.unpublish(blog.getDocId());
-
-            File file = new File("readme.adoc");
-            String readmeADoc = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-
-            for (int i = 0; i < sampleSize; i++) {
-                String title = "ADocBlog readme blog sample";
-                if (i > 0) {
-                    title += " - copy#" + i;
-                }
-                LocalDateTime dt = LocalDateTime.now().minusDays(i);
-                createAndPublish(Content.Format.ADOC, "test", title, readmeADoc, dt);
-            }
-        }
-    }
-
 }

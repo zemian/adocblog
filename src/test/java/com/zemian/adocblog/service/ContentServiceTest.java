@@ -20,7 +20,7 @@ public class ContentServiceTest extends SpringTestBase {
     public void crud() {
         // Create
         Content content = DataUtils.createContent(
-                Content.Format.ADOC, "test", "test doc", "ContentService *test*");
+                Content.Format.ADOC, "admin", "test doc", "ContentService *test*");
         contentService.create(content);
 
         try {
@@ -40,7 +40,7 @@ public class ContentServiceTest extends SpringTestBase {
     public void getContentHtml() {
         // Create
         Content content = DataUtils.createContent(
-                Content.Format.ADOC, "test", "test doc", "ContentService *test*");
+                Content.Format.ADOC, "admin", "test doc", "ContentService *test*");
         contentService.create(content);
 
         try {
