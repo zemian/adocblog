@@ -33,7 +33,7 @@ public class BlogServiceTest extends SpringTestBase {
     public void crud() {
         // Create
         Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.ADOC,
-                "test", "Just a test", "BlogServiceTest *test*");
+                "admin", "Just a test", "BlogServiceTest *test*");
         blogService.create(blog);
 
         try {
@@ -45,7 +45,7 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(blog2.getLatestContent().getVersion(), is(1));
             assertThat(blog2.getLatestContent().getReasonForEdit(), nullValue());
             assertThat(blog2.getLatestContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(blog2.getLatestContent().getCreatedUser(), is("test"));
+            assertThat(blog2.getLatestContent().getCreatedUser(), is("admin"));
             assertThat(blog2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
             assertThat(blog2.getPublishedContent(), nullValue());
             assertThat(blog2.getPublishedUser(), nullValue());
@@ -66,7 +66,7 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(blog2.getLatestContent().getVersion(), is(2));
             assertThat(blog2.getLatestContent().getReasonForEdit(), is("test edit"));
             assertThat(blog2.getLatestContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(blog2.getLatestContent().getCreatedUser(), is("test"));
+            assertThat(blog2.getLatestContent().getCreatedUser(), is("admin"));
             assertThat(blog2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
             assertThat(blog2.getPublishedContent(), nullValue());
             assertThat(blog2.getPublishedUser(), nullValue());
@@ -90,7 +90,7 @@ public class BlogServiceTest extends SpringTestBase {
     public void blogOperations() {
         // Create
         Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.ADOC,
-                "test", "Just a test", "BlogServiceTest *test*");
+                "admin", "Just a test", "BlogServiceTest *test*");
         blogService.create(blog);
 
         try {
@@ -114,7 +114,7 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(found.isPresent(), is(false));
 
             // Publish
-            blog2.setPublishedUser("test");
+            blog2.setPublishedUser("admin");
             blog2.setPublishedDt(LocalDateTime.now());
             blogService.publish(blog2);
             blog2 = blogService.get(blog.getDocId());
@@ -124,17 +124,17 @@ public class BlogServiceTest extends SpringTestBase {
             assertThat(blog2.getLatestContent().getVersion(), is(1));
             assertThat(blog2.getLatestContent().getReasonForEdit(), nullValue());
             assertThat(blog2.getLatestContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(blog2.getLatestContent().getCreatedUser(), is("test"));
+            assertThat(blog2.getLatestContent().getCreatedUser(), is("admin"));
             assertThat(blog2.getLatestContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
             assertThat(blog2.getPublishedContent(), notNullValue());
-            assertThat(blog2.getPublishedUser(), is("test"));
+            assertThat(blog2.getPublishedUser(), is("admin"));
             assertThat(blog2.getPublishedDt(), lessThanOrEqualTo(LocalDateTime.now()));
             assertThat(blog2.getPublishedContent().getTitle(), is("Just a test"));
             assertThat(blog2.getPublishedContent().getContentId(), is(blog2.getLatestContent().getContentId()));
             assertThat(blog2.getPublishedContent().getVersion(), is(1));
             assertThat(blog2.getPublishedContent().getReasonForEdit(), nullValue());
             assertThat(blog2.getPublishedContent().getFormat(), is(Content.Format.ADOC));
-            assertThat(blog2.getPublishedContent().getCreatedUser(), is("test"));
+            assertThat(blog2.getPublishedContent().getCreatedUser(), is("admin"));
             assertThat(blog2.getPublishedContent().getCreatedDt(), lessThanOrEqualTo(LocalDateTime.now()));
             assertThat(blog2.getType(), is(Doc.Type.BLOG));
 
@@ -191,13 +191,13 @@ public class BlogServiceTest extends SpringTestBase {
         List<Doc> blogs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Doc blog = DataUtils.createDoc(Doc.Type.BLOG, Content.Format.ADOC,
-                    "test", "findList test", "BlogServiceTest *test*");
+                    "admin", "findList test", "BlogServiceTest *test*");
 
             blogService.create(blog);
             blogs.add(blog);
 
             if (i % 2 == 0) {
-                blog.setPublishedUser("test");
+                blog.setPublishedUser("admin");
                 blog.setPublishedDt(LocalDateTime.now().plus(1, ChronoUnit.MILLIS)); // Set published with gap on purpose for testing.
                 blogService.publish(blog);
             }
