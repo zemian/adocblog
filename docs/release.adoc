@@ -2,6 +2,8 @@
 
 == SunnyCMS (Future Release Planning)
 
+- Rename project to SunnyCMS
+- Add diff storage for doc version history
 - Make app more CMS friendly
 - Customizable and overriable site content
 - More streamline Editor for blog/html/json/ftl
@@ -13,10 +15,9 @@
 * Add default admin user with password for easy setup
 * Separate sample data generation from tests
 - Add path to Blog doc
-- Add diff storage for doc version history
 - Support multiple static path/directory mapping
+- Add DocExport tool
 - Rework home page with doc preview
-- Rename project to SunnyCMS
 
 
 == adocblog-1.1 (2018-06-25)
