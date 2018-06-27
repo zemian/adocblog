@@ -32,6 +32,13 @@ CREATE TABLE users (
 -- A dummy user used to record anonymous user activity (eg: comment posting)
 -- INSERT INTO users (username, password, full_name) VALUES('anonymous', '', 'anonymous user');
 
+-- Create a default admin user 'admin' with password 'admin'
+-- We provide this for easy first time setup
+-- User is encouraged to change the password as soon as possible.
+insert into users(username, password, full_name, admin)
+values('admin', 'sha1:64000:18:PTJR+KdNIdUpwwkOZj6dSVr9XtFIUcCu:rXX7/mYNcjSd9jCNjxL58eEM', 'Admin Admin', true);
+
+
 CREATE TABLE contents (
   content_id SERIAL NOT NULL PRIMARY KEY,
   title VARCHAR(2000) NOT NULL,

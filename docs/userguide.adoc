@@ -33,15 +33,6 @@ createdb --owner=adocblog adocblog_dev
 psql -U adocblog adocblog_dev < db/create-schema.sql
 ----
 
-After you setup a new DB, you need at least one application user for the
-ADocBlog. You can create an `admin` user using our tool script.
-
-  java -cp "config:target/adocblog/WEB-INF/lib/*" \
-  --create --adminUser=true --fullName="ADocBlog Admin" \
-  admin mySecretPassword
-
-If you're on Windows, replace `:` with `;` as path separator.
-
 == How to Run/Deploy ADocBlog
 
 The `adocblog.war` is self-contained and it can be deployed into any Java based 
@@ -60,6 +51,8 @@ already have `webapp-runner` tool. Try running:
 
 Now you can open `http://localhost:8080/admin` to start publishing content!
 
+Your default login is username: `admin` with password `admin`. Please change your
+password immediately after you login.
 
 == Setup New ADocBlog Config
 

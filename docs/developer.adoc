@@ -64,6 +64,18 @@ the DB password like this:
 
 Next, replace the output of the encrypted password with your plain password in config file.
 
+
+== Create User with Command Line Tool
+
+Application users may be managed through the Admin Console when you run the application on server.
+However you may also create new user with our command line tool:
+
+  java -cp "config:target/adocblog/WEB-INF/lib/*" \
+  com.zemian.adocblog.app.UserTool
+  --create --adminUser=true --fullName="ADocBlog Admin" \
+  admin mySecretPassword
+
+
 == Print Released Version Props
 
 If you build package with `-P with-version-file`, then this tool should print these info:
