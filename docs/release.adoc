@@ -1,5 +1,22 @@
 = Release Document
 
+== SunnyCMS (Future Release Planning)
+
+- Make app more CMS friendly
+- Customizable and overriable site content
+- More streamline Editor for blog/html/json/ftl
+
+== adocblog-1.2 (Current Master Branch)
+
+- Add default adocblog app user with password
+- Rework unit tests (remove data after each tests)
+- Add path to Blog doc
+- Add diff storage for doc version history
+- Support multiple static path/directory mapping
+- Rework home page with doc preview
+- Rename project to SunnyCMS
+
+
 == adocblog-1.1 (2018-06-25)
 
 * Cleanup tests
