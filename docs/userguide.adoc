@@ -53,7 +53,7 @@ command line tool called `webapp-runner`.
 
 === Using `webapp-runner` Tomcat Server
 
-If you have build ADocBlog binrary package with above instruction, then you 
+If you have build ADocBlog binary package with above instruction, then you
 already have `webapp-runner` tool. Try running:
 
   java -jar target/dependency/webapp-runner.jar target/adocblog.war --port 8080
@@ -63,11 +63,12 @@ Now you can open `http://localhost:8080/admin` to start publishing content!
 
 == Setup New ADocBlog Config
 
-The ADocBlog is designed to be able to load different configurable environment.
-The configuration files set can be stored in a directory under the Java classpath
-under `adocblog`. Without explicit set an env, it default to `dev` settings.
+The ADocBlog is able to load different configurable files set per environment.
+The configuration files set can be stored in the Java classpath
+under `adocblog` directory. The application provide reasonable default values
+when you do not explicit set an env.
 
-To create a new set of configration files, create a directory like this:
+To create a new set of configuration files, create a directory like this:
 
 ----
 mkdir -p config/adocblog/myenv
@@ -115,7 +116,7 @@ Next, replace the output of the encrypted password with your plain password in c
 
 == Add extra static web content
 
-You may add and may a directory of static web content outside of the war package application.
+You may add a directory of static web content outside of the war package application.
 This allow you to easily add images and other static files without have to modify the source
 or recompile the war package. This feature is optional, and you can add it with these config:
 
