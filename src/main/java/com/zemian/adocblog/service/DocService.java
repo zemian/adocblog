@@ -5,13 +5,18 @@ import com.zemian.adocblog.data.dao.AuditLogDAO;
 import com.zemian.adocblog.data.dao.DocDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
-import com.zemian.adocblog.data.domain.AuditLog;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class DocService {
+    private static Logger LOG = LoggerFactory.getLogger(DocService.class);
 
     @Autowired
     protected DocDAO docDAO;
@@ -138,5 +144,39 @@ public class DocService {
 
     public int removeOldDocs(LocalDateTime sinceDt) {
         return docDAO.removeOldDocs(sinceDt);
+    }
+
+    public void export(String path) {
+        File dir = new File(path);
+        if (dir.exists()) {
+            dir.mkdirs();
+            LOG.info("Created directory: {}", dir);
+        }
+
+        int count = 0;
+        boolean done = false;
+        Paging paging = new Paging(0, Paging.DEFAULT_SIZE);
+        PagingList<Doc> pagingDocs;
+        do {
+            pagingDocs = docDAO.findLatest(paging, Doc.Type.BLOG);
+            List<Doc> docs = pagingDocs.getList();
+            LOG.debug("Found {} docs.", docs.size());
+            for (Doc doc : docs) {
+                File file = new File(dir, "" + doc.getDocId());
+                LOG.info("Export doc={} to file={}", doc, file);
+                try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
+                    out.write(doc.getLatestContent().getContentText());
+                } catch (IOException e) {
+                    LOG.error("Failed to export file {}", file);
+                }
+                count++;
+            }
+            if (pagingDocs.isMore()) {
+                paging = new Paging(paging.getOffset() + docs.size(), Paging.DEFAULT_SIZE);
+            } else {
+                done = true;
+            }
+        } while (!done);
+        LOG.info("Export has completed with {} docs.", count);
     }
 }

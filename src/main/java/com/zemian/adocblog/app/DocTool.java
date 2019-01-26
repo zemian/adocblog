@@ -1,6 +1,5 @@
 package com.zemian.adocblog.app;
 
-import com.zemian.adocblog.AppException;
 import com.zemian.adocblog.CommonConfig;
 import com.zemian.adocblog.app.support.CmdOpts;
 import com.zemian.adocblog.service.DocService;
@@ -37,11 +36,16 @@ public class DocTool {
     private DocService docService;
 
     private void printHelp() {
-        System.out.println("Document managment tool.\n" +
+        System.out.println("Document management tool.\n" +
                 "\n" +
-                "Usage: (remove marked for delete docs)\n" +
-                "  DocTool --sinceMonths=6 removeMarkForDelete\n" +
-                "  DocTool --sinceDatetime=YYYY-MM-DD'T'HH:MM removeMarkForDelete\n" +
+                "Usage: " +
+                "  DocTool removeMarkForDelete [--sinceMonths=6]" +
+                "    Remove marked for delete docs older than N months.\n" +
+                "  DocTool removeMarkForDelete [sinceDatetime=YYYY-MM-DD'T'HH:MM]\n" +
+                "    Remove marked for delete docs since a DATE.\n" +
+                "\n" +
+                "  DocTool exportLatest [--path=/path/to/store/export]\n" +
+                "    Export all latest docs into a directory path.\n" +
                 "\n");
     }
 
@@ -61,6 +65,9 @@ public class DocTool {
                 sinceDt = LocalDateTime.parse(opts.getOpt("sinceDatetime"));
             }
             docService.removeOldDocs(sinceDt);
+        }  else if ("export".equals(cmd)) {
+            String path = opts.getOpt("path", "export");
+            docService.export(path);
         } else {
             System.out.println("ERROR: invalid arguments");
             printHelp();
