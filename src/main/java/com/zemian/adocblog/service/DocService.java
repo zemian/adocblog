@@ -5,6 +5,7 @@ import com.zemian.adocblog.data.dao.AuditLogDAO;
 import com.zemian.adocblog.data.dao.DocDAO;
 import com.zemian.adocblog.data.dao.Paging;
 import com.zemian.adocblog.data.dao.PagingList;
+import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
 import org.slf4j.Logger;
@@ -34,6 +35,9 @@ public class DocService {
 
     @Autowired
     protected AuditLogDAO auditLogDAO;
+
+    @Autowired
+    protected ContentService contentService;
 
     public void create(Doc doc) {
         docDAO.create(doc);
@@ -148,11 +152,12 @@ public class DocService {
 
     public void export(String path) {
         File dir = new File(path);
-        if (dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdirs();
-            LOG.info("Created directory: {}", dir);
+            LOG.info("Created directory={}", dir);
         }
 
+        LOG.info("Exporting to directory={}", dir.getAbsolutePath());
         int count = 0;
         boolean done = false;
         Paging paging = new Paging(0, Paging.DEFAULT_SIZE);
@@ -162,10 +167,16 @@ public class DocService {
             List<Doc> docs = pagingDocs.getList();
             LOG.debug("Found {} docs.", docs.size());
             for (Doc doc : docs) {
-                File file = new File(dir, "" + doc.getDocId());
+                Content content = doc.getLatestContent();
+                File file = new File(dir, "" + doc.getDocId() + "." + content.getFormat().name().toLowerCase());
                 LOG.info("Export doc={} to file={}", doc, file);
                 try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
-                    out.write(doc.getLatestContent().getContentText());
+                    String contentText = contentService.getContentText(content.getContentId());
+                    if (contentText != null)
+                        out.write(contentText);
+                    else
+                        LOG.error("Doc {} Content {} is empty!", doc, content);
+                    LOG.info("Content {} exported to {}", content, file);
                 } catch (IOException e) {
                     LOG.error("Failed to export file {}", file);
                 }

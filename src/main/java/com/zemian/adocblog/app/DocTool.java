@@ -38,8 +38,8 @@ public class DocTool {
     private void printHelp() {
         System.out.println("Document management tool.\n" +
                 "\n" +
-                "Usage: " +
-                "  DocTool removeMarkForDelete [--sinceMonths=6]" +
+                "Usage:\n" +
+                "  DocTool removeMarkForDelete [--sinceMonths=6]\n" +
                 "    Remove marked for delete docs older than N months.\n" +
                 "  DocTool removeMarkForDelete [sinceDatetime=YYYY-MM-DD'T'HH:MM]\n" +
                 "    Remove marked for delete docs since a DATE.\n" +
@@ -65,8 +65,8 @@ public class DocTool {
                 sinceDt = LocalDateTime.parse(opts.getOpt("sinceDatetime"));
             }
             docService.removeOldDocs(sinceDt);
-        }  else if ("export".equals(cmd)) {
-            String path = opts.getOpt("path", "export");
+        }  else if ("exportLatest".equals(cmd)) {
+            String path = opts.getOpt("path", "target/export");
             docService.export(path);
         } else {
             System.out.println("ERROR: invalid arguments");
