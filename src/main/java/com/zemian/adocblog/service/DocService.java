@@ -180,6 +180,7 @@ public class DocService {
                 fn = fn.replaceAll("/", "");
                 fn = fn.replaceAll("\\(", "");
                 fn = fn.replaceAll("\\)", "");
+                fn = fn.replaceAll("\\:", "");
                 String ext = content.getFormat().name().toLowerCase();
                 File file = new File(dir, dirPath + "/" + fn + "." + ext);
                 if (!file.getParentFile().exists())
