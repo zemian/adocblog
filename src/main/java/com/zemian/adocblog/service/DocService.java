@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -111,7 +112,7 @@ public class DocService {
 
     public void unpublish(Integer docId) {
         docDAO.unpublish(docId);
-        auditLogDAO.create("DOC_UNPUBLISHED","DocId=" + docId);
+        auditLogDAO.create("DOC_UNPUBLISHED", "DocId=" + docId);
     }
 
     // ==
@@ -166,16 +167,39 @@ public class DocService {
             pagingDocs = docDAO.findLatest(paging, Doc.Type.BLOG);
             List<Doc> docs = pagingDocs.getList();
             LOG.debug("Found {} docs.", docs.size());
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter df2 = DateTimeFormatter.ofPattern("yyyy/MM");
             for (Doc doc : docs) {
                 Content content = doc.getLatestContent();
-                File file = new File(dir, "" + doc.getDocId() + "." + content.getFormat().name().toLowerCase());
+                String dirPath = doc.getPublishedDt().format(df2);
+                String fn = content.getTitle().toLowerCase();
+                fn = fn.replaceAll(" ", "-");
+                fn = fn.replaceAll("\\.", "-");
+                fn = fn.replaceAll("'", "");
+                fn = fn.replaceAll("\\\"", "");
+                fn = fn.replaceAll("/", "");
+                fn = fn.replaceAll("\\(", "");
+                fn = fn.replaceAll("\\)", "");
+                String ext = content.getFormat().name().toLowerCase();
+                File file = new File(dir, dirPath + "/" + fn + "." + ext);
+                if (!file.getParentFile().exists())
+                    file.getParentFile().mkdirs();
+
                 LOG.info("Export doc={} to file={}", doc, file);
                 try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
                     String contentText = contentService.getContentText(content.getContentId());
-                    if (contentText != null)
+                    if (contentText != null) {
+                        out.write("title=" + content.getTitle() + "\n");
+                        out.write("date=" + doc.getPublishedDt().format(df) + "\n");
+                        out.write("type=post\n");
+                        out.write("tags=" + String.join(", ", doc.getTags()) + "\n");
+                        out.write("status=published\n");
+                        out.write("~~~~~~\n");
                         out.write(contentText);
-                    else
+                        out.flush();
+                    } else {
                         LOG.error("Doc {} Content {} is empty!", doc, content);
+                    }
                     LOG.info("Content {} exported to {}", content, file);
                 } catch (IOException e) {
                     LOG.error("Failed to export file {}", file);
