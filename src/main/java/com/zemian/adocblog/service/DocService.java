@@ -8,6 +8,7 @@ import com.zemian.adocblog.data.dao.PagingList;
 import com.zemian.adocblog.data.domain.Content;
 import com.zemian.adocblog.data.domain.Doc;
 import com.zemian.adocblog.data.domain.DocHistory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,7 +194,10 @@ public class DocService {
                         out.write("title=" + content.getTitle() + "\n");
                         out.write("date=" + doc.getPublishedDt().format(df) + "\n");
                         out.write("type=post\n");
-                        out.write("tags=" + String.join(", ", doc.getTags()) + "\n");
+                        if (StringUtils.isNotEmpty(doc.getTags())) {
+                            String tagsStr = doc.getTags().trim().replaceAll(" ", ", ");
+                            out.write("tags=" + tagsStr + "\n");
+                        }
                         out.write("status=published\n");
                         out.write("~~~~~~\n");
                         out.write(contentText);
